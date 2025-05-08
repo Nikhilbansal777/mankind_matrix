@@ -9,4 +9,4 @@ const withLayout = (WrappedComponent) => {
   );
 };
 
-export default withLayout; 
+export default withLayout;

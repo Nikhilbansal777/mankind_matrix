@@ -1,0 +1,164 @@
+/* ProfilePage.module.css */
+
+.profilePageContainer {
+    display: flex; /* Use flexbox to place navigation and content side by side */
+    max-width: 4600px; /* Adjust as needed */
+    margin: 0 auto;
+    margin-left: 0;
+    gap: 0px; /* Space between navigation and content */
+    padding: 20px;
+    align-self: start;
+  }
+  
+  .accountNavigationContainer {
+    width: 300px; /* Adjust the width of the navigation sidebar */
+    background-color: #f8f8f8;
+    border-right: 1px solid #eee;
+    padding: 20px;
+    margin-right: 20px; /* Space between navigation and content */
+    /* Ensure the navigation doesn't shrink */
+    flex-shrink: 0;
+  }
+  
+  .accountNavigationContainer h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #000000;
+    font-size: 1.6rem;
+  }
+  
+  .accountNavigationContainer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+  }
+  
+  .accountNavigationContainer ul li {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.2rem;
+  }
+  
+  .accountNavigationContainer ul li:hover {
+    background-color: #eee;
+  }
+  
+  .accountNavigationContainer ul li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+  }
+  
+  .accountNavigationContainer ul li a.active {
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .profileCard {
+    flex-grow: 1; /* Allow the profile card to take up the remaining space */
+    border-radius: 8px;
+    padding: 24px;
+    margin-left: 150px; /* Space between navigation and content */
+    width: 100%; /* Ensure it takes full width of the container */
+    max-width: 1200px; /* Optional: limit the maximum width */
+  }
+  
+  .profileCard h2 {
+    font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: #000000;
+  margin-bottom: 1rem;
+  }
+  
+  .profileInfo {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    gap: 15px;
+  }
+  
+  .infoItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: left;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  
+  .label {
+    font-weight: bold;
+    color: #555;
+    width: 180px; /* Adjusted width */
+  }
+  
+  .value {
+    flex-grow: 1;
+    overflow-wrap: break-word;
+    text-align: left;
+    padding-left: 75px; /* Add left padding for gap */
+  }
+  
+  .editButton {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: 500;
+  }
+  
+  .editButton:hover {
+    background-color: #000000;
+  }
+  
+  .addButton {
+    background-color: #000000;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .addButton:hover {
+    background-color: #000000;
+  }
+  
+  .mobileInfo {
+    flex-grow: 1;
+  }
+  
+  .securityNote {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 5px;
+  }
+  
+  .errorMessage {
+    color: #d9534f;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f8d7da;
+    border-radius: 4px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .profilePageContainer {
+      flex-direction: column; /* Stack navigation and content on smaller screens */
+    }
+  
+    .accountNavigationContainer {
+      width: 100%;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+    }
+  }
