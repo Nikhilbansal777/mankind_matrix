@@ -1,232 +1,224 @@
 /* manage-addresses.css */
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: Arial, sans-serif;
     margin: 0;
     background-color: #f4f4f4;
 }
+.manage-addresses-content {
+    flex-direction: column;
+    width: auto; /* Constrain the width of the content */
+    text-align: center; /* Center the text */
+    width: 100%;
+}
+
+.manage-addresses-content address-content-header {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: #000000;
+  margin-bottom: 0.5rem;
+}
 
 .manage-addresses-container {
-    display: flex;
-    gap: 50px;
-    padding: 20px;
-    width: 100%;
-    max-width: 2000px;
-    margin: 0 auto;
+    display: flex; /* Places AccountNavigation and content side-by-side */
+  gap: 0px; /* Space between navigation and content */
+  padding: 20px; /* Padding around the entire addresses section */
+  width: 100%; /* Full width of the parent */
+  max-width: 2000px; /* Optional: constrain width */
+  margin-left: 0;
+  font-family: sans-serif; /* Basic font */
+  }
+/* --- Header and General Styles (Keep as is) --- */
+.default-checkbox-container {
+    grid-column: 1 / -1; /* Span both columns of the grid */
+    display: flex; /* Enable Flexbox for inline alignment */
+    align-items: center; /* Vertically align items in the center */
+    justify-content: flex-start; /* Align items to the left */
+    margin-top: 10px; /* Add some top margin for spacing */
 }
 
-.manage-addresses-content {
-    flex: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 30px;
+.default-checkbox-container label[for="isDefault"] {
+    text-align: left;
+    font-weight: normal;
+    padding-left: 5px;
+    margin-right: 10px; /* This will create the gap */
 }
 
-.address-content-header {
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 2rem;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 10px;
-}
-
-
-
-.address-content-header p {
-    color: #666;
-    font-size: 1.1rem;
-    margin-top: 0;
-}
-
-
-
-/* Address Root Container */
+/* --- Container for Address Section --- */
 #address-root {
+    max-width: 600px;
+    margin: 20px auto;
     background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #address-root h2,
 #address-root h3 {
-    color: #1a1a1a;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
+    color: #000000;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
     border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
 }
 
-/* Add Address Button */
+
+/* ----- START: UPDATED FORM STYLES ----- */
+
 #add-address-btn {
     background-color: #000000;
     color: white;
-    padding: 12px 24px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    margin-bottom: 30px;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
 }
 
-#add-address-btn:hover {
-    background-color: #333;
-    transform: translateY(-1px);
-}
-
-/* Form Styling */
+/* The form element itself - Apply Grid here */
 #address-form {
     display: grid;
-    grid-template-columns: 150px 1fr;
-    margin: 0 auto;
-    max-width: 800px;
-    padding: 30px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    justify-content: center;
-    align-items: center;
+    grid-template-columns: auto 1fr; /* Label column sized to content, Input takes rest */
+    gap: 15px 12px; /* Vertical(row) gap, Horizontal(column) gap */
+    margin-top: 25px;;
+    margin-left: 150px;;
+    width: 70%; /* Set a fixed width for the form */
 }
 
 #address-form label {
-    font-size: 0.95rem;
-    font-weight: 500;
     font-weight: bold;
-    color: #4a4a4a;
-    text-align: left;
-    margin-left: 70px;
-    padding: 10px 20px;
+    font-size: 0.9em;
+    color: #000000;
+    text-align: right;
+    padding-right: 50px; /* Space between label and input */
+    margin-left: 150px; 
+    margin-bottom: 0;
 }
 
 #address-form input[type="text"] {
-    width: 100%;
-    max-width: 400px;
-    padding: 12px 16px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: 1rem;
-    transition: border-color 0.2s ease;
-    background-color: white;
-    margin: 0 auto 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box;
+    width: 70%; /* Limit the maximum width of the input box */
+    margin-bottom: 0;
 }
 
-#address-form input[type="text"]:focus {
-    outline: none;
-    border-color: #000000;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+/* Specific handling for the checkbox row */
+#address-form label[for="isDefault"] {
+    grid-column: 2 / 3;
+    text-align: left;
+    font-weight: normal;
+    padding-left: 5px;
+    cursor: pointer;
 }
 
-/* Checkbox Styling */
-.default-checkbox-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 20px 0;
-    grid-column: 1 / -1;
-}
-
-.default-checkbox-container input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+#address-form input[type="checkbox"]#isDefault {
+    grid-column: 1 / 2;
+    justify-self: end;
     margin: 0;
-}
-
-.default-checkbox-container label {
-    font-size: 0.95rem;
-    color: #4a4a4a;
+    width: auto;
     cursor: pointer;
-    padding: 0;
 }
 
-/* Form Actions */
+/* Container for Save/Cancel buttons */
 .form-actions {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
+    justify-content: left;
 }
 
-.form-actions button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
+.form-actions button[type="submit"] {
+    padding: 8px 15px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    border: none;
+    border-radius: 4px;
+    width: 300px;
+    margin-left: 450px;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.form-actions button[type="button"] {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    align-items: center;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
 }
 
 .form-actions button[type="submit"] {
     background-color: #000000;
     color: white;
-    min-width: 120px;
 }
-
 .form-actions button[type="submit"]:hover {
-    background-color: #333;
-    transform: translateY(-1px);
+    background-color: #000000;
 }
 
-.form-actions button[type="button"] {
-    background-color: #e0e0e0;
-    color: #4a4a4a;
-    min-width: 120px;
+.form-actions button[type="button"],
+.form-actions #cancel-btn {
+     /* Adjust vertical and horizontal padding */
+    font-size: 1em;
+    background-color: #000000;
+    margin-left: 40px;
+    color: white;
 }
 
-.form-actions button[type="button"]:hover {
-    background-color: #d0d0d0;
+
+/* ----- END: UPDATED FORM STYLES ----- */
+
+
+/* --- Utility and Error Styles (Keep as is) --- */
+.hidden {
+    display: none !important;
 }
 
-/* Error Message Styling */
 .error-message {
-    color: #dc3545;
-    font-size: 0.9rem;
-    margin-top: 5px;
-    grid-column: 2 / 3;
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 15px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .manage-addresses-container {
-        flex-direction: column;
-        gap: 30px;
-    }
+/* --- Optional: Responsiveness for the Form (Update input max-width if needed) --- */
+@media (max-width: 500px) {
+  #address-form {
+    grid-template-columns: 1fr; /* Stack to a single column */
+    gap: 5px 0;
+  }
 
-    .manage-addresses-content {
-        padding: 20px;
-    }
+  #address-form label {
+     grid-column: 1 / -1;
+     text-align: left;
+     padding-right: 0;
+     margin-bottom: 3px;
+  }
 
-    #address-form {
-        grid-template-columns: 1fr;
-        padding: 20px;
-    }
+   #address-form input[type="text"]{
+       grid-column: 1 / -1;
+       margin-bottom: 10px;
+       max-width: none; /* Allow input to be full width on small screens */
+   }
 
-    #address-form label {
-        text-align: left;
-        padding: 0;
-    }
+   /* Checkbox layout for stacking */
+   #address-form input[type="checkbox"]#isDefault {
+       grid-column: 1 / -1;
+       justify-self: start;
+       margin-bottom: 0;
+   }
+    #address-form label[for="isDefault"]{
+       grid-column: 1 / -1;
+       padding-left: 25px;
+       position: relative;
+       top: -18px;
+       margin-bottom: -10px;
+   }
 
-    #address-form input[type="text"] {
-        max-width: 100%;
-    }
-
-    .form-actions {
-        flex-direction: column;
-    }
-
-    .form-actions button {
-        width: 100%;
-    }
-
-    .address-content-header h1 {
-        font-size: 1.75rem;
-    }
+   .form-actions {
+       justify-content: center;
+   }
 }

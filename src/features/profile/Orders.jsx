@@ -4,14 +4,12 @@ import './Orders.css'; // Import your CSS styles for the component
 import axios from 'axios'; // Import axios for API calls
 import AccountNavigation from './AccountNavigation';
 import withLayout from '../../layouts/HOC/withLayout';
-import { useNavigate } from 'react-router-dom'; // Import for navigation
 const API_URL = 'https://your-api-endpoint.com/orders';
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Initialize navigate hook
 
   useEffect(() => {
     fetchOrders();
@@ -72,15 +70,6 @@ const Order = () => {
   const handleOpenSupport = (orderId) => {
     // In a real application, this would open a support chat or form
     alert(`Support request initiated for order #${orderId}`);
-  };
-
-  /**
-   * Handle initiating a return request
-   * @param {Object} order - The complete order object
-   */
-  const handleReturnRequest = (order) => {
-    // Navigate to the Return-Request page and pass the order data
-    navigate('/return-request', { state: { order } });
   };
 
   /**
@@ -228,13 +217,6 @@ const Order = () => {
                     onClick={() => handleOpenSupport(order.id)}
                   >
                     Support
-                  </button>
-                  {/* New Return Request Button */}
-                  <button
-                    className="btn return-btn"
-                    onClick={() => handleReturnRequest(order)}
-                  >
-                    Return Request
                   </button>
                 </div>
               </div>

@@ -3,31 +3,30 @@ import './Header.css';
 import { Link } from 'react-router';
 import { FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
-import NotificationsUI from '../../features/profile/NotificationsUI';
 
 function Header({ onSearch }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const { itemCount, itemAdded } = useCart();
- 
+  
   // Check if we're on mobile view
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-   
+    
     // Initial check
     checkIfMobile();
-   
+    
     // Add event listener
     window.addEventListener('resize', checkIfMobile);
-   
+    
     // Cleanup
     return () => {
       window.removeEventListener('resize', checkIfMobile);
     };
   }, []);
- 
+  
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
@@ -38,15 +37,15 @@ function Header({ onSearch }) {
       <Link to="/" className="logo-link">
         <div className="logo">Mankind Matrix</div>
       </Link>
-      
+
       {/* Mobile menu toggle button */}
-      <div
+      <div 
         className={`mobile-menu-toggle ${isMobile ? 'mobile-transparent' : ''}`}
         onClick={toggleMobileMenu}
       >
         {mobileMenuOpen ? <FaTimes /> : <FaBars />}
       </div>
-      
+
       <div className={`header-right ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         <nav className="nav-links">
           <Link to='/products'>Products</Link>
@@ -54,7 +53,7 @@ function Header({ onSearch }) {
           <a href="#about">About</a>
           <Link to='/contact'>Contact</Link>
         </nav>
-       
+        
         <div className="search-bar">
           <input
             type="text"
@@ -63,23 +62,17 @@ function Header({ onSearch }) {
           />
         </div>
       </div>
-     
-      {/* Actions section with Notifications and Cart */}
-      <div className={`header-actions ${isMobile ? 'mobile-transparent' : ''}`}>
-        {/* Notifications Component */}
-        <NotificationsUI />
-       
-        {/* Cart icon with item count */}
-        <Link
-          to="/cart"
-          className={`cart-icon-wrapper ${itemAdded ? 'cart-pulse' : ''}`}
-        >
-          <FaShoppingCart className="cart-icon" />
-          {itemCount > 0 && (
-            <span className="cart-count">{itemCount}</span>
-          )}
-        </Link>
-      </div>
+      
+      {/* Cart icon with item count */}
+      <Link 
+        to="/cart" 
+        className={`cart-icon-wrapper ${isMobile ? 'mobile-transparent' : ''} ${itemAdded ? 'cart-pulse' : ''}`}
+      >
+        <FaShoppingCart className="cart-icon" />
+        {itemCount > 0 && (
+          <span className="cart-count">{itemCount}</span>
+        )}
+      </Link>
     </div>
   );
 }

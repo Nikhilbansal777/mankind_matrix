@@ -36,21 +36,19 @@ const ManageAddressesPage = () => {
     return true;
   };
 
-  const saveAddress = (event) => {
-    event.preventDefault();
-    
-    if (!validateAddress(currentAddress)) {
+  const saveAddress = (address) => {
+    if (!validateAddress(address)) {
       return;
     }
 
     const updatedAddresses = [...addresses];
     if (editIndex >= 0) {
-      updatedAddresses[editIndex] = currentAddress;
+      updatedAddresses[editIndex] = address;
     } else {
-      updatedAddresses.push(currentAddress);
+      updatedAddresses.push(address);
     }
 
-    if (currentAddress.isDefault) {
+    if (address.isDefault) {
       updatedAddresses.forEach((addr, idx) => {
         if (editIndex !== idx) {
           addr.isDefault = false;
@@ -117,10 +115,15 @@ const ManageAddressesPage = () => {
       state: '',
       zipcode: '',
       country: '',
-      isDefault: addresses.length === 0,
+      isDefault: false,
     });
     setEditIndex(-1);
     setShowForm(true);
+  };
+
+  const handleSaveAddress = (event) => {
+    event.preventDefault();
+    saveAddress(currentAddress);
   };
 
   const handleCancelForm = () => {
@@ -142,80 +145,58 @@ const ManageAddressesPage = () => {
       <AccountNavigation />
       <div className="manage-addresses-content">
         <h2 className="address-content-header">Your Addresses</h2>
-        
-        {!showForm ? (
-          <div id="address-list-container">
-            <button id="add-address-btn" onClick={handleAddAddressClick}>
-              Add New Address
-            </button>
-            
-            <div id="address-list">
-              {addresses.length === 0 ? (
-                <div className="empty-state">No addresses saved. Add your first address.</div>
-              ) : (
-                addresses.map((address, index) => (
-                  <div key={index} className={`address-card ${address.isDefault ? 'default-address' : ''}`}>
-                    <div className="address-content">
-                      <h3>{address.name} {address.isDefault && <span className="default-badge">Default</span>}</h3>
-                      <p>{address.street}</p>
-                      <p>{address.city}, {address.state} {address.zipcode}</p>
-                      <p>{address.country}</p>
-                    </div>
-                    <div className="address-actions">
-                      <button className="edit-btn" onClick={() => editAddressHandler(index)}>Edit</button>
-                      <button className="delete-btn" onClick={() => deleteAddressHandler(index)}>Delete</button>
-                      {!address.isDefault && (
-                        <button className="default-btn" onClick={() => setDefaultAddressHandler(index)}>
-                          Set as Default
-                        </button>
-                      )}
-                    </div>
+        <div id="address-list-container" className={showForm ? 'hidden' : ''}>
+          <button id="add-address-btn" onClick={handleAddAddressClick}>Add New Address</button>
+          <div id="address-list">
+            {addresses.length === 0 ? (
+              <div className="empty-state">No addresses saved. Add your first address.</div>
+            ) : (
+              addresses.map((address, index) => (
+                <div key={index} className={`address-card ${address.isDefault ? 'default-address' : ''}`}>
+                  <div className="address-content">
+                    <h3>{address.name} {address.isDefault && <span className="default-badge">Default</span>}</h3>
+                    <p>{address.street}</p>
+                    <p>{address.city}, {address.state} {address.zipcode}</p>
+                    <p>{address.country}</p>
                   </div>
-                ))
-              )}
+                  <div className="address-actions">
+                    <button className="edit-btn" onClick={() => editAddressHandler(index)}>Edit</button>
+                    <button className="delete-btn" onClick={() => deleteAddressHandler(index)}>Delete</button>
+                    {!address.isDefault && (
+                      <button className="default-btn" onClick={() => setDefaultAddressHandler(index)}>Set as Default</button>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        <div id="address-form-container" className={showForm ? '' : 'hidden'}>
+          <h3>{editIndex >= 0 ? 'Edit Address' : 'Add New Address'}</h3>
+          <form id="address-form" onSubmit={handleSaveAddress}>
+            <label htmlFor="name">Name:</label>
+            <input type="text" id="name" name="name" value={currentAddress.name} onChange={handleInputChange} required />
+            <label htmlFor="street">Street:</label>
+            <input type="text" id="street" name="street" value={currentAddress.street} onChange={handleInputChange} required />
+            <label htmlFor="city">City:</label>
+            <input type="text" id="city" name="city" value={currentAddress.city} onChange={handleInputChange} required />
+            <label htmlFor="state">State:</label>
+            <input type="text" id="state" name="state" value={currentAddress.state} onChange={handleInputChange} required />
+            <label htmlFor="zipcode">Zip Code:</label>
+            <input type="text" id="zipcode" name="zipcode" value={currentAddress.zipcode} onChange={handleInputChange} required />
+            <label htmlFor="country">Country:</label>
+            <input type="text" id="country" name="country" value={currentAddress.country} onChange={handleInputChange} required />
+            <div className="default-checkbox-container">
+              <label htmlFor="isDefault">Set as Default:</label>
+              <input type="checkbox" id="isDefault" name="isDefault" checked={currentAddress.isDefault} onChange={handleInputChange} />
             </div>
+          </form>
+          <div className="form-actions">
+            <button type="submit">Save Address</button>
+            <button type="button" id="cancel-btn" onClick={handleCancelForm}>Cancel</button>
           </div>
-        ) : (
-          <div id="address-form-container">
-            <h3 style={{marginLeft: '120px'}}>{editIndex >= 0 ? 'Edit Address' : 'Add New Address'}</h3>    
-            <form id="address-form" onSubmit={saveAddress}>
-              <label htmlFor="name">Name:</label>
-              <input type="text" id="name" name="name" value={currentAddress.name} onChange={handleInputChange} required />
-              
-              <label htmlFor="street">Street:</label>
-              <input type="text" id="street" name="street" value={currentAddress.street} onChange={handleInputChange} required />
-              
-              <label htmlFor="city">City:</label>
-              <input type="text" id="city" name="city" value={currentAddress.city} onChange={handleInputChange} required />
-              
-              <label htmlFor="state">State:</label>
-              <input type="text" id="state" name="state" value={currentAddress.state} onChange={handleInputChange} required />
-              
-              <label htmlFor="zipcode">ZipCode:</label>
-              <input type="text" id="zipcode" name="zipcode" value={currentAddress.zipcode} onChange={handleInputChange} required />
-              
-              <label htmlFor="country">Country:</label>
-              <input type="text" id="country" name="country" value={currentAddress.country} onChange={handleInputChange} required />
-              
-              <div className="default-checkbox-container">
-                <input 
-                  type="checkbox" 
-                  id="isDefault" 
-                  name="isDefault" 
-                  checked={currentAddress.isDefault} 
-                  onChange={handleInputChange}
-                  disabled={addresses.length === 0}
-                />
-                <label htmlFor="isDefault">Set as Default Address</label>
-              </div>
-              
-              <div className="form-actions">
-                <button type="submit">{editIndex >= 0 ? 'Update' : 'Save'} Address</button>
-                <button type="button" onClick={handleCancelForm}>Cancel</button>
-              </div>
-            </form>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

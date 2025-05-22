@@ -5,23 +5,29 @@
 }
 
 .payment-methods-container {
-  display: flex;
-  gap: 50px;
+  display: flex; /* Places AccountNavigation and content side-by-side */
+  gap: 50px; /* Space between navigation and content */
+  padding: 20px; /* Padding around the entire addresses section */
+  width: 100%; /* Full width of the parent */
+  max-width: 2000px; /* Optional: constrain width */
+  font-family: sans-serif; /* Basic font */
+}
+
+.account-navigation-container {
+  width: 350px;
+  min-height: 100vh; /* Full viewport height */
+  background-color: #f8f8f8;
+  border-right: 1px solid #eee;
   padding: 20px;
-  width: 100%;
-  max-width: 2000px;
-  margin-left: 0;
-  font-family: sans-serif;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  overflow-y: auto;
 }
-
-
 .payment-methods-content {
-  flex: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 30px;
+  flex-direction: column;
+  width: 100%;
 }
-
 .payment-methods-content page-title {
   font-size: 2.5rem;
   font-weight: 700;
@@ -40,7 +46,7 @@
   display: flex;
   flex-direction: column;
   background-color: whitesmoke;
-  width: 900px;
+  width: 1200px;
   gap: 1rem;
   margin-bottom: 2rem;
 }

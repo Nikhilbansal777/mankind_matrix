@@ -1,18 +1,66 @@
 /* ProfilePage.css */
-
+/* ProfilePage.css */
 .profile-page-container {
   display: flex;
-  gap: 50px;
+  max-width: 100%; /* Full width */
+  margin: 0;
   padding: 20px;
-  width: 100%;
-  max-width: 2000px;
-  margin-left: 0;
-  font-family: sans-serif;
+  gap: 0;
+}
+
+.account-navigation-container {
+  width: 300px;
+  min-height: 100vh; /* Full viewport height */
+  background-color: #f8f8f8;
+  border-right: 1px solid #eee;
+  padding: 20px;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.account-navigation-container h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #000000;
+  font-size: 1.6rem;
+}
+
+.account-navigation-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.account-navigation-container ul li {
+  margin-bottom: 5px;
+}
+
+.account-navigation-container ul li a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+  padding: 10px 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 4px;
+}
+
+.account-navigation-container ul li a:hover {
+  background-color: #f0f0f0;
+}
+
+.account-navigation-container ul li a.active {
+  font-weight: bold;
+  color: #007bff;
+  background-color: #e6f2ff;
 }
 
 .profile-card {
-  flex-direction: column;
-  width: 80%;
+  flex-grow: 1;
+  margin-left: 250px; /* Match the width of navigation container */
+  padding: 24px;
+  max-width: calc(100% - 250px);
 }
 
 /* Responsive adjustments */
