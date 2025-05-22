@@ -33,8 +33,9 @@ const AppRouter = () => {
         <Route path="/payments" element={<PaymentMethods/>} />
         <Route path="/help" element={<Help />} />
         <Route path='cart' element={<CartPage></CartPage>}></Route>
+        <Route path='product' element={<ProductPage></ProductPage>}></Route>
         <Route path="AI" element={<CartPage></CartPage>}></Route>
-        <Route path='product/:id' element={<ProductPage></ProductPage>}></Route>
+        <Route path='product/:id' element={<ProductView></ProductView>}></Route>
       </Routes>
     </Router>
   );
