@@ -72,7 +72,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         {product ? 'Edit Product' : 'Add New Product'}
       </DialogTitle>
       <DialogContent>
-        <Grid container spacing={2} sx={{ mt: 1 }}>
+        <Grid container spacing={2} sx={{ mt: 1, flexDirection: 'column' }}>
           <Grid item xs={12}>
             <TextField
               fullWidth

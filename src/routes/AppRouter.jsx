@@ -15,6 +15,7 @@ import ProductView from '../features/products/ProductView/ProductView.jsx';
 import ProductPage from '../features/products/Products.jsx';
 import ReturnRequest from '../features/profile/ReturnRequest.jsx';
 import AdminPage from '../features/admin/AdminPage.jsx';
+import LandingPages from '../features/landingpage/LandingPages.jsx';  
 const AppRouter = () => {
     
   return (
@@ -24,6 +25,7 @@ const AppRouter = () => {
         <Route path='products' element={<Product></Product>}></Route>
         <Route path='login' element={<Login></Login>}></Route>
         <Route path='admin' element={<AdminPage></AdminPage>}></Route>
+        <Route path='landing' element={<LandingPages></LandingPages>}></Route>
         <Route path='return-request' element={<ReturnRequest></ReturnRequest>}></Route>
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/account" element={<AccountPage />} /> {/* Added new Account route */}
