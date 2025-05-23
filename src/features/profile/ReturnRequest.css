@@ -1,0 +1,265 @@
+/* ReturnRequest.css */
+.return-request-container {
+  display: flex;
+  gap: 50px;
+  padding: 20px;
+  width: 100%;
+  max-width: 2000px;
+  font-family: sans-serif;
+}
+
+.return-main-content {
+  flex-direction: column;
+  width: 80%;
+}
+
+.return-content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  padding: 20px;
+}
+
+.return-order-info {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.return-order-info h1 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.return-order-info h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.return-section {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+  width: 100%;
+}
+
+.return-section h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.return-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.return-item {
+  display: flex;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 15px;
+  background-color: #fff;
+}
+
+.return-item-image {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+
+.return-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.return-item-details {
+  flex-grow: 1;
+}
+
+.return-item-details h4 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.return-item-price {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.return-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.return-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.return-quantity {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.return-quantity label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.return-quantity input {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.max-quantity {
+  color: #666;
+  font-size: 14px;
+}
+
+.return-reason-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.return-additional-info {
+  margin-top: 15px;
+}
+
+.return-additional-info label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.return-additional-info textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.return-method {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.return-method label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.return-policy {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.return-policy p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #666;
+}
+
+.return-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-btn {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.submit-btn {
+  background-color: #000000;
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: #000000;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Add these styles to Orders.css to style the return button */
+.order-actions .return-btn {
+  background-color: #ff9800;
+  color: white;
+}
+
+.order-actions .return-btn:hover {
+  background-color: #f57c00;
+}
+
+@media (max-width: 768px) {
+  .return-request-container {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .return-item {
+    flex-direction: column;
+  }
+  
+  .return-item-image {
+    width: 100%;
+    height: 200px;
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .return-form-actions {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}

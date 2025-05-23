@@ -1,222 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import ProductCard from './ProductCard';
 import Pagination from './Pagination';
+import useProducts from '../../../hooks/useProducts';
 import './ProductGrid.css';
 
 const ProductGrid = ({ searchQuery, category }) => {
-  const [products, setProducts] = useState([]);
-  const [filtered, setFiltered] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(12);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Hardcoded dummy product data for testing
-  const dummyProducts = [
-    // Graphics Processing Units (GPUs)
-    {
-      id: 1,
-      name: 'SpectraForce X Series',
-      shortDescription: 'High-performance graphics cards for gaming and creative professionals.',
-      price: '$799',
-      category: 'GPUs',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=SpectraForce+X+GPU'
-    },
-    {
-      id: 2,
-      name: 'NovaCore Vision',
-      shortDescription: 'Professional GPUs for workstations, 3D rendering, and CAD applications.',
-      price: '$999',
-      category: 'GPUs',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=NovaCore+Vision'
-    },
-    {
-      id: 3,
-      name: 'ThunderCore AI GPU',
-      shortDescription: 'High-performance GPUs for AI, machine learning, and data center applications.',
-      price: '$1,499',
-      category: 'GPUs',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=ThunderCore+AI+GPU'
-    },
-    {
-      id: 4,
-      name: 'FusionRender Series',
-      shortDescription: 'GPUs designed for HPC (high-performance computing) and AI model training.',
-      price: '$2,000',
-      category: 'GPUs',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=FusionRender+Series'
-    },
   
-    // Artificial Intelligence (AI) and Deep Learning
-    {
-      id: 5,
-      name: 'QuantumMind Systems',
-      shortDescription: 'AI supercomputing systems for deep learning and AI model training.',
-      price: 'Call for Pricing',
-      category: 'AI Hardware',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=QuantumMind+Systems'
-    },
-    {
-      id: 6,
-      name: 'EdgeNexus Platform',
-      shortDescription: 'AI-powered edge computing solutions for autonomous machines, robotics, and IoT devices.',
-      price: 'Call for Pricing',
-      category: 'AI Hardware',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=EdgeNexus+Platform'
-    },
-    {
-      id: 7,
-      name: 'NeuraFlow Suite',
-      shortDescription: 'A parallel computing platform and API designed for accelerating AI and data-heavy workloads.',
-      price: '$699',
-      category: 'AI Hardware',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=NeuraFlow+Suite'
-    },
-    {
-      id: 8,
-      name: 'DeepStream AI Studio',
-      shortDescription: 'A platform for creating AI-based video analytics applications for industries like retail, security, and automotive.',
-      price: '$999',
-      category: 'AI Hardware',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=DeepStream+AI+Studio'
-    },
+  const {
+    products,
+    loading,
+    error,
+    pagination,
+    getProducts
+  } = useProducts();
   
-    // Data Center Products
-    {
-      id: 9,
-      name: 'NovaGrid Solutions',
-      shortDescription: 'GPUs designed for high-performance computing, scientific simulations, and AI workloads in data centers.',
-      price: '$1,299',
-      category: 'Data Center',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=NovaGrid+Solutions'
-    },
-    {
-      id: 10,
-      name: 'HyperEdge Processing',
-      shortDescription: 'Advanced computing systems designed for scaling AI workloads in the cloud and on-premise.',
-      price: 'Call for Pricing',
-      category: 'Data Center',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=HyperEdge+Processing'
-    },
-    {
-      id: 11,
-      name: 'CloudSphere Accelerator',
-      shortDescription: 'Data processing units designed for accelerating cloud, network, and storage functions in data centers.',
-      price: '$1,499',
-      category: 'Data Center',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=CloudSphere+Accelerator'
-    },
-  
-    // Automotive Solutions
-    {
-      id: 12,
-      name: 'DriveSense Platform',
-      shortDescription: 'A suite of AI-driven solutions for self-driving vehicles, including hardware and software for autonomous driving.',
-      price: 'Call for Pricing',
-      category: 'Automotive',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=DriveSense+Platform'
-    },
-    {
-      id: 13,
-      name: 'OrionDrive SoC',
-      shortDescription: 'A high-performance system-on-chip (SoC) for autonomous driving applications.',
-      price: '$2,199',
-      category: 'Automotive',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=OrionDrive+SoC'
-    },
-    {
-      id: 14,
-      name: 'AutoNexus AGX',
-      shortDescription: 'Hardware and software solutions for developing intelligent autonomous vehicle systems.',
-      price: 'Call for Pricing',
-      category: 'Automotive',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=AutoNexus+AGX'
-    },
-  
-    // Networking and Interconnect Products
-    {
-      id: 15,
-      name: 'HyperLink Connect',
-      shortDescription: 'High-speed Ethernet and InfiniBand network interconnects for enterprise and cloud environments.',
-      price: '$499',
-      category: 'Networking',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=HyperLink+Connect'
-    },
-    {
-      id: 16,
-      name: 'SwiftComm Network',
-      shortDescription: 'High-throughput, low-latency networking solution for data centers and HPC applications.',
-      price: '$799',
-      category: 'Networking',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=SwiftComm+Network'
-    },
-  
-    // AI and Machine Learning Software
-    {
-      id: 17,
-      name: 'LumiFlow AI',
-      shortDescription: 'A machine learning library for training deep learning models, optimized for multi-GPU performance.',
-      price: '$199',
-      category: 'AI Software',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=LumiFlow+AI'
-    },
-    {
-      id: 18,
-      name: 'InfernoForge',
-      shortDescription: 'A dynamic deep learning framework for research and deployment, widely used in the AI community.',
-      price: '$249',
-      category: 'AI Software',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=InfernoForge'
-    },
-    {
-      id: 19,
-      name: 'CoreVision AI',
-      shortDescription: 'A deep learning framework optimized for image recognition, computer vision, and object detection.',
-      price: '$299',
-      category: 'AI Software',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=CoreVision+AI'
-    },
-    {
-      id: 20,
-      name: 'CoreNeuron Suite',
-      shortDescription: 'A scalable deep learning framework, designed for both experimental research and real-world application deployment.',
-      price: '$399',
-      category: 'AI Software',
-      imageUrl: 'https://via.placeholder.com/300x200.png?text=CoreNeuron+Suite'
-    }
-  ];
-  
-  // Set initial products
+  // Fetch products from API
   useEffect(() => {
-    setProducts(dummyProducts);
-    setFiltered(dummyProducts);
-    setIsLoading(false);
-  }, []);
+    const loadProducts = async () => {
+      try {
+        const pageIndex = currentPage - 1; // API uses 0-based indexing
+        await getProducts(pageIndex, productsPerPage);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      }
+    };
+    
+    loadProducts();
+  }, [currentPage, productsPerPage, getProducts]);
 
   // Adjust products per page based on screen size
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 576) {
-        // 4 products (2 rows of 2)
         setProductsPerPage(4);
       } else if (window.innerWidth <= 992) {
-        // 6 products (3 rows of 2)
         setProductsPerPage(6);
       } else {
-        // 8 products (2 rows of 4)
         setProductsPerPage(8);
       }
     };
 
-    // Set initial value and add event listener
     handleResize();
     window.addEventListener('resize', handleResize);
-
-    // Cleanup
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Filter products based on search query and category
-  useEffect(() => {
+  // Filter products using useMemo for better performance
+  const filteredProducts = useMemo(() => {
     let result = products;
     
     if (category) {
@@ -224,53 +56,67 @@ const ProductGrid = ({ searchQuery, category }) => {
     }
     
     if (searchQuery) {
+      const query = searchQuery.toLowerCase();
       result = result.filter(p =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.shortDescription.toLowerCase().includes(searchQuery.toLowerCase())
+        p.name.toLowerCase().includes(query) ||
+        (p.shortDescription && p.shortDescription.toLowerCase().includes(query))
       );
     }
     
-    setFiltered(result);
-    setCurrentPage(1); // Reset to first page when filtering/searching
-  }, [searchQuery, category, products]);
+    return result;
+  }, [products, searchQuery, category]);
 
-  // Pagination logic
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filtered.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(filtered.length / productsPerPage);
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // Scroll to top of product grid when changing pages
+    window.scrollTo({
+      top: document.querySelector('.product-grid-container').offsetTop - 100,
+      behavior: 'smooth'
+    });
+  };
 
-  if (isLoading) {
+  if (loading) {
     return (
-      <div className="product-grid-container">
-        <div className="loading">Loading products...</div>
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading products...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2>Error Loading Products</h2>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (filteredProducts.length === 0) {
+    return (
+      <div className="product-not-found">
+        <h2>No Products Found</h2>
+        <p>Try adjusting your search or filter criteria.</p>
       </div>
     );
   }
 
   return (
     <div className="product-grid-container">
-      {filtered.length === 0 ? (
-        <div className="no-results">
-          <p>No products found matching your criteria.</p>
-          <p>Try adjusting your filter or search terms.</p>
-        </div>
-      ) : (
-        <>
-          <div className="product-grid">
-            {currentProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-          
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          )}
-        </>
+      <div className="product-grid">
+        {filteredProducts.map(product => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+      
+      {pagination.totalPages > 1 && (
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+        />
       )}
     </div>
   );

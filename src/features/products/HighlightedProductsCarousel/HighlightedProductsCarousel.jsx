@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import ProductHighlightCard from './ProductHighlightCard';
+import useProducts from '../../../hooks/useProducts';
 import './HighlightedProductsCarousel.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -29,68 +30,26 @@ const NextArrow = (props) => {
 };
 
 const HighlightedProductsCarousel = () => {
-  // Dummy data for featured electronic products
-  const featuredProducts = [
-    {
-      id: 1,
-      name: "RASPBERRY PI 4",
-      category: "SINGLE BOARD COMPUTERS",
-      price: "$45.99",
-      imageUrl: "https://ar.mouser.com/images/marketingid/2017/img/174924105_Microchip_EthernetofEverything.png?v=041124.0458",
-    },
-    {
-      id: 2,
-      name: "ARDUINO UNO",
-      category: "MICROCONTROLLERS",
-      price: "$23.50",
-      imageUrl: "https://ar.mouser.com/images/marketingid/2017/img/174924105_Microchip_EthernetofEverything.png?v=041124.0458",
-    },
-    {
-      id: 3,
-      name: "NVIDIA JETSON",
-      category: "EDGE AI COMPUTING",
-      price: "$99.99",
-      imageUrl: "https://ar.mouser.com/images/marketingid/2017/img/174924105_Microchip_EthernetofEverything.png?v=041124.0458",
-    },
-    {
-      id: 4,
-      name: "ESP32 DEV KIT",
-      category: "IOT DEVELOPMENT",
-      price: "$12.95",
-      imageUrl: "https://ar.mouser.com/images/marketingid/2017/img/174924105_Microchip_EthernetofEverything.png?v=041124.0458",
-    },
-    {
-      id: 5,
-      name: "TEENSY 4.1",
-      category: "MICROCONTROLLERS",
-      price: "$29.95",
-      imageUrl: "https://ar.mouser.com/images/marketingid/2017/img/174924105_Microchip_EthernetofEverything.png?v=041124.0458",
-    },
-    {
-      id: 6,
-      name: "MICROCHIP PIC",
-      category: "EMBEDDED SYSTEMS",
-      price: "$34.50",
-      imageUrl: "https://ar.mouser.com/images/marketingid/2017/img/174924105_Microchip_EthernetofEverything.png?v=041124.0458",
-    },
-    {
-      id: 7,
-      name: "STM32 NUCLEO",
-      category: "MICROCONTROLLERS",
-      price: "$19.99",
-      imageUrl: "https://ar.mouser.com/images/marketingid/2017/img/174924105_Microchip_EthernetofEverything.png?v=041124.0458",
-    },
-    {
-      id: 8,
-      name: "BEAGLEBONE BLACK",
-      category: "SINGLE BOARD COMPUTERS",
-      price: "$59.95",
-      imageUrl: "https://ar.mouser.com/images/marketingid/2017/img/174924105_Microchip_EthernetofEverything.png?v=041124.0458",
-    }
-  ];
-
-  // Current slide tracking
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { 
+    featuredProducts,
+    loading, 
+    error, 
+    getFeaturedProducts 
+  } = useProducts();
+
+  // Fetch featured products
+  useEffect(() => {
+    const loadFeaturedProducts = async () => {
+      try {
+        await getFeaturedProducts();
+      } catch (err) {
+        console.error('Error loading featured products:', err);
+      }
+    };
+    
+    loadFeaturedProducts();
+  }, [getFeaturedProducts]);
 
   // Calculate number of pages (for dots)
   const itemsPerPage = 5; // Match slidesToShow
@@ -202,6 +161,33 @@ const HighlightedProductsCarousel = () => {
       </div>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading featured products...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2>Error Loading Featured Products</h2>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (featuredProducts.length === 0) {
+    return (
+      <div className="product-not-found">
+        <h2>No Featured Products</h2>
+        <p>No featured products available at this time.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="highlighted-products-container" style={{ position: 'relative', paddingBottom: '70px' }}>

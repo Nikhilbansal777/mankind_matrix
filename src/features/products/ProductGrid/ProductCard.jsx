@@ -1,15 +1,11 @@
-// src/components/ProductCard.js
 import React, { useState } from 'react';
-import { useCart } from '../../../context/CartContext';
+import { Link } from 'react-router-dom';
+import { useCart } from '../../../hooks/useCart';
 import CartNotification from '../../cart/CartNotification';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const [showNotification, setShowNotification] = useState(false);
-
-  const viewProductDetails = (id) => {
-    window.location.href = `/products/${id}`;
-  };
 
   const handleAddToCart = (product) => {
     addToCart(product);
@@ -31,7 +27,9 @@ const ProductCard = ({ product }) => {
         <li><strong>Category:</strong> {product.category}</li>
       </ul>
       <div className="actions">
-        <button onClick={() => viewProductDetails(product.id)}>View Details</button>
+        <Link to={`/product/${product.id}`}>
+          <button>View Details</button>
+        </Link>
         <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
       </div>
       

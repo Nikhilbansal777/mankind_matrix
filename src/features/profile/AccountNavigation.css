@@ -1,0 +1,68 @@
+/* AccountNavigation.css - Shared navigation styles for account pages */
+
+.account-navigation-container {
+    width: 350px;
+    min-height: 100vh; /* Full viewport height */
+    background-color: #f8f8f8;
+    border-right: 1px solid #eee;
+    padding: 20px;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+  
+  /* Navigation items styling */
+  .account-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px;
+  }
+  
+  .account-nav-item {
+    margin-bottom: 5px;
+  }
+  
+  .account-nav-link {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    color: #555;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .account-nav-link:hover {
+    background-color: #f0f2f5;
+    color: #333;
+  }
+  
+  .account-nav-item.active .account-nav-link {
+    background-color: #ced5dc;
+    border-color: #2c2b2b;
+    font-weight: 500;
+  }
+  
+  /* Account section heading */
+  .account-section-heading {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  /* Responsive design for smaller screens */
+  @media (max-width: 768px) {
+    .account-navigation-container {
+      width: 100%;
+      min-height: auto;
+      border-right: none;
+      border-bottom: 1px solid #eee;
+    }
+  }

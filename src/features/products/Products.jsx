@@ -3,6 +3,7 @@ import withLayout from '../../layouts/HOC/withLayout';
 import ProductGrid from '../products/ProductGrid';
 import SidebarFilters from '../products/Filters/SidebarFilters';
 import './Products.css';
+import Sidebar from  '../../layouts/components/sidebar';
 
 const ProductsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,6 +20,8 @@ const ProductsPage = () => {
   };
 
   return (
+    <div className='d-flex'>
+    <Sidebar></Sidebar>
     <div className="products-page">
       <div className="products-header">
         <h1>Our Products</h1>
@@ -45,6 +48,7 @@ const ProductsPage = () => {
           />
         </div>
       </div>
+    </div>
     </div>
   );
 };

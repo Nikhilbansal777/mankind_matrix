@@ -7,8 +7,7 @@ import withLayout from '../../layouts/HOC/withLayout';
 import { ToastContainer, toast } from 'react-toastify';
 
 const LandingPage = () => {
-
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
 
    const showToaster = (type) => {

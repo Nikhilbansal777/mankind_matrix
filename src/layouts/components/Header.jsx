@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './Header.css';
 import { Link } from 'react-router';
 import { FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../hooks/useCart';
 
 function Header({ onSearch }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const { itemCount, itemAdded } = useCart();
+  const { itemCount } = useCart();
   
   // Check if we're on mobile view
   useEffect(() => {
@@ -66,7 +66,7 @@ function Header({ onSearch }) {
       {/* Cart icon with item count */}
       <Link 
         to="/cart" 
-        className={`cart-icon-wrapper ${isMobile ? 'mobile-transparent' : ''} ${itemAdded ? 'cart-pulse' : ''}`}
+        className={`cart-icon-wrapper ${isMobile ? 'mobile-transparent' : ''}`}
       >
         <FaShoppingCart className="cart-icon" />
         {itemCount > 0 && (

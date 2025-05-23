@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../hooks/useCart';
 import withLayout from '../../layouts/HOC/withLayout';
 import './CheckoutPage.css';
 
 const CheckoutPage = () => {
-  const { cart, clearCart } = useCart();
+  const { items, total, clearCart } = useCart();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -29,7 +29,7 @@ const CheckoutPage = () => {
     e.preventDefault();
     
     // In a real app, you would send this data to your backend
-    console.log('Order submitted:', { ...formData, orderItems: cart.items });
+    console.log('Order submitted:', { ...formData, orderItems: items });
     
     // Simulate order completion (would normally come from API)
     setTimeout(() => {
@@ -38,7 +38,7 @@ const CheckoutPage = () => {
     }, 1500);
   };
   
-  if (cart.items.length === 0 && !orderComplete) {
+  if (items.length === 0 && !orderComplete) {
     // Redirect back to cart if cart is empty and order not complete
     window.location.href = '/cart';
     return null;
@@ -230,7 +230,7 @@ const CheckoutPage = () => {
           <h2>Order Summary</h2>
           
           <div className="order-items">
-            {cart.items.map(item => (
+            {items.map(item => (
               <div className="order-item" key={item.id}>
                 <div className="order-item-info">
                   <span className="item-quantity">{item.quantity}x</span>
@@ -246,11 +246,11 @@ const CheckoutPage = () => {
           <div className="order-totals">
             <div className="subtotal">
               <span>Subtotal:</span>
-              <span>${cart.total.toFixed(2)}</span>
+              <span>${total.toFixed(2)}</span>
             </div>
             <div className="tax">
               <span>Tax (10%):</span>
-              <span>${(cart.total * 0.1).toFixed(2)}</span>
+              <span>${(total * 0.1).toFixed(2)}</span>
             </div>
             <div className="shipping">
               <span>Shipping:</span>
@@ -258,7 +258,7 @@ const CheckoutPage = () => {
             </div>
             <div className="grand-total">
               <span>Total:</span>
-              <span>${(cart.total + cart.total * 0.1).toFixed(2)}</span>
+              <span>${(total + total * 0.1).toFixed(2)}</span>
             </div>
           </div>
         </div>

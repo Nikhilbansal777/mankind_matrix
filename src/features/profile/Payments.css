@@ -1,0 +1,232 @@
+/* payments.css */
+.payment-methods {
+  margin: 2rem 0;
+  width: 100%;
+}
+
+.payment-methods-container {
+  display: flex; /* Places AccountNavigation and content side-by-side */
+  gap: 50px; /* Space between navigation and content */
+  padding: 20px; /* Padding around the entire addresses section */
+  width: 100%; /* Full width of the parent */
+  max-width: 2000px; /* Optional: constrain width */
+  font-family: sans-serif; /* Basic font */
+}
+
+.account-navigation-container {
+  width: 350px;
+  min-height: 100vh; /* Full viewport height */
+  background-color: #f8f8f8;
+  border-right: 1px solid #eee;
+  padding: 20px;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  overflow-y: auto;
+}
+.payment-methods-content {
+  flex-direction: column;
+  width: 100%;
+}
+.payment-methods-content page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: #000000;
+  margin-bottom: 0.5rem;
+}
+.payment-methods-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  background-color: whitesmoke;
+  width: 1200px;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payment-option:hover {
+  background-color: #f9f9f9;
+}
+
+.payment-option.selected {
+  border-color: #2c2b2b;
+  background-color: #ced5dc;
+}
+
+.payment-option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+  margin-right: 1rem;
+  color: #c12222;
+}
+
+.payment-option.selected .payment-option-icon {
+  background-color: #e6f0fd;
+}
+
+.payment-option-details {
+  flex: 1;
+}
+
+.payment-option-details payment-mode {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.payment-option-details payment-caption{
+  margin: 0;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.payment-option-select {
+  margin-left: 1rem;
+}
+
+.payment-option-select input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.payment-details {
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.form-row {
+  margin-bottom: 1.25rem;
+}
+
+.form-row.two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.form-group input {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #414141;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.save-card-button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+/* Wallet specific styles */
+.wallet-options {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.wallet-option {
+  flex: 1;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.wallet-option:hover {
+  border-color: #424141;
+  background-color: #f9f9f9;
+}
+
+.wallet-option img {
+  max-width: 100%;
+  height: auto;
+}
+
+.wallet-instruction {
+  text-align: center;
+  color: #666;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+}
+
+/* Gift card specific styles */
+.verify-gift-card {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #5a5757;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.verify-gift-card:hover {
+  background-color: #6b6c6c;
+}
+
+/* ProfilePage.module.css */
+.profileContainer {
+  display: flex; /* Enable flex layout for direct children */
+  gap: 2rem; /* Adjust the gap between the navigation and the payment methods container */
+  align-items: flex-start; /* Align items to the top by default */
+}
+
+/* You might have other styles for .profileContainer, keep those as well */

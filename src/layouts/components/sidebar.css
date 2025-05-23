@@ -1,0 +1,24 @@
+.sidenav {
+    background-color: #2c3e50;
+    color: white;
+    width:60%;
+  }
+
+  ul li {
+    list-style: none;
+    padding: 10px;
+  }
+
+  .sidenav-list-item:hover {
+    background-color: #34495e;;
+  }
+  .sidenav-content {
+    text-decoration: none;
+    color: white;
+    font-size: 13px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .sidenav-list-item h4 {
+    font-family: Arial, Helvetica, sans-serif;
+  }
