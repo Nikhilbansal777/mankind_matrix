@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
@@ -24,7 +25,7 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    navigate('/checkout');
+    navigate('/delivery');
   };
   
   if (items.length === 0) {
