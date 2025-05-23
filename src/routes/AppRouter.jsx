@@ -13,12 +13,10 @@ import Help from '../features/profile/Help.jsx';
 import CartPage from '../features/cart/CartPage.jsx';
 import CheckoutPage from '../features/cart/CheckoutPage.jsx';
 import ProductView from '../features/products/ProductView/ProductView.jsx';
-import ProductPage from '../features/products/Products.jsx';
 import ReturnRequest from '../features/profile/ReturnRequest.jsx';
 import AdminPage from '../features/admin/AdminPage.jsx';
-import ProductPage from '../features/products/ProductPage.jsx';
+import ProductPage from '../features/products/Products.jsx';
 import Delivery from '../features/cart/Delivery.jsx';
-import PaymentPage from '../features/cart/Payments.jsx';
 
 const AppRouter = () => {
     
@@ -41,8 +39,7 @@ const AppRouter = () => {
         <Route path='cart' element={<CartPage></CartPage>}></Route>
         <Route path='checkout' element={<CheckoutPage></CheckoutPage>}></Route>
         <Route path="AI" element={<CartPage></CartPage>}></Route>
-        <Route path='payments' element={<PaymentPage></PaymentPage>}></Route>
-        <Route path='product/:id' element={<ProductPage></ProductPage>}></Route>
+        <Route path='product/:id' element={<ProductView></ProductView>}></Route>
       </Routes>
     </Router>
   );

@@ -25,7 +25,7 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    navigate('/checkout');
+    navigate('/delivery');
   };
   
   if (items.length === 0) {
@@ -151,7 +151,6 @@ const CartPage = () => {
               <span>Total:</span>
               <span>${(total + total * 0.1).toFixed(2)}</span>
             </div>
-            <button className="checkout-btn">
             
             <button 
               className="checkout-btn"

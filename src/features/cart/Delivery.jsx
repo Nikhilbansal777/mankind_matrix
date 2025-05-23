@@ -516,7 +516,7 @@ const DeliveryPage = () => {
                     <h3 className="item-name">{item.name}</h3>
                     <div className="item-meta">
                       <p className="item-quantity">Qty: {item.quantity}</p>
-                      <p className="item-price">${typeof item.price === 'number' ? item.price.toFixed(2) : item.price}</p>
+                      <p className="item-price">{typeof item.price === 'number' ? item.price.toFixed(2) : item.price}</p>
                     </div>
                   </div>
                 </div>
