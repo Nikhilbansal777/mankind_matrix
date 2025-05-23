@@ -31,9 +31,9 @@ git --version
 ---
 
 
-### 2. Set Up React Project (If Starting Fresh)
+### (Optional) 2. Set Up React Project
 
-> _Skip this if you're working directly from the existing repo._
+> _Skip this if you're working directly from the existing repo. This command will create a new project where you can understand how to start from scratch a project, but for front-end development, we have everything created already, jump to step 3._
 
 You can create a new React project using Create React App with the command below:
 
@@ -42,7 +42,6 @@ npx create-react-app your-project-name
 cd your-project-name
 npm start
 ```
-
 ---
 
 ### 3. Clone This Repository
@@ -50,7 +49,7 @@ npm start
 To work with the **Mankind Matrix** project, clone the `master` branch:
 
 ```bash
-git clone --branch master --single-branch https://github.com/Nikhilbansal777/mankind_matrix
+git clone --branch master https://github.com/Nikhilbansal777/mankind_matrix
 cd mankind_matrix
 ```
 

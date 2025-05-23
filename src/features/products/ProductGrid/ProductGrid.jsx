@@ -1,64 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import ProductCard from './ProductCard';
 import Pagination from './Pagination';
-import { getAllProducts } from '../../../api/productService';
+import useProducts from '../../../hooks/useProducts';
 import './ProductGrid.css';
 
 const ProductGrid = ({ searchQuery, category }) => {
-  const [products, setProducts] = useState([]);
-  const [filtered, setFiltered] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(12);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [totalProducts, setTotalProducts] = useState(0);
+  
+  const {
+    products,
+    loading,
+    error,
+    pagination,
+    getProducts
+  } = useProducts();
   
   // Fetch products from API
   useEffect(() => {
-    const fetchProducts = async () => {
+    const loadProducts = async () => {
       try {
-        setIsLoading(true);
         const pageIndex = currentPage - 1; // API uses 0-based indexing
-        const response = await getAllProducts(pageIndex, productsPerPage);
-        
-        setProducts(response.content);
-        setTotalProducts(response.totalElements);
-        setIsLoading(false);
+        await getProducts(pageIndex, productsPerPage);
       } catch (err) {
-        setError('Failed to load products');
-        setIsLoading(false);
         console.error('Error fetching products:', err);
       }
     };
     
-    fetchProducts();
-  }, [currentPage, productsPerPage]);
+    loadProducts();
+  }, [currentPage, productsPerPage, getProducts]);
 
   // Adjust products per page based on screen size
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 576) {
-        // 4 products (2 rows of 2)
         setProductsPerPage(4);
       } else if (window.innerWidth <= 992) {
-        // 6 products (3 rows of 2)
         setProductsPerPage(6);
       } else {
-        // 8 products (2 rows of 4)
         setProductsPerPage(8);
       }
     };
 
-    // Set initial value and add event listener
     handleResize();
     window.addEventListener('resize', handleResize);
-
-    // Cleanup
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Filter products based on search query and category
-  useEffect(() => {
+  // Filter products using useMemo for better performance
+  const filteredProducts = useMemo(() => {
     let result = products;
     
     if (category) {
@@ -66,14 +56,15 @@ const ProductGrid = ({ searchQuery, category }) => {
     }
     
     if (searchQuery) {
+      const query = searchQuery.toLowerCase();
       result = result.filter(p =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (p.shortDescription && p.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()))
+        p.name.toLowerCase().includes(query) ||
+        (p.shortDescription && p.shortDescription.toLowerCase().includes(query))
       );
     }
     
-    setFiltered(result);
-  }, [searchQuery, category, products]);
+    return result;
+  }, [products, searchQuery, category]);
 
   // Handle page change
   const handlePageChange = (pageNumber) => {
@@ -85,10 +76,7 @@ const ProductGrid = ({ searchQuery, category }) => {
     });
   };
 
-  // Pagination logic
-  const totalPages = Math.ceil(totalProducts / productsPerPage);
-
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
@@ -106,7 +94,7 @@ const ProductGrid = ({ searchQuery, category }) => {
     );
   }
 
-  if (filtered.length === 0) {
+  if (filteredProducts.length === 0) {
     return (
       <div className="product-not-found">
         <h2>No Products Found</h2>
@@ -118,15 +106,15 @@ const ProductGrid = ({ searchQuery, category }) => {
   return (
     <div className="product-grid-container">
       <div className="product-grid">
-        {filtered.map(product => (
+        {filteredProducts.map(product => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
       
-      {totalPages > 1 && (
+      {pagination.totalPages > 1 && (
         <Pagination 
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={pagination.totalPages}
           onPageChange={handlePageChange}
         />
       )}

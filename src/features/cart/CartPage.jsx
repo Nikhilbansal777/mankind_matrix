@@ -1,11 +1,13 @@
 import React from 'react';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../hooks/useCart';
+import { useNavigate } from 'react-router-dom';
 import { FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
 import withLayout from '../../layouts/HOC/withLayout';
 import './CartPage.css';
 
 const CartPage = () => {
-  const { cart, addToCart, removeFromCart, clearCart } = useCart();
+  const { items, total, addToCart, removeFromCart, clearCart } = useCart();
+  const navigate = useNavigate();
   
   const handleRemoveItem = (productId) => {
     removeFromCart(productId);
@@ -20,8 +22,12 @@ const CartPage = () => {
       clearCart();
     }
   };
+
+  const handleCheckout = () => {
+    navigate('/checkout');
+  };
   
-  if (cart.items.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="cart-page empty-cart">
         <h1>Your Cart</h1>
@@ -52,7 +58,7 @@ const CartPage = () => {
         </div>
         
         <div className="cart-items">
-          {cart.items.map(item => {
+          {items.map(item => {
             // Calculate item total
             const priceValue = parseFloat(item.price.replace('$', '').replace(',', '')) || 0;
             const itemTotal = priceValue * item.quantity;
@@ -115,7 +121,7 @@ const CartPage = () => {
           <div className="cart-actions">
             <button 
               className="continue-shopping-btn"
-              onClick={() => window.location.href = '/products'}
+              onClick={() => navigate('/products')}
             >
               Continue Shopping
             </button>
@@ -130,11 +136,11 @@ const CartPage = () => {
           <div className="cart-totals">
             <div className="subtotal">
               <span>Subtotal:</span>
-              <span>${cart.total.toFixed(2)}</span>
+              <span>${total.toFixed(2)}</span>
             </div>
             <div className="tax">
               <span>Tax (10%):</span>
-              <span>${(cart.total * 0.1).toFixed(2)}</span>
+              <span>${(total * 0.1).toFixed(2)}</span>
             </div>
             <div className="shipping">
               <span>Shipping:</span>
@@ -142,10 +148,13 @@ const CartPage = () => {
             </div>
             <div className="grand-total">
               <span>Total:</span>
-              <span>${(cart.total + cart.total * 0.1).toFixed(2)}</span>
+              <span>${(total + total * 0.1).toFixed(2)}</span>
             </div>
             
-            <button className="checkout-btn">
+            <button 
+              className="checkout-btn"
+              onClick={handleCheckout}
+            >
               Proceed to Checkout
             </button>
           </div>

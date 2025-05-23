@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
 import ProductHighlightCard from './ProductHighlightCard';
-import { getFeaturedProducts } from '../../../api/productService';
+import useProducts from '../../../hooks/useProducts';
 import './HighlightedProductsCarousel.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -30,30 +30,26 @@ const NextArrow = (props) => {
 };
 
 const HighlightedProductsCarousel = () => {
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  
-  // Current slide tracking
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { 
+    featuredProducts,
+    loading, 
+    error, 
+    getFeaturedProducts 
+  } = useProducts();
 
   // Fetch featured products
   useEffect(() => {
     const loadFeaturedProducts = async () => {
       try {
-        setLoading(true);
-        const products = await getFeaturedProducts();
-        setFeaturedProducts(products);
-        setLoading(false);
+        await getFeaturedProducts();
       } catch (err) {
-        setError('Failed to load featured products');
-        setLoading(false);
         console.error('Error loading featured products:', err);
       }
     };
     
     loadFeaturedProducts();
-  }, []);
+  }, [getFeaturedProducts]);
 
   // Calculate number of pages (for dots)
   const itemsPerPage = 5; // Match slidesToShow

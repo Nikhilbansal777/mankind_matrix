@@ -70,14 +70,14 @@ const Login = ({ onLogin }) => {
                 <input type="checkbox" /> Remember me
               </label>
               <div className="forgot">
-                <a href="#">Forgot password?</a>
+                <button type="button" className="link-button">Forgot password?</button>
               </div>
             </div>
 
             <button type="submit">Sign in →</button>
 
             <p className="signup-link">
-              No account? <a href="#">Sign up</a>
+              No account? <button type="button" className="link-button">Sign up</button>
             </p>
           </form>
         </div>
