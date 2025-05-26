@@ -16,6 +16,7 @@ import ProductView from '../features/products/ProductView/ProductView.jsx';
 import ProductPage from '../features/products/Products.jsx';
 import ReturnRequest from '../features/profile/ReturnRequest.jsx';
 import AdminPage from '../features/admin/AdminPage.jsx';
+import ContactPage from '../features/contact/ContactPage.jsx';
 import LandingPages from '../features/landingpage/LandingPages.jsx';  
 const AppRouter = () => {
     
@@ -38,7 +39,8 @@ const AppRouter = () => {
         <Route path='cart' element={<CartPage></CartPage>}></Route>
         <Route path='checkout' element={<CheckoutPage></CheckoutPage>}></Route>
         <Route path="AI" element={<CartPage></CartPage>}></Route>
-        <Route path='product/:id' element={<ProductView></ProductView>}></Route>
+        <Route path='product/:id' element={<ProductPage></ProductPage>}></Route>
+        <Route path='contact' element={<ContactPage>/</ContactPage>}></Route>
       </Routes>
     </Router>
   );
