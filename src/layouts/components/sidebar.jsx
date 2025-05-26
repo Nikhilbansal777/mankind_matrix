@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./sidebar.css";
 import { Link } from "react-router-dom";
+
 function Sidebar() {
-  const [sidebars, setSidebar] = useState([
+  const [sidebars] = useState([
     { item: "AI and Deep Learning", link: "AI" },
     { item: "Cloud Computing", link: "cloud" },
     { item: "Networking and Interconnect", link: "network" },
@@ -13,6 +14,7 @@ function Sidebar() {
     { item: "AI SoftwareHardware Products", link: "aiSoftwareAndHardware" },
     { item: "Microchips", link: "microchips" },
   ]);
+
   return (
     <>
       <div className="sidenav">

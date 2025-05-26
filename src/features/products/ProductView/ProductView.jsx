@@ -1,38 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { getProductById } from '../../../api/productService';
 import { useParams } from 'react-router-dom';
-import { useCart } from '../../../context/CartContext';
+import { useCart } from '../../../hooks/useCart';
+import useProducts from '../../../hooks/useProducts';
 import withLayout from '../../../layouts/HOC/withLayout';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './ProductView.css';
 
 const ProductView = () => {
-  const [product, setProduct] = useState(null);
-  const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const { id } = useParams();
   const { addToCart } = useCart();
+  const { 
+    currentProduct: product,
+    loading, 
+    getProduct,
+    clearProduct 
+  } = useProducts();
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    getProductById(id)
-      .then(data => {
-        setProduct(data);
-        setLoading(false);
-      })
-      .catch(error => {
-        setLoading(false);
-        if (error.response && error.response.status === 404) {
-          setNotFound(true);
-        } else {
-          setError(error.message || 'Unknown error occurred');
-        }
-      });
-  }, [id]);
+    const loadProduct = async () => {
+      try {
+        await getProduct(id);
+      } catch (error) {
+        console.error('Error loading product:', error);
+      }
+    };
+
+    loadProduct();
+    
+    // Cleanup function to clear the current product when component unmounts
+    return () => {
+      clearProduct();
+    };
+  }, [id, getProduct, clearProduct]);
 
   const handleAddToCart = () => {
     if (product) {
@@ -50,16 +51,6 @@ const ProductView = () => {
     }
   };
 
-  if (notFound) {
-    return (
-      <div className="product-not-found">
-        <h1>404</h1>
-        <p>Product Not Found</p>
-        <a href="/products">Back to Products</a>
-      </div>
-    );
-  }
-
   if (loading) {
     return (
       <div className="loading-container">
@@ -69,11 +60,11 @@ const ProductView = () => {
     );
   }
 
-  if (error || !product) {
+  if (!product) {
     return (
       <div className="error-container">
         <h2>Error Loading Product</h2>
-        <p>{error || 'There was an error loading the product details. Please try again later.'}</p>
+        <p>There was an error loading the product details. Please try again later.</p>
         <a href="/products">Back to Products</a>
       </div>
     );

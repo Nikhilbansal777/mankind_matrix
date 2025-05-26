@@ -11,11 +11,13 @@ import OrderManager from '../features/profile/Orders.jsx';
 import PaymentMethods from '../features/profile/Payments.jsx';
 import Help from '../features/profile/Help.jsx';
 import CartPage from '../features/cart/CartPage.jsx';
+import CheckoutPage from '../features/cart/CheckoutPage.jsx';
 import ProductView from '../features/products/ProductView/ProductView.jsx';
 import ProductPage from '../features/products/Products.jsx';
 import ReturnRequest from '../features/profile/ReturnRequest.jsx';
 import AdminPage from '../features/admin/AdminPage.jsx';
 import ContactPage from '../features/contact/ContactPage.jsx';
+import LandingPages from '../features/landingpage/LandingPages.jsx';  
 const AppRouter = () => {
     
   return (
@@ -25,6 +27,7 @@ const AppRouter = () => {
         <Route path='products' element={<Product></Product>}></Route>
         <Route path='login' element={<Login></Login>}></Route>
         <Route path='admin' element={<AdminPage></AdminPage>}></Route>
+        <Route path='landing' element={<LandingPages></LandingPages>}></Route>
         <Route path='return-request' element={<ReturnRequest></ReturnRequest>}></Route>
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/account" element={<AccountPage />} /> {/* Added new Account route */}
@@ -34,6 +37,7 @@ const AppRouter = () => {
         <Route path="/payments" element={<PaymentMethods/>} />
         <Route path="/help" element={<Help />} />
         <Route path='cart' element={<CartPage></CartPage>}></Route>
+        <Route path='checkout' element={<CheckoutPage></CheckoutPage>}></Route>
         <Route path="AI" element={<CartPage></CartPage>}></Route>
         <Route path='product/:id' element={<ProductPage></ProductPage>}></Route>
         <Route path='contact' element={<ContactPage>/</ContactPage>}></Route>
