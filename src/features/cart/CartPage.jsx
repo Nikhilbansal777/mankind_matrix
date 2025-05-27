@@ -1,9 +1,9 @@
 import React from 'react';
 import { useCart } from '../../hooks/useCart';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
 import withLayout from '../../layouts/HOC/withLayout';
-import './CartPage.css';
+import styles from './CartPage.module.css';
 
 const CartPage = () => {
   const { items, total, addToCart, removeFromCart, clearCart } = useCart();
@@ -14,7 +14,8 @@ const CartPage = () => {
   };
   
   const handleAddItem = (product) => {
-    addToCart(product);
+    // Add just one item at a time
+    addToCart({ ...product, quantity: 1 });
   };
   
   const handleClearCart = () => {
@@ -29,12 +30,12 @@ const CartPage = () => {
   
   if (items.length === 0) {
     return (
-      <div className="cart-page empty-cart">
+      <div className={`${styles.cartPage} ${styles.emptyCart}`}>
         <h1>Your Cart</h1>
-        <div className="empty-cart-message">
+        <div className={styles.emptyCartMessage}>
           <p>Your cart is empty.</p>
           <button 
-            className="continue-shopping-btn"
+            className={styles.continueShoppingBtn}
             onClick={() => window.location.href = '/products'}
           >
             Continue Shopping
@@ -45,71 +46,76 @@ const CartPage = () => {
   }
   
   return (
-    <div className="cart-page">
+    <div className={styles.cartPage}>
       <h1>Your Cart</h1>
       
-      <div className="cart-container">
-        <div className="cart-header">
-          <div className="product-info">Product</div>
-          <div className="product-price">Price</div>
-          <div className="product-quantity">Quantity</div>
-          <div className="product-total">Total</div>
-          <div className="product-remove">Remove</div>
+      <div className={styles.cartContainer}>
+        <div className={styles.cartHeader}>
+          <div className={styles.productInfo}>Product</div>
+          <div className={styles.productPrice}>Price</div>
+          <div className={styles.productQuantity}>Quantity</div>
+          <div className={styles.productTotal}>Total</div>
+          <div className={styles.productRemove}>Remove</div>
         </div>
         
-        <div className="cart-items">
+        <div className={styles.cartItems}>
           {items.map(item => {
             // Calculate item total
             const priceValue = parseFloat(item.price.replace('$', '').replace(',', '')) || 0;
             const itemTotal = priceValue * item.quantity;
             
             return (
-              <div className="cart-item" key={item.id}>
-                <div className="product-info">
-                  <div className="product-image">
+              <div className={styles.cartItem} key={item.id}>
+                <div className={styles.productInfo}>
+                  <div className={styles.productImage}>
                     {/* Display product image if available */}
                     {item.imageUrl ? (
                       <img src={item.imageUrl} alt={item.name} />
                     ) : (
-                      <div className="placeholder-image">{item.name.charAt(0)}</div>
+                      <div className={styles.placeholderImage}>{item.name.charAt(0)}</div>
                     )}
                   </div>
-                  <div className="product-details">
-                    <h3>{item.name}</h3>
-                    <p className="product-category">{item.category}</p>
+                  <div className={styles.productDetails}>
+                    <Link to={`/product/${item.id}`} className={styles.productName}>
+                      <h3>{item.name}</h3>
+                    </Link>
+                    <p className={styles.productCategory}>{item.category}</p>
                   </div>
                 </div>
                 
-                <div className="product-price">{item.price}</div>
+                <div className={styles.productPrice}>{item.price}</div>
                 
-                <div className="product-quantity">
+                <div className={styles.productQuantity}>
                   <button 
-                    className="quantity-btn"
+                    className={styles.quantityBtn}
                     onClick={() => handleRemoveItem(item.id)}
+                    aria-label="Decrease quantity"
                   >
-                    <FaMinus />
+                    <FaMinus size={12} />
                   </button>
-                  <span className="quantity">{item.quantity}</span>
+                  <span className={styles.quantity}>{item.quantity}</span>
                   <button 
-                    className="quantity-btn"
+                    className={styles.quantityBtn}
                     onClick={() => handleAddItem(item)}
+                    aria-label="Increase quantity"
                   >
-                    <FaPlus />
+                    <FaPlus size={12} />
                   </button>
                 </div>
                 
-                <div className="product-total">${itemTotal.toFixed(2)}</div>
+                <div className={styles.productTotal}>${itemTotal.toFixed(2)}</div>
                 
-                <div className="product-remove">
+                <div className={styles.productRemove}>
                   <button 
-                    className="remove-btn"
+                    className={styles.removeBtn}
                     onClick={() => {
                       for (let i = 0; i < item.quantity; i++) {
                         handleRemoveItem(item.id);
                       }
                     }}
+                    aria-label="Remove item"
                   >
-                    <FaTrash />
+                    <FaTrash size={14} />
                   </button>
                 </div>
               </div>
@@ -117,42 +123,42 @@ const CartPage = () => {
           })}
         </div>
         
-        <div className="cart-summary">
-          <div className="cart-actions">
+        <div className={styles.cartSummary}>
+          <div className={styles.cartActions}>
             <button 
-              className="continue-shopping-btn"
+              className={styles.continueShoppingBtn}
               onClick={() => navigate('/products')}
             >
               Continue Shopping
             </button>
             <button 
-              className="clear-cart-btn"
+              className={styles.clearCartBtn}
               onClick={handleClearCart}
             >
               Clear Cart
             </button>
           </div>
           
-          <div className="cart-totals">
-            <div className="subtotal">
+          <div className={styles.cartTotals}>
+            <div className={styles.subtotal}>
               <span>Subtotal:</span>
               <span>${total.toFixed(2)}</span>
             </div>
-            <div className="tax">
+            <div className={styles.tax}>
               <span>Tax (10%):</span>
               <span>${(total * 0.1).toFixed(2)}</span>
             </div>
-            <div className="shipping">
+            <div className={styles.shipping}>
               <span>Shipping:</span>
               <span>FREE</span>
             </div>
-            <div className="grand-total">
+            <div className={styles.grandTotal}>
               <span>Total:</span>
               <span>${(total + total * 0.1).toFixed(2)}</span>
             </div>
             
             <button 
-              className="checkout-btn"
+              className={styles.checkoutBtn}
               onClick={handleCheckout}
             >
               Proceed to Checkout

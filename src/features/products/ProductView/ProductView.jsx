@@ -5,7 +5,7 @@ import useProducts from '../../../hooks/useProducts';
 import withLayout from '../../../layouts/HOC/withLayout';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './ProductView.css';
+import styles from './ProductView.module.css';
 
 const ProductView = () => {
   const [quantity, setQuantity] = useState(1);
@@ -53,8 +53,8 @@ const ProductView = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
         <p>Loading product details...</p>
       </div>
     );
@@ -62,7 +62,7 @@ const ProductView = () => {
 
   if (!product) {
     return (
-      <div className="error-container">
+      <div className={styles.errorContainer}>
         <h2>Error Loading Product</h2>
         <p>There was an error loading the product details. Please try again later.</p>
         <a href="/products">Back to Products</a>
@@ -74,27 +74,27 @@ const ProductView = () => {
   const imageUrl = product.imageUrl || `https://via.placeholder.com/500x400.png?text=${product.name}`;
 
   return (
-    <div className="product-page-container">
+    <div className={styles.productPageContainer}>
       <ToastContainer />
       
-      <div className="product-details">
-        <div className="product-image-container">
-          <img src={imageUrl} alt={product.name} className="product-image" />
+      <div className={styles.productDetails}>
+        <div className={styles.productImageContainer}>
+          <img src={imageUrl} alt={product.name} className={styles.productImage} />
         </div>
         
-        <div className="product-info">
-          <h1 className="product-title">{product.name}</h1>
-          <div className="product-category">Category: <span>{product.category}</span></div>
-          <div className="product-price">Price: <span>{product.price}</span></div>
+        <div className={styles.productInfo}>
+          <h1 className={styles.productTitle}>{product.name}</h1>
+          <div className={styles.productCategory}>Category: <span>{product.category}</span></div>
+          <div className={styles.productPrice}>Price: <span>{product.price}</span></div>
           
-          <div className="product-description">
+          <div className={styles.productDescription}>
             <h3>Description</h3>
             <p>{product.shortDescription}</p>
             {product.longDescription && <p>{product.longDescription}</p>}
           </div>
           
-          <div className="product-actions">
-            <div className="quantity-selector">
+          <div className={styles.productActions}>
+            <div className={styles.quantitySelector}>
               <label htmlFor="quantity">Quantity:</label>
               <input
                 type="number"
@@ -106,13 +106,13 @@ const ProductView = () => {
               />
             </div>
             
-            <button className="add-to-cart-btn" onClick={handleAddToCart}>
+            <button className={styles.addToCartBtn} onClick={handleAddToCart}>
               Add to Cart
             </button>
           </div>
           
           {product.specifications && (
-            <div className="product-specifications">
+            <div className={styles.productSpecifications}>
               <h3>Specifications</h3>
               <ul>
                 {Object.entries(product.specifications).map(([key, value]) => (
