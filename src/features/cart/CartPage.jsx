@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCart } from '../../hooks/useCart';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
 import withLayout from '../../layouts/HOC/withLayout';
 import styles from './CartPage.module.css';
@@ -76,7 +76,9 @@ const CartPage = () => {
                     )}
                   </div>
                   <div className={styles.productDetails}>
-                    <h3>{item.name}</h3>
+                    <Link to={`/product/${item.id}`} className={styles.productName}>
+                      <h3>{item.name}</h3>
+                    </Link>
                     <p className={styles.productCategory}>{item.category}</p>
                   </div>
                 </div>

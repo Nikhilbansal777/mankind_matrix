@@ -95,6 +95,23 @@
     font-size: 1.1rem;
   }
   
+  .productName {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: color 0.2s ease;
+  }
+  
+  .productName:hover {
+    color: #e91e63;
+  }
+  
+  .productName h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    transition: color 0.2s ease;
+  }
+  
   .productCategory {
     font-size: 0.9rem;
     color: #777;
