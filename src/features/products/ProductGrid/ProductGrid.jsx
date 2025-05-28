@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import ProductCard from './ProductCard';
 import Pagination from './Pagination';
 import useProducts from '../../../hooks/useProducts';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './ProductGrid.css';
 
 const ProductGrid = ({ searchQuery, category }) => {
@@ -105,6 +107,18 @@ const ProductGrid = ({ searchQuery, category }) => {
 
   return (
     <div className="product-grid-container">
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="product-grid">
         {filteredProducts.map(product => (
           <ProductCard key={product.id} product={product} />
