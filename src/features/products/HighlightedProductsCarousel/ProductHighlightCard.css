@@ -29,6 +29,12 @@
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.card-image-container:hover {
+  transform: scale(1.02);
 }
 
 .card-image {
@@ -69,6 +75,12 @@
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.card-name:hover {
+  color: #666;
 }
 
 .card-category {
