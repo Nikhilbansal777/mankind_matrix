@@ -96,13 +96,6 @@ export const cartSlice = createSlice({
       }
     },
     
-    clearCart: (state) => {
-      state.items = [];
-      state.itemCount = 0;
-      state.total = 0;
-      localStorage.removeItem('cart');
-    },
-    
     updateItemQuantity: (state, action) => {
       const { id, quantity } = action.payload;
       const itemIndex = state.items.findIndex(item => item.id === id);
@@ -126,7 +119,7 @@ export const cartSlice = createSlice({
 });
 
 // Export actions
-export const { addItem, removeItem, clearCart, updateItemQuantity } = cartSlice.actions;
+export const { addItem, removeItem, updateItemQuantity } = cartSlice.actions;
 
 // Selectors
 export const selectCartItems = (state) => state.cart.items;
