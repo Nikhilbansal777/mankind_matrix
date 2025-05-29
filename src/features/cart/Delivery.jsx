@@ -18,7 +18,7 @@ const DeliveryPage = () => {
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [currentStep, setCurrentStep] = useState('delivery'); // 'delivery' or 'payment'
+  const [currentStep, setCurrentStep] = useState('delivery'); 
 
   const taxRate = 0.10;
   const taxAmount = cart.total * taxRate;
@@ -54,7 +54,7 @@ const DeliveryPage = () => {
     const expressDeliveryDays = [];
     for (let i = 0; i < 3; i++) {
       const deliveryDate = new Date(currentDate);
-      deliveryDate.setHours(currentDate.getHours() + 72 + (i * 24)); // 3 days + additional days
+      deliveryDate.setHours(currentDate.getHours() + 72 + (i * 24)); 
       
       const formattedDate = deliveryDate.toLocaleDateString('en-US', { 
         month: 'short', 
@@ -90,10 +90,10 @@ const DeliveryPage = () => {
   // Try to fetch delivery options from API, fallback to default options
   const fetchDeliveryOptions = async () => {
     try {
-      // Attempt to fetch from API
+      
       const response = await fetch('/api/delivery-options');
       
-      // Check if the request was successful
+      
       if (!response.ok) {
         throw new Error('API returned error status: ' + response.status);
       }
@@ -102,7 +102,7 @@ const DeliveryPage = () => {
       setDeliveryOptions(data);
     } catch (error) {
       console.log('API fetch failed, using default delivery options:', error);
-      // If API call fails, use the default options
+      
       const defaultOptions = getDefaultDeliveryOptions();
       setDeliveryOptions(defaultOptions);
     } finally {
@@ -111,29 +111,29 @@ const DeliveryPage = () => {
   };
 
   useEffect(() => {
-    // Fetch delivery options (from API or generate them)
+    
     fetchDeliveryOptions();
 
-    // Initialize page functionality
+    
     if (window.app && typeof window.app.initDeliveryPage === 'function') {
       window.app.initDeliveryPage();
     } else {
-      // Fallback initialization
+      
       initBoxInteractions();
     }
 
     return () => {
-      // Cleanup if needed
+      
     };
   }, []);
 
-  // Reset selected date and time slot when delivery type changes
+  
   useEffect(() => {
     setSelectedDate(null);
     setSelectedTimeSlot(null);
   }, [deliveryType]);
 
-  // Fallback function if vanilla JS isn't available
+ 
   const initBoxInteractions = () => {
     const boxes = document.querySelectorAll('.delivery-option');
     boxes.forEach(box => {
@@ -148,9 +148,9 @@ const DeliveryPage = () => {
       return;
     }
 
-    // Move to payment step instead of showing popup
+    
     setCurrentStep('payment');
-    setPaymentMethod('card'); // Default to card payment
+    setPaymentMethod('card'); 
   };
 
   const handlePaymentMethodSelect = (method) => {
@@ -160,12 +160,12 @@ const DeliveryPage = () => {
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
     
-    // Simulate payment processing
+   
     setIsProcessing(true);
     
     setTimeout(() => {
       setIsProcessing(false);
-      // Navigate to confirmation page or show confirmation message
+      
       window.location.href = '/confirmation';
     }, 2000);
   };
@@ -174,16 +174,16 @@ const DeliveryPage = () => {
     setCurrentStep('delivery');
   };
 
-  // Helper function to get proper image URL
+  
   const getImageUrl = (item) => {
-    // Check for all possible image URL properties based on the product structure in ProductGrid
+   
     if (item.image) return item.image;
     if (item.imageUrl) return item.imageUrl;
     if (item.productImage) return item.productImage;
-    // Check for product property which may contain the image URL (used when product object is nested)
+    
     if (item.product && item.product.imageUrl) return item.product.imageUrl;
     
-    // If no image is available, return null
+    
     return null;
   };
 

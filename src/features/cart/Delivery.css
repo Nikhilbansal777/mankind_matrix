@@ -667,13 +667,6 @@
   box-shadow: var(--shadow-md);
 }
 
-/* These classes can be used in your JSX like:
-className="flex-center"
-className="text-muted"
-className="icon-container"
-className="card-shadow"
-*/
-
 /* Address Section Styles */
 .address-details {
   display: flex;
