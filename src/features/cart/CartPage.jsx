@@ -6,7 +6,7 @@ import withLayout from '../../layouts/HOC/withLayout';
 import styles from './CartPage.module.css';
 
 const CartPage = () => {
-  const { items, total, addToCart, removeFromCart, clearCart } = useCart();
+  const { items, total, addToCart, removeFromCart } = useCart();
   const navigate = useNavigate();
   
   const handleRemoveItem = (productId) => {
@@ -16,12 +16,6 @@ const CartPage = () => {
   const handleAddItem = (product) => {
     // Add just one item at a time
     addToCart({ ...product, quantity: 1 });
-  };
-  
-  const handleClearCart = () => {
-    if (window.confirm('Are you sure you want to clear your cart?')) {
-      clearCart();
-    }
   };
 
   const handleCheckout = () => {
@@ -130,12 +124,6 @@ const CartPage = () => {
               onClick={() => navigate('/products')}
             >
               Continue Shopping
-            </button>
-            <button 
-              className={styles.clearCartBtn}
-              onClick={handleClearCart}
-            >
-              Clear Cart
             </button>
           </div>
           
