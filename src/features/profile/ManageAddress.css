@@ -4,31 +4,8 @@ body {
     margin: 0;
     background-color: #f4f4f4;
 }
-.manage-addresses-content {
-    flex-direction: column;
-    width: auto; /* Constrain the width of the content */
-    text-align: center; /* Center the text */
-    width: 100%;
-}
 
-.manage-addresses-content address-content-header {
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  color: #000000;
-  margin-bottom: 0.5rem;
-}
 
-.manage-addresses-container {
-    display: flex; /* Places AccountNavigation and content side-by-side */
-  gap: 0px; /* Space between navigation and content */
-  padding: 20px; /* Padding around the entire addresses section */
-  width: 100%; /* Full width of the parent */
-  max-width: 2000px; /* Optional: constrain width */
-  margin-left: 0;
-  font-family: sans-serif; /* Basic font */
-  }
-/* --- Header and General Styles (Keep as is) --- */
 .default-checkbox-container {
     grid-column: 1 / -1; /* Span both columns of the grid */
     display: flex; /* Enable Flexbox for inline alignment */
@@ -43,6 +20,7 @@ body {
     padding-left: 5px;
     margin-right: 10px; /* This will create the gap */
 }
+
 
 /* --- Container for Address Section --- */
 #address-root {
@@ -65,8 +43,6 @@ body {
 }
 
 
-/* ----- START: UPDATED FORM STYLES ----- */
-
 #add-address-btn {
     background-color: #000000;
     color: white;
@@ -78,36 +54,50 @@ body {
     transition: background-color 0.2s ease;
 }
 
-/* The form element itself - Apply Grid here */
 #address-form {
     display: grid;
-    grid-template-columns: auto 1fr; /* Label column sized to content, Input takes rest */
-    gap: 15px 12px; /* Vertical(row) gap, Horizontal(column) gap */
-    margin-top: 25px;;
-    margin-left: 150px;;
-    width: 70%; /* Set a fixed width for the form */
+    grid-template-columns: auto 1fr; 
+    gap: 15px 12px; 
+    margin-top: 25px;
+    align-items: center;
+    width: auto; 
 }
 
 #address-form label {
     font-weight: bold;
     font-size: 0.9em;
     color: #000000;
-    text-align: right;
-    padding-right: 50px; /* Space between label and input */
-    margin-left: 150px; 
+    text-align: left;
+    padding-right: 10px;  
     margin-bottom: 0;
 }
 
 #address-form input[type="text"] {
     padding: 10px;
     border: 1px solid #ccc;
+    align-self: center;
     border-radius: 4px;
     font-size: 1em;
     box-sizing: border-box;
-    width: 70%; /* Limit the maximum width of the input box */
+    width: auto;
     margin-bottom: 0;
 }
 
+.address-card{
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.address-actions {
+    display: flex;
+    gap: 0.5rem;
+}
 /* Specific handling for the checkbox row */
 #address-form label[for="isDefault"] {
     grid-column: 2 / 3;
@@ -127,7 +117,10 @@ body {
 
 /* Container for Save/Cancel buttons */
 .form-actions {
-    justify-content: left;
+    grid-column: 2;
+    justify-content:left !important;
+    gap: 50px;
+    margin-top: 10px;
 }
 
 .form-actions button[type="submit"] {
@@ -135,8 +128,9 @@ body {
     cursor: pointer;
     border: none;
     border-radius: 4px;
-    width: 300px;
-    margin-left: 450px;
+    background-color: #000000;
+    color: white;
+    margin-left: 200px;
     font-size: 1em;
     transition: background-color 0.2s ease;
 }
@@ -146,15 +140,12 @@ body {
     cursor: pointer;
     border: none;
     border-radius: 4px;
-    align-items: center;
     font-size: 1em;
     transition: background-color 0.2s ease;
-}
-
-.form-actions button[type="submit"] {
     background-color: #000000;
     color: white;
 }
+
 .form-actions button[type="submit"]:hover {
     background-color: #000000;
 }
@@ -164,15 +155,12 @@ body {
      /* Adjust vertical and horizontal padding */
     font-size: 1em;
     background-color: #000000;
-    margin-left: 40px;
+    margin-left: 10px;
     color: white;
 }
 
 
-/* ----- END: UPDATED FORM STYLES ----- */
 
-
-/* --- Utility and Error Styles (Keep as is) --- */
 .hidden {
     display: none !important;
 }

@@ -87,11 +87,10 @@ const Order = () => {
   };
 
   return (
-    <div className="account-page">
-      {/* Add AccountNavigation component here */}
+    <div className="manage-containers">
       <AccountNavigation activeTab="orders" />
       
-      <div className="orders-container">
+      <div className="side-container">
         {/* Show loading state */}
         {loading && (
           <div className="loading-spinner">Loading your orders...</div>

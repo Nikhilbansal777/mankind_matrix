@@ -12,51 +12,6 @@ body {
   width: 100%;
 }
 
-.help-page-container {
-  display: flex; /* Places AccountNavigation and content side-by-side */
-  gap: 50px; /* Space between navigation and content */
-  padding: 20px; /* Padding around the entire section */
-  width: 100%; /* Full width of the parent */
-  max-width: 2000px; /* Optional: constrain width */
-  font-family: sans-serif; /* Basic font */
-}
-
-/* Account navigation styling - won't affect other pages */
-.account-navigation-container {
-  width: 350px;
-  min-height: 100vh; /* Full viewport height */
-  background-color: #f8f8f8;
-  border-right: 1px solid #eee;
-  padding: 20px;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-  overflow-y: auto;
-}
-
-/* Main content container */
-.help-main-content {
-  flex-direction: column;
-  width: 100%;
-}
-
-.help-main-content h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  color: #000000;
-  margin-bottom: 0.5rem;
-}
-
-/* Help content wrapper */
-.help-content-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-}
 
 /* Header section */
 .help-page-header {
@@ -150,7 +105,6 @@ body {
 }
 
 .category-select-button {
-  display: block;
   width: 100%;
   text-align: left;
   padding: 10px 15px;
@@ -348,10 +302,6 @@ body {
 
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
-  .help-page-container {
-    flex-direction: column;
-    gap: 30px;
-  }
   
   .account-navigation-container {
     width: 100%;

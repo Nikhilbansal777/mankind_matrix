@@ -141,9 +141,9 @@ const ManageAddressesPage = () => {
   };
 
   return (
-    <div className="manage-addresses-container">
+    <div className="manage-containers">
       <AccountNavigation />
-      <div className="manage-addresses-content">
+      <div className="side-container">
         <h2 className="address-content-header">Your Addresses</h2>
         <div id="address-list-container" className={showForm ? 'hidden' : ''}>
           <button id="add-address-btn" onClick={handleAddAddressClick}>Add New Address</button>
@@ -191,11 +191,12 @@ const ManageAddressesPage = () => {
               <label htmlFor="isDefault">Set as Default:</label>
               <input type="checkbox" id="isDefault" name="isDefault" checked={currentAddress.isDefault} onChange={handleInputChange} />
             </div>
-          </form>
-          <div className="form-actions">
+            <div className="form-actions">
             <button type="submit">Save Address</button>
             <button type="button" id="cancel-btn" onClick={handleCancelForm}>Cancel</button>
           </div>
+          </form>
+          
         </div>
       </div>
     </div>

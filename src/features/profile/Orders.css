@@ -1,16 +1,5 @@
 /* orders.css - Styling for the Order component */
 
-/* Account page layout */
-.account-page {
-  display: flex; /* Places AccountNavigation and content side-by-side */
-  gap: 0px; /* Space between navigation and content */
-  padding: 20px; /* Padding around the entire addresses section */
-  width: 100%; /* Full width of the parent */
-  max-width: 2000px; /* Optional: constrain width */
-  margin-left: 0;
-  font-family: sans-serif; /* Basic font */
-}
-
 .nav-list {
   list-style: none;
   padding: 0;
@@ -22,7 +11,6 @@
 }
 
 .nav-link {
-  display: block;
   padding: 12px 15px;
   color: #000000;
   text-decoration: none;
@@ -40,59 +28,6 @@
   background-color: #e3f2fd;
   color: #000000;
   font-weight: 500;
-}
-
-/* Main content */
-.account-content {
-  flex-grow: 1;
-  padding: 30px;
-  overflow-y: auto;
-  display: flex;
-  justify-content: center;
-}
-
-/* Main container */
-.orders-container {
-  max-width: 900px;
-  width: 100%;
-  padding-bottom: 40px;
-  margin: 0 auto;
-}
-
-.orders-container h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  color: #000000;
-  margin-bottom: 0.5rem;
-}
-
-/* Loading state */
-.loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  font-size: 18px;
-  color: #666;
-  position: relative;
-}
-
-.loading-spinner::after {
-  content: '';
-  display: block;
-  width: 30px;
-  height: 30px;
-  margin-left: 15px;
-  border-radius: 50%;
-  border: 3px solid #ccc;
-  border-top-color: #000000;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 /* Error and empty states */

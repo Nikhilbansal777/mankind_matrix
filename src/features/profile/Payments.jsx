@@ -15,10 +15,10 @@ const PaymentMethods = ({ onPaymentMethodChange }) => {
   };
 
   return (
-    <div className="payment-methods-container">
+    <div className="manage-containers">
       <AccountNavigation />
       
-      <div className="payment-methods-content">
+      <div className="side-container">
         <h2 className="page-title">Payment Methods</h2>
         <div className="payment-methods">
           <h3 className="payment-methods-title">Select Payment Method</h3>
