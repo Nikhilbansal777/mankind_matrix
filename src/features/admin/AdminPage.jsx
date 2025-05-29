@@ -3,6 +3,7 @@ import { Container, Typography, Box, Paper, Tabs, Tab } from '@mui/material';
 import ProductManagement from './ProductManagement';
 import UserManagement from './UserManagement';
 import SalesAnalytics from './SalesAnalytics';
+import withLayout from '../../layouts/HOC/withLayout';
 
 const AdminPage = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -17,7 +18,7 @@ const AdminPage = () => {
         <Typography variant="h4" component="h1" gutterBottom>
           Admin Dashboard
         </Typography>
-        
+
         <Paper sx={{ width: '100%', mb: 2 }}>
           <Tabs
             value={selectedTab}
@@ -39,4 +40,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default withLayout(AdminPage);
