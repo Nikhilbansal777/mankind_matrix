@@ -1,4 +1,4 @@
-/* Header */
+/* Header component styles - optimized */
 .header {
   background-color: #1e1e23;
   color: #ccc;
@@ -6,58 +6,39 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: nowrap;
-  position: relative;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: 100px;
 }
 
 /* Logo styles */
 .logo-link {
   text-decoration: none;
-  color: inherit;
-  display: block;
 }
 
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
   color: #fff;
-  cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .logo:hover {
-  color: #e91e63; /* Optional: add hover effect */
+  color: #e91e63;
 }
 
-/* Mobile menu toggle button (hidden on desktop) */
-.mobile-menu-toggle {
-  display: none;
-  font-size: 1.5rem;
-  color: #fff;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-.header h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.header p {
-  font-size: 1.1rem;
-  color: #ccc;
+/* Header sections */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 
 .nav-links {
   display: flex;
   gap: 2rem;
-  flex-wrap: wrap;
 }
 
 .nav-links a {
@@ -92,6 +73,13 @@
 
 .search-bar input::placeholder {
   color: #aaa;
+}
+
+/* Header actions with cart and notifications */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 /* Cart Icon Styles */
@@ -130,7 +118,76 @@
   font-weight: bold;
 }
 
-/* Faded/Semi-transparent style for mobile elements */
+/* Notification styles */
+.notification-wrapper {
+  position: relative;
+  margin-right: 4px;
+  display: inline-block;
+}
+
+/* Notification panel styles */
+.notification-panel {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  z-index: 50;
+  box-shadow: none;
+}
+
+.notification-panel.active {
+  background-color: white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  border-radius: 8px;
+}
+
+.notification-button {
+  cursor: pointer;
+  color: #ccc;
+  font-size: 1.4rem;
+  transition: color 0.2s ease;
+}
+
+.notification-button:hover {
+  color: #fff;
+}
+
+/* Mobile menu toggle (hidden on desktop) */
+.mobile-menu-toggle {
+  display: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+/* Animations */
+@keyframes cartPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.cart-pulse {
+  animation: cartPulse 0.5s ease;
+}
+
+.cart-pulse .cart-count {
+  animation: cartPulse 0.5s ease;
+}
+
+@keyframes notification-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.notification-pulse {
+  animation: notification-pulse 0.5s ease;
+}
+
+/* Mobile transparency utility class */
 .mobile-transparent {
   opacity: 0.6;
 }
@@ -151,20 +208,28 @@
 }
 
 @media (max-width: 768px) {
+  .header {
+    padding: 1rem 1.5rem;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+  
   .mobile-menu-toggle {
     display: block;
     z-index: 101;
-    opacity: 0.6; /* Semi-transparent by default */
+    opacity: 0.6;
   }
   
   .mobile-menu-toggle:hover {
-    opacity: 1; /* Full opacity on hover */
+    opacity: 1;
   }
 
   .header-right {
     position: fixed;
     top: 0;
-    right: -300px; /* Hide off-screen by default */
+    right: -300px;
     width: 250px;
     height: 100vh;
     background-color: #1e1e23;
@@ -178,7 +243,7 @@
   }
 
   .header-right.mobile-open {
-    right: 0; /* Show menu when open */
+    right: 0;
   }
 
   .nav-links {
@@ -200,47 +265,27 @@
   .search-bar input {
     width: 100%;
   }
+  
+  .header-actions {
+    position: absolute;
+    right: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 11;
+  }
 
   .cart-icon-wrapper {
-    position: absolute;
-    top: 1.5rem;
-    right: 5rem;
-    z-index: 101;
-    opacity: 0.6; /* Semi-transparent by default */
+    position: relative;
+    opacity: 0.6;
   }
   
   .cart-icon-wrapper:hover {
-    opacity: 1; /* Full opacity on hover */
+    opacity: 1;
   }
-}
-
-@keyframes cartPulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.cart-pulse {
-  animation: cartPulse 0.5s ease;
-}
-
-/* Make sure the count badge follows the animation */
-.cart-pulse .cart-count {
-  animation: cartPulse 0.5s ease;
-}
-
-@media (max-width: 576px) {
-  .header {
-    padding: 1rem 1.5rem;
-  }
-
-  .logo {
-    font-size: 1.4rem;
+  
+  /* Fixed notification panel position for mobile */
+  .notification-panel {
+    top: 70px;
+    right: 10px;
   }
 }
