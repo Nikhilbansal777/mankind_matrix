@@ -51,7 +51,7 @@ const ProfilePageContent = () => {
   };
 
   return (
-    <div className="profile-card">
+    <div className="side-container">
       <div className="edit-button-container">
         <button 
           id="editProfileButton" 
@@ -101,7 +101,7 @@ const ProfilePageContent = () => {
 };
 
 const ProfilePage = () => (
-  <div className="profile-page-container">
+  <div className="manage-containers">
     <AccountNavigation />
     <ProfilePageContent />
   </div>

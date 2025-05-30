@@ -12,6 +12,42 @@
     overflow-y: auto;
   }
   
+  .account-navigation-container h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #000000;
+    font-size: 1.6rem;
+  }
+  
+  .account-navigation-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .account-navigation-container ul li {
+    margin-bottom: 5px;
+  }
+  
+  .account-navigation-container ul li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 4px;
+  }
+  
+  .account-navigation-container ul li a:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .account-navigation-container ul li a.active {
+    font-weight: bold;
+    color: #007bff;
+    background-color: #e6f2ff;
+  }
+  
   /* Navigation items styling */
   .account-nav-list {
     list-style: none;
@@ -61,8 +97,8 @@
   @media (max-width: 768px) {
     .account-navigation-container {
       width: 100%;
-      min-height: auto;
-      border-right: none;
+      position: static;
       border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
     }
   }

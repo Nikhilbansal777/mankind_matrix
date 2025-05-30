@@ -1,139 +1,23 @@
 /* ProfilePage.css */
-/* ProfilePage.css */
-.profile-page-container {
-  display: flex;
-  max-width: 100%; /* Full width */
-  margin: 0;
-  padding: 20px;
-  gap: 0;
+.manage-containers {
+  display: flex; /* Places AccountNavigation and content side-by-side */
+  gap: 0px; /* Space between navigation and content */
+  padding: 20px; /* Padding around the entire addresses section */
+  width: 100%; /* Full width of the parent */
+  max-width: 2000px; /* Optional: constrain width */
+  margin-left: 0;
+  font-family: sans-serif; /* Basic font */
 }
 
-.account-navigation-container {
-  width: 300px;
-  min-height: 100vh; /* Full viewport height */
-  background-color: #f8f8f8;
-  border-right: 1px solid #eee;
-  padding: 20px;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-  overflow-y: auto;
-}
 
-.account-navigation-container h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: #000000;
-  font-size: 1.6rem;
-}
-
-.account-navigation-container ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.account-navigation-container ul li {
-  margin-bottom: 5px;
-}
-
-.account-navigation-container ul li a {
-  text-decoration: none;
-  color: #333;
-  display: block;
-  padding: 10px 15px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  border-radius: 4px;
-}
-
-.account-navigation-container ul li a:hover {
-  background-color: #f0f0f0;
-}
-
-.account-navigation-container ul li a.active {
-  font-weight: bold;
-  color: #007bff;
-  background-color: #e6f2ff;
-}
-
-.profile-card {
-  flex-grow: 1;
-  margin-left: 250px; /* Match the width of navigation container */
-  padding: 24px;
-  max-width: calc(100% - 250px);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .account-navigation-container {
-    width: 100%;
-    position: static;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
-  }
-
-  .profile-card {
-    margin-left: 0;
-    max-width: 100%;
-  }
-
-  .profile-page-container {
-    flex-direction: column;
-  }
-}
-
-.account-navigation-container h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: #000000;
-  font-size: 1.6rem;
-}
-
-.account-navigation-container ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.account-navigation-container ul li {
-  padding: 10px 15px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 1.2rem;
-}
-
-.account-navigation-container ul li:hover {
-  background-color: #eee;
-}
-
-.account-navigation-container ul li a {
-  text-decoration: none;
-  color: #333;
-  display: block;
-  padding: 10px 15px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  border-radius: 4px;
-}
-
-.account-navigation-container ul li a:hover {
-  background-color: #f0f0f0;
-}
-
-.account-navigation-container ul li a.active {
-  font-weight: bold;
-  color: #007bff;
-  background-color: #e6f2ff;
-}
-
-.profile-card {
-  flex-grow: 1;
-  border-radius: 8px;
-  padding: 24px;
+.side-container {
+  max-width: 900px;
   width: 100%;
-  max-width: 800px;
+  padding-bottom: 40px;
+  margin: 0 auto;
 }
 
-.profile-card h2 {
+.side-container h2 {
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
@@ -229,13 +113,9 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .profile-page-container {
-    flex-direction: column;
-  }
 
-  .account-navigation-container {
-    width: 100%;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
+  .side-container {
+    margin-left: 0;
+    max-width: 100%;
   }
 }

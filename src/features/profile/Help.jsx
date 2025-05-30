@@ -24,11 +24,10 @@ const Help = () => {
     : faqData[activeCategory];
 
   return (
-    <div className="help-page-container">
+    <div className="manage-containers">
       <AccountNavigation />
       
-      <div className="help-main-content">
-        <div className="help-content-wrapper">
+      <div className="side-container">
           <header className="help-page-header">
             <h1 className="help-page-title">Help & FAQ</h1>
             <p className="help-page-description">Find answers to commonly asked questions and get support for your inquiries.</p>
@@ -134,7 +133,6 @@ const Help = () => {
           </footer>
         </div>
       </div>
-    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import './ProfilePage.css'; // Changed to standard CSS import
+import './AccountNavigation.css'; // Changed to standard CSS import
 
 const AccountNavigation = () => {
   // Array of navigation items

@@ -1,40 +1,10 @@
 /* payments.css */
 .payment-methods {
+  display:grid !important;
   margin: 2rem 0;
   width: 100%;
 }
 
-.payment-methods-container {
-  display: flex; /* Places AccountNavigation and content side-by-side */
-  gap: 50px; /* Space between navigation and content */
-  padding: 20px; /* Padding around the entire addresses section */
-  width: 100%; /* Full width of the parent */
-  max-width: 2000px; /* Optional: constrain width */
-  font-family: sans-serif; /* Basic font */
-}
-
-.account-navigation-container {
-  width: 350px;
-  min-height: 100vh; /* Full viewport height */
-  background-color: #f8f8f8;
-  border-right: 1px solid #eee;
-  padding: 20px;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-  overflow-y: auto;
-}
-.payment-methods-content {
-  flex-direction: column;
-  width: 100%;
-}
-.payment-methods-content page-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  color: #000000;
-  margin-bottom: 0.5rem;
-}
 .payment-methods-title {
   font-size: 1.25rem;
   font-weight: 600;
@@ -46,7 +16,7 @@
   display: flex;
   flex-direction: column;
   background-color: whitesmoke;
-  width: 1200px;
+  width: auto;
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -221,12 +191,3 @@
 .verify-gift-card:hover {
   background-color: #6b6c6c;
 }
-
-/* ProfilePage.module.css */
-.profileContainer {
-  display: flex; /* Enable flex layout for direct children */
-  gap: 2rem; /* Adjust the gap between the navigation and the payment methods container */
-  align-items: flex-start; /* Align items to the top by default */
-}
-
-/* You might have other styles for .profileContainer, keep those as well */

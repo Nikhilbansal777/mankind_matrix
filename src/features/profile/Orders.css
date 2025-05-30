@@ -1,16 +1,5 @@
 /* orders.css - Styling for the Order component */
 
-/* Account page layout */
-.account-page {
-  display: flex; /* Places AccountNavigation and content side-by-side */
-  gap: 0px; /* Space between navigation and content */
-  padding: 20px; /* Padding around the entire addresses section */
-  width: 100%; /* Full width of the parent */
-  max-width: 2000px; /* Optional: constrain width */
-  margin-left: 0;
-  font-family: sans-serif; /* Basic font */
-}
-
 .nav-list {
   list-style: none;
   padding: 0;
@@ -22,7 +11,6 @@
 }
 
 .nav-link {
-  display: block;
   padding: 12px 15px;
   color: #000000;
   text-decoration: none;
@@ -40,59 +28,6 @@
   background-color: #e3f2fd;
   color: #000000;
   font-weight: 500;
-}
-
-/* Main content */
-.account-content {
-  flex-grow: 1;
-  padding: 30px;
-  overflow-y: auto;
-  display: flex;
-  justify-content: center;
-}
-
-/* Main container */
-.orders-container {
-  max-width: 900px;
-  width: 100%;
-  padding-bottom: 40px;
-  margin: 0 auto;
-}
-
-.orders-container h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  color: #000000;
-  margin-bottom: 0.5rem;
-}
-
-/* Loading state */
-.loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  font-size: 18px;
-  color: #666;
-  position: relative;
-}
-
-.loading-spinner::after {
-  content: '';
-  display: block;
-  width: 30px;
-  height: 30px;
-  margin-left: 15px;
-  border-radius: 50%;
-  border: 3px solid #ccc;
-  border-top-color: #000000;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 /* Error and empty states */
@@ -133,11 +68,17 @@
 /* Order card */
 .order-card {
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 30px;
   overflow: hidden;
   width: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 /* Order header */
@@ -145,28 +86,30 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: 20px 24px;
   background-color: #f8f9fa;
   border-bottom: 1px solid #eaeaea;
 }
 
 .order-header h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: #1a1a1a;
 }
 
 .order-date {
   color: #666;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .order-status {
-  padding: 4px 12px;
+  padding: 6px 16px;
   border-radius: 20px;
   font-size: 14px;
   font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .order-status.delivered {
@@ -191,14 +134,15 @@
 
 /* Order items */
 .order-items {
-  padding: 20px;
+  padding: 24px;
   border-bottom: 1px solid #eaeaea;
+  background-color: #fff;
 }
 
 .order-item {
   display: flex;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -209,14 +153,15 @@
 }
 
 .item-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 6px;
-  background-color: #f0f0f0;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
   background-size: cover;
   background-position: center;
-  margin-right: 15px;
+  margin-right: 20px;
   flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .item-details {
@@ -224,26 +169,28 @@
 }
 
 .item-details h4 {
-  margin: 0 0 8px 0;
+  margin: 0 0 10px 0;
   font-size: 16px;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
 .item-price {
   font-weight: 600;
-  color: #333;
-  margin-bottom: 5px;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+  font-size: 15px;
 }
 
 .item-quantity {
   font-size: 14px;
   color: #666;
+  font-weight: 500;
 }
 
 /* Order summary */
 .order-summary {
-  padding: 15px 20px;
+  padding: 20px 24px;
   background-color: #f8f9fa;
   border-bottom: 1px solid #eaeaea;
 }
@@ -251,7 +198,7 @@
 .summary-row {
   display: flex;
   justify-content: space-between;
-  padding: 5px 0;
+  padding: 6px 0;
   font-size: 14px;
   color: #666;
 }
@@ -259,9 +206,9 @@
 .summary-row.total {
   font-weight: 600;
   font-size: 16px;
-  color: #333;
-  padding-top: 10px;
-  margin-top: 5px;
+  color: #1a1a1a;
+  padding-top: 12px;
+  margin-top: 8px;
   border-top: 1px solid #eaeaea;
 }
 
@@ -287,69 +234,62 @@
 /* Order actions */
 .order-actions {
   display: flex;
-  padding: 15px 20px;
-  gap: 10px;
+  padding: 20px 24px;
+  gap: 12px;
+  background-color: #fff;
 }
 
 /* Buttons */
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
   text-align: center;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
   outline: none;
+  min-width: 120px;
 }
 
 .reorder-btn {
-  background-color: #3498db;
+  background-color: #3498db !important;
   color: white;
 }
 
 .reorder-btn:hover {
-  background-color: #2980b9;
+  background-color: #357abd !important;
 }
 
 .tracking-btn {
-  background-color: #2ecc71;
+  background-color: #34c759 !important;
   color: white;
 }
 
 .tracking-btn:hover {
-  background-color: #27ae60;
+  background-color: #2fb350 !important;
+}
+
+.return-btn {
+  background-color: #e74c3c !important;
+  color: white;
+}
+
+.return-btn:hover {
+  background-color: #c0392b !important;
 }
 
 .support-btn {
-  background-color: #f1c40f;
-  color: #333;
+  background-color: #f39c12;
+  color: white;
 }
 
 .support-btn:hover {
-  background-color: #f39c12;
-}
-
-.retry-btn {
-  background-color: #3498db;
-  color: white;
-  margin-left: 10px;
-}
-
-.retry-btn:hover {
-  background-color: #2980b9;
-}
-
-.shop-btn {
-  background-color: #3498db;
-  color: white;
-  margin-top: 10px;
-}
-
-.shop-btn:hover {
-  background-color: #2980b9;
+  background-color: #d68910;
 }
 
 /* Responsive styling */
@@ -374,23 +314,16 @@
   .order-header {
     flex-direction: column;
     align-items: flex-start;
-  }
-  
-  .order-date, .order-status {
-    margin-top: 8px;
+    gap: 10px;
   }
   
   .order-actions {
-    flex-direction: column;
+    flex-wrap: wrap;
   }
   
   .btn {
-    width: 100%;
-    margin-bottom: 8px;
-  }
-  
-  .btn:last-child {
-    margin-bottom: 0;
+    flex: 1;
+    min-width: calc(50% - 6px);
   }
 }
 
@@ -405,8 +338,12 @@
   
   .item-image {
     width: 100%;
-    height: 150px;
+    height: 200px;
     margin-right: 0;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .btn {
+    width: 100%;
   }
 }
