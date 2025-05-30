@@ -1,5 +1,6 @@
 // Order.js - React component for displaying past orders
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Orders.css'; // Import your CSS styles for the component
 import axios from 'axios'; // Import axios for API calls
 import AccountNavigation from './AccountNavigation';
@@ -7,6 +8,7 @@ import withLayout from '../../layouts/HOC/withLayout';
 const API_URL = 'https://your-api-endpoint.com/orders';
 
 const Order = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -70,6 +72,10 @@ const Order = () => {
   const handleOpenSupport = (orderId) => {
     // In a real application, this would open a support chat or form
     alert(`Support request initiated for order #${orderId}`);
+  };
+
+  const handleReturnRequest = (order) => {
+    navigate('/return-request', { state: { order } });
   };
 
   /**
@@ -210,6 +216,12 @@ const Order = () => {
                     onClick={() => handleTrackOrder(order.id, order.tracking_number)}
                   >
                     Track Order
+                  </button>
+                  <button
+                    className="btn return-btn"
+                    onClick={() => handleReturnRequest(order)}
+                  >
+                    Return Request
                   </button>
                   <button
                     className="btn support-btn"
