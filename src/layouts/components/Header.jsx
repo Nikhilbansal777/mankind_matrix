@@ -72,7 +72,7 @@ function Header({ onSearch }) {
         {/* Cart icon with item count */}
         <Link
           to="/cart"
-          className={`cart-icon-wrapper ${itemCount ? 'cart-pulse' : ''}`}
+          className={`cart-icon-wrapper ${isMobile ? 'mobile-transparent' : ''}`}
         >
           <FaShoppingCart className="cart-icon" />
           {itemCount > 0 && (
