@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   addItem,
   removeItem,
-  clearCart,
   updateItemQuantity,
   selectCartItems,
   selectCartItemCount,
@@ -26,10 +25,6 @@ export const useCart = () => {
     dispatch(removeItem(productId));
   };
   
-  const clearCartItems = () => {
-    dispatch(clearCart());
-  };
-  
   const updateQuantity = (productId, quantity) => {
     dispatch(updateItemQuantity({ id: productId, quantity }));
   };
@@ -47,7 +42,6 @@ export const useCart = () => {
     // Actions
     addToCart,
     removeFromCart,
-    clearCart: clearCartItems,
     updateQuantity,
     getCartItem
   };

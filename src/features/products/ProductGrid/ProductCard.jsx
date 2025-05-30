@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../../hooks/useCart';
-import CartNotification from '../../cart/CartNotification';
+import { toast } from 'react-toastify';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
-  const [showNotification, setShowNotification] = useState(false);
 
   const handleAddToCart = (product) => {
     addToCart(product);
-    setShowNotification(true);
-    
-    // Hide notification after it animates out
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 3000);
+    toast.success(`${product.name} added to cart!`, {
+      position: 'bottom-center'
+    });
   };
 
   return (
@@ -32,10 +28,6 @@ const ProductCard = ({ product }) => {
         </Link>
         <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
       </div>
-      
-      {showNotification && (
-        <CartNotification message={`${product.name} added to cart!`} />
-      )}
     </div>
   );
 };
