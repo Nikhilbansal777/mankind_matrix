@@ -6,7 +6,7 @@ import './Delivery.css';
 import { useCart } from '../../hooks/useCart';
 
 const DeliveryPage = () => {
-  const { cart } = useCart();
+  const { items, total } = useCart();
   const [deliveryType, setDeliveryType] = useState("standard");
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
@@ -21,9 +21,9 @@ const DeliveryPage = () => {
   const [currentStep, setCurrentStep] = useState('delivery'); 
 
   const taxRate = 0.10;
-  const taxAmount = cart.total * taxRate;
+  const taxAmount = total * taxRate;
   const deliveryFee = deliveryOptions[deliveryType]?.price || 0;
-  const total = cart.total + taxAmount + deliveryFee;
+  const finalTotal = total + taxAmount + deliveryFee;
 
   // Default delivery options if API fails
   const getDefaultDeliveryOptions = () => {
@@ -355,7 +355,7 @@ const DeliveryPage = () => {
             // Payment Section
             <div className="payment-section">
               {/* Updated Delivery Summary */}
-              <div className="delivery-summary-card">
+              <div className="content-card">
                 <h2>Delivery Summary</h2>
                 <div className="delivery-summary-content">
                   <div className="delivery-summary-row">
@@ -363,7 +363,7 @@ const DeliveryPage = () => {
                       {deliveryType === "express" ? <Clock size={18} /> : <Truck size={18} />}
                     </div>
                     <div className="summary-detail">
-                      <span className="detail-label">Method:</span>
+                      <span className="detail-label">Method</span>
                       <span className="detail-value">{deliveryOptions[deliveryType]?.title}</span>
                     </div>
                   </div>
@@ -373,7 +373,7 @@ const DeliveryPage = () => {
                       <Calendar size={18} />
                     </div>
                     <div className="summary-detail">
-                      <span className="detail-label">Date:</span>
+                      <span className="detail-label">Date</span>
                       <span className="detail-value">{selectedDate}</span>
                     </div>
                   </div>
@@ -383,7 +383,7 @@ const DeliveryPage = () => {
                       <Clock size={18} />
                     </div>
                     <div className="summary-detail">
-                      <span className="detail-label">Time:</span>
+                      <span className="detail-label">Time</span>
                       <span className="detail-value">{selectedTimeSlot}</span>
                     </div>
                   </div>
@@ -393,8 +393,11 @@ const DeliveryPage = () => {
                       <MapPin size={18} />
                     </div>
                     <div className="summary-detail address-detail">
-                      <span className="detail-label">Address:</span>
-                      <span className="detail-value">123 Main Street, Apt 4B<br/>New York, NY 10001</span>
+                      <span className="detail-label">Address</span>
+                      <span className="detail-value">
+                        123 Main Street, Apt 4B<br/>
+                        New York, NY 10001
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -421,7 +424,8 @@ const DeliveryPage = () => {
               </div>
               
               {paymentMethod === 'card' && (
-                <form className="payment-form" onSubmit={handlePaymentSubmit}>
+                <form className="content-card payment-form" onSubmit={handlePaymentSubmit}>
+                  <h2>Payment Information</h2>
                   <div className="form-group">
                     <label htmlFor="card-number">Card Number</label>
                     <input 
@@ -447,7 +451,7 @@ const DeliveryPage = () => {
                   </div>
                   
                   <div className="form-row">
-                    <div className="form-group half">
+                    <div className="form-group">
                       <label htmlFor="expiry-date">Expiry Date</label>
                       <input 
                         type="text" 
@@ -459,7 +463,7 @@ const DeliveryPage = () => {
                       />
                     </div>
                     
-                    <div className="form-group half">
+                    <div className="form-group">
                       <label htmlFor="cvv">CVV</label>
                       <input 
                         type="text" 
@@ -473,7 +477,6 @@ const DeliveryPage = () => {
                   </div>
                   
                   <div className="button-group">
-                    {/* Updated Back to Delivery Button */}
                     <button 
                       type="button" 
                       className="back-button"
@@ -503,7 +506,7 @@ const DeliveryPage = () => {
             <h2>Order Summary</h2>
 
             <div className="cart-order">
-              {cart.items.map(item => (
+              {items.map(item => (
                 <div key={item.id} className="cart-item">
                   <div className="item-image">
                     {getImageUrl(item) ? (
@@ -526,7 +529,7 @@ const DeliveryPage = () => {
             <div className="summary-details">
               <div className="summary-row">
                 <span>Subtotal</span>
-                <span>${cart.total.toFixed(2)}</span>
+                <span>${total.toFixed(2)}</span>
               </div>
               <div className="summary-row">
                 <span>Tax (10%)</span>
@@ -538,7 +541,7 @@ const DeliveryPage = () => {
               </div>
               <div className="summary-row total">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>${finalTotal.toFixed(2)}</span>
               </div>
             </div>
 
