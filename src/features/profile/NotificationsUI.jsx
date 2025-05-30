@@ -120,7 +120,13 @@ function NotificationsUI() {
           <span className="cart-count" style={{ 
             fontSize: '0.7rem', 
             width: '18px', 
-            height: '18px' 
+            height: '18px',
+            position: 'absolute',
+            top: '-5px',
+            right: '-5px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}>
             {unreadCount}
           </span>
@@ -262,7 +268,7 @@ function NotificationsUI() {
                               }}
                               title="Mark as read"
                             >
-                              <FaCheck />
+                              ✓
                             </button>
                           )}
                           <button
@@ -282,7 +288,7 @@ function NotificationsUI() {
                             }}
                             title="Remove notification"
                           >
-                            <FaTrash />
+                            ✕
                           </button>
                         </div>
                       </div>
