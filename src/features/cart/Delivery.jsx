@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, Clock, Truck, Check, MapPin, CreditCard, ArrowLeft } from 'lucide-react';
 import withLayout from '../../layouts/HOC/withLayout';
 import './Delivery.css';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../hooks/useCart';
 
 const DeliveryPage = () => {
   const { cart } = useCart();

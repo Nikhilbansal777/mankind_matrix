@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import { FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
 import withLayout from '../../layouts/HOC/withLayout';
 import styles from './CartPage.module.css';
