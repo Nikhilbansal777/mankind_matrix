@@ -46,7 +46,7 @@ const AppRouter = () => {
         <Route path='checkout' element={<CheckoutPage></CheckoutPage>}></Route>
         <Route path="AI" element={<CartPage></CartPage>}></Route>
         <Route path='product/:id' element={<ProductView></ProductView>}></Route>
-        <Route path='contact' element={<ContactPage></ContactPage>}></Route>
+        <Route path='contact' element={<ContactPage>/</ContactPage>}></Route>
       </Routes>
     </Router>
   );
