@@ -51,7 +51,7 @@ function Header({ onSearch }) {
       <nav className="nav-links">
           <Link to='/products'>Products</Link>
           <a href="#blog">Blog</a>
-          <a href="#about">About</a>
+          <Link to='/about'>About</Link>
           <Link to='/contact'>Contact</Link>
         </nav>
        

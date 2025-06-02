@@ -8,7 +8,8 @@ import AppRouter from './routes/AppRouter';
 const App = () => {
   return (
     <Provider store={store}>
-      <AppRouter />
+        <AppRouter />
+ 
     </Provider>
   );
 };
