@@ -17,8 +17,10 @@ import ReturnRequest from '../features/profile/ReturnRequest.jsx';
 import AdminPage from '../features/admin/AdminPage.jsx';
 import ContactPage from '../features/contact/ContactPage.jsx';
 import LandingPages from '../features/landingpage/LandingPages.jsx';  
+import ProductView from '../features/products/ProductView/ProductView.jsx';
 import ProductPage from '../features/products/Products.jsx';
-import Delivery from '../features/cart/Delivery.jsx';
+import AboutUs from '../features/about/AboutUs.jsx';
+import DeliveryPage from '../features/cart/Delivery.jsx';
 
 const AppRouter = () => {
     
@@ -38,11 +40,13 @@ const AppRouter = () => {
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/payments" element={<PaymentMethods/>} />
         <Route path="/help" element={<Help />} />
-        <Route path='Delivery' element={<Delivery></Delivery>}></Route>
+        <Route path="/about" element={<AboutUs />} />
+        <Route path='Delivery' element={<DeliveryPage></DeliveryPage>}></Route>
         <Route path='cart' element={<CartPage></CartPage>}></Route>
         <Route path='checkout' element={<CheckoutPage></CheckoutPage>}></Route>
         <Route path="AI" element={<CartPage></CartPage>}></Route>
-        <Route path='product/:id' element={<ProductPage></ProductPage>}></Route>
+        <Route path='product/:id' element={<ProductView></ProductView>}></Route>
+        <Route path='contact' element={<ContactPage></ContactPage>}></Route>
       </Routes>
     </Router>
   );
