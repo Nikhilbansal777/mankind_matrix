@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
+import HighlightedProductsCarousel from '../products/HighlightedProductsCarousel';
 import "slick-carousel/slick/slick-theme.css";
 
 
@@ -102,28 +103,7 @@ const LandingPages = () => {
           <div className="error">{error}</div>
         ) : (
           <div className="featured-products-carousel">
-            <Slider {...carouselSettings}>
-              {featuredProducts.map(product => (
-                <div key={product.id} className="product-card">
-                  <div className="product-image">
-                    {product.imageUrl && (
-                      <img src={product.imageUrl} alt={product.name} />
-                    )}
-                  </div>
-                  <div className="product-info">
-                    <h2>{product.name}</h2>
-                    <p>{product.shortDescription}</p>
-                    <div className="product-details">
-                      <span className="price">{product.price}</span>
-                      <span className="category">{product.category}</span>
-                    </div>
-                    <Link to={`/product/${product.id}`} className="learn-more">
-                      Learn more &gt;
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </Slider>
+            <HighlightedProductsCarousel />
           </div>
         )}
       </section>

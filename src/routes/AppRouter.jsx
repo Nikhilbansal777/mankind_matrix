@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LandingPage from '../features/home/LandingPage.jsx';
 import Product from '../features/products/Products.jsx';
 import Login from '../features/auth/login.jsx';
 import ProfilePage from '../features/profile/ProfilePage.jsx';
@@ -23,11 +22,10 @@ const AppRouter = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<LandingPages />} />
         <Route path='products' element={<Product></Product>}></Route>
         <Route path='login' element={<Login></Login>}></Route>
         <Route path='admin' element={<AdminPage></AdminPage>}></Route>
-        <Route path='landing' element={<LandingPages></LandingPages>}></Route>
         <Route path='return-request' element={<ReturnRequest></ReturnRequest>}></Route>
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/account" element={<AccountPage />} /> {/* Added new Account route */}

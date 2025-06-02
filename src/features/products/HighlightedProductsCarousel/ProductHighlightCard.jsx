@@ -2,9 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../hooks/useCart';
 import './ProductHighlightCard.css';
+import { Link } from 'react-router-dom';
 
 const ProductHighlightCard = ({ product }) => {
-  const { name, category, price, imageUrl, id } = product;
+  const { name, category, price, imageUrl, id, shortDescription } = product;
   const { addToCart } = useCart();
   const navigate = useNavigate();
   
@@ -40,10 +41,17 @@ const ProductHighlightCard = ({ product }) => {
           >
             {truncateText(name, 25)}
           </h3>
-          <div className="card-category">{truncateText(category, 25)}</div>
-          <div className="card-price">{price}</div>
+          <p className="card-description">
+            {truncateText(shortDescription, 100)}
+          </p>
+          <div className="product-details">
+            <span className="price">{price}</span>
+            <span className="category">{truncateText(category, 25)}</span>
+          </div>
         </div>
-        <button className="shop-now-button" onClick={handleShopNow}>SHOP NOW</button>
+        <Link to={`/product/${id}`} className="learn-more">
+          Learn more &gt;
+        </Link>
       </div>
     </div>
   );

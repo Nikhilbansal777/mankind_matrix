@@ -57,52 +57,40 @@ const HighlightedProductsCarousel = () => {
   
   // Settings for react-slick carousel
   const settings = {
-    dots: false, // Disable the built-in dots, we'll create our own
+    dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 5,
-    initialSlide: 0,
-    autoplay: false,
-    autoplaySpeed: 5000,
-    arrows: false,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    arrows: true,
+    autoplay: true,
+    autoplaySpeed: 3000,
     beforeChange: (current, next) => {
-      setCurrentSlide(next / itemsPerPage); // Update current slide for custom dots
+      setCurrentSlide(next);
     },
     responsive: [
       {
-        breakpoint: 1600,
-        settings: {
-          slidesToShow: 5,
-          slidesToScroll: 5,
-        }
-      },
-      {
-        breakpoint: 1400,
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 4,
-        }
-      },
-      {
-        breakpoint: 1100,
+        breakpoint: 1200,
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToScroll: 1,
+          arrows: true
         }
       },
       {
-        breakpoint: 768,
+        breakpoint: 992,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToScroll: 1,
+          arrows: true
         }
       },
       {
-        breakpoint: 480,
+        breakpoint: 576,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
+          arrows: true
         }
       }
     ]
@@ -190,23 +178,14 @@ const HighlightedProductsCarousel = () => {
   }
 
   return (
-    <div className="highlighted-products-container" style={{ position: 'relative', paddingBottom: '70px' }}>
-      <div className="slider-wrapper" style={{ position: 'relative', overflow: 'visible' }}>
-        <Slider ref={sliderRef} {...settings}>
-          {featuredProducts.map(product => (
-            <div key={product.id} className="carousel-item">
-              <ProductHighlightCard product={product} />
-            </div>
-          ))}
-        </Slider>
-        {renderCustomDots()} {/* Our custom dots */}
-      </div>
-      <div className="navigation-container" style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
-        <div className="arrows-container">
-          <PrevArrow onClick={goToPrev} />
-          <NextArrow onClick={goToNext} />
-        </div>
-      </div>
+    <div className="highlighted-products-container">
+      <Slider ref={sliderRef} {...settings}>
+        {featuredProducts.map(product => (
+          <div key={product.id} className="carousel-item">
+            <ProductHighlightCard product={product} />
+          </div>
+        ))}
+      </Slider>
     </div>
   );
 };
