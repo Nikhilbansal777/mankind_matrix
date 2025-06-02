@@ -3,64 +3,21 @@
   width: 100%;
   max-width: 100vw;
   position: relative;
-  padding: 0 0 70px;
+  padding: 0 0 40px;
   overflow-x: hidden;
 }
 
 .carousel-item {
-  padding: 0 0.25rem;
+  padding: 0 0.5rem;
   outline: none;
   height: auto;
   width: 100%;
 }
 
-/* Navigation container positioned below slider */
-.navigation-container {
-  position: absolute;
-  width: 100%;
-  bottom: 10px;
-  left: 0;
-  text-align: center;
-  z-index: 20;
-}
-
-.arrows-container {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.custom-arrow {
-  width: 36px;
-  height: 36px;
-  background-color: rgba(0, 0, 0, 0.8);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  color: white;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 2;
-}
-
-.custom-arrow:hover {
-  background-color: #000;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Override slick default styles to hide the default arrows */
-.slick-prev, 
-.slick-next {
-  display: none !important;
-}
-
+/* Slick slider customizations */
 .slick-slider {
-  overflow-x: hidden;
+  overflow: visible;
   max-width: 100%;
-  overflow-y: visible;
   margin: 2rem auto 1rem;
 }
 
@@ -80,17 +37,71 @@
   align-items: stretch;
 }
 
-/* Adjust the product card specifically in the carousel */
+/* Navigation arrows */
+.slick-prev,
+.slick-next {
+  width: 50px;
+  height: 80px;
+  background: rgba(148, 148, 158, 0.9) !important;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+.slick-prev {
+  left: 20px;
+}
+
+.slick-next {
+  right: 20px;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  font-size: 30px;
+  opacity: 1;
+  color: white;
+}
+
+/* Dots styling */
+.slick-dots {
+  bottom: -40px;
+}
+
+.slick-dots li button:before {
+  font-size: 12px;
+  color: #1d1d1f;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #0066cc;
+}
+
+/* Product card adjustments */
 .carousel-item .product-highlight-card {
   height: auto;
-  min-height: 280px;
-  max-height: 310px;
+  min-height: 420px;
   display: flex;
   flex-direction: column;
+  margin: 8px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .carousel-item .card-image-container {
-  height: 140px;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.carousel-item .card-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .carousel-item .card-content {
@@ -100,40 +111,63 @@
   flex-direction: column;
 }
 
-.slider-wrapper {
-  position: relative;
-  width: 100%;
-  overflow: visible;
-  margin-bottom: 10px;
+.carousel-item .card-content h3 {
+  font-size: 1.2rem;
+  color: #1d1d1f;
+  margin-bottom: 8px;
 }
 
-/* Shop now button styling */
-.shop-now-button {
-  padding: 0.4rem 0.8rem;
-  font-size: 0.85rem;
-  margin-top: 0.5rem;
-  white-space: nowrap;
-  background-color: #101820;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.carousel-item .card-content p {
+  font-size: 0.9rem;
+  color: #86868b;
+  margin-bottom: 12px;
+  flex: 1;
+  text-align: center;
+  text-justify: inter-word;
+  hyphens: auto;
+  line-height: 1.6;
 }
 
-.shop-now-button:hover {
-  background-color: #333;
-  transform: translateY(-2px);
+.carousel-item .card-content .product-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.carousel-item .card-content .price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.carousel-item .card-content .category {
+  font-size: 0.8rem;
+  color: #86868b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.carousel-item .card-content .learn-more {
+  color: #0066cc;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-block;
+  margin-top: auto;
 }
 
 /* Responsive styles */
-@media (max-width: 1400px) {
+@media (max-width: 1200px) {
   .highlighted-products-container {
     width: 98%;
   }
   
   .carousel-item .product-highlight-card {
-    min-height: 270px;
+    min-height: 380px;
+  }
+  
+  .carousel-item .card-image-container {
+    height: 240px;
   }
 }
 
@@ -141,35 +175,55 @@
   .highlighted-products-container {
     width: 98%;
     margin: 1.5rem auto;
-    padding: 0 0 60px;
+    padding: 0 0 40px;
   }
   
-  .custom-arrow {
-    width: 32px;
-    height: 32px;
+  .slick-prev,
+  .slick-next {
+    width: 45px;
+    height: 70px;
+  }
+  
+  .slick-prev:before,
+  .slick-next:before {
+    font-size: 26px;
   }
   
   .carousel-item .product-highlight-card {
-    min-height: 260px;
+    min-height: 350px;
+  }
+  
+  .carousel-item .card-image-container {
+    height: 220px;
   }
 }
 
-@media (max-width: 480px) {
-  .highlighted-products-container {
-    width: 98%;
-    padding: 0 0 55px;
+@media (max-width: 576px) {
+  .slick-prev,
+  .slick-next {
+    width: 40px;
+    height: 60px;
   }
   
-  .custom-arrow {
-    width: 28px;
-    height: 28px;
-  }
-  
-  .arrows-container {
-    gap: 0.5rem;
+  .slick-prev:before,
+  .slick-next:before {
+    font-size: 24px;
   }
   
   .carousel-item .product-highlight-card {
-    min-height: 250px;
+    min-height: 380px;
+    padding: 18px;
+  }
+  
+  .carousel-item .card-image-container {
+    height: 240px;
+  }
+  
+  .carousel-item .card-content h3 {
+    font-size: 1.3rem;
+  }
+  
+  .carousel-item .card-content p {
+    font-size: 1rem;
   }
 }

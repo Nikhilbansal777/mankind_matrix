@@ -34,10 +34,10 @@
 
 /* Featured Products Section */
 .featured-products {
-  padding: 80px 0; /* Remove horizontal padding */
+  padding: 80px 0;
   background-color: #ffffff;
-  overflow: hidden; /* Prevent horizontal scroll */
-  position: relative; /* For arrow positioning */
+  overflow: hidden;
+  position: relative;
 }
 
 .section-title {
@@ -45,196 +45,14 @@
   font-size: 2.5rem;
   color: #1d1d1f;
   margin-bottom: 40px;
-  padding: 0 20px; /* Add padding only to title */
+  padding: 0 20px;
 }
 
 .featured-products-carousel {
-  width: 100%; /* Full width to page edges */
+  width: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Prevent carousel overflow */
-}
-
-/* Slick Slider Container - Core carousel fixes */
-.featured-products-carousel .slick-slider {
   overflow: hidden;
-}
-
-.featured-products-carousel .slick-list {
-  overflow: hidden; /* Critical for preventing horizontal scroll */
-  margin: 0; /* Remove negative margins for full width */
-  padding: 0 20px; /* Add padding for edge spacing */
-}
-
-.featured-products-carousel .slick-track {
-  display: flex;
-  align-items: stretch; /* Equal height cards */
-}
-
-/* Product Card Styles */
-.product-card {
-  padding: 20px;
-  margin: 8px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  height: auto;
-  box-sizing: border-box;
-  min-height: 420px;
-}
-
-.product-image {
-  width: 100%;
-  height: 280px;
-  overflow: hidden;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-.product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.product-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.product-info h2 {
-  font-size: 1.2rem;
-  color: #1d1d1f;
-  margin-bottom: 8px;
-}
-
-.product-info p {
-  font-size: 0.9rem;
-  color: #86868b;
-  margin-bottom: 12px;
-  flex: 1;
-}
-
-.product-details {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.price {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #1d1d1f;
-}
-
-.category {
-  font-size: 0.8rem;
-  color: #86868b;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.learn-more {
-  color: #0066cc;
-  text-decoration: none;
-  font-weight: 500;
-  display: inline-block;
-  margin-top: auto;
-}
-
-/* Carousel Navigation */
-.slick-prev,
-.slick-next {
-  width: 50px;
-  height: 80px;
-  background: rgba(148, 148, 158, 0.9) !important;
-  border-radius: 4px;
-  z-index: 10;
-}
-
-.slick-prev {
-  left: 20px;
-}
-
-.slick-next {
-  right: 20px;
-}
-
-.slick-prev:before,
-.slick-next:before {
-  font-size: 30px;
-  opacity: 1;
-  color: white;
-}
-
-/* Ensure arrows are visible and properly positioned */
-.featured-products-carousel .slick-prev,
-.featured-products-carousel .slick-next {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 80px;
-  background: rgba(148, 148, 158, 0.9) !important;
-  border-radius: 4px;
-  z-index: 10;
-}
-
-.featured-products-carousel .slick-prev {
-  left: 20px;
-}
-
-.featured-products-carousel .slick-next {
-  right: 20px;
-}
-
-.featured-products-carousel .slick-prev:before,
-.featured-products-carousel .slick-next:before {
-  font-size: 30px;
-  opacity: 1;
-  color: white;
-}
-
-/* Responsive adjustments for arrows */
-@media (max-width: 768px) {
-  .featured-products-carousel .slick-prev,
-  .featured-products-carousel .slick-next {
-    width: 45px;
-    height: 70px;
-  }
-
-  .featured-products-carousel .slick-prev:before,
-  .featured-products-carousel .slick-next:before {
-    font-size: 26px;
-  }
-}
-
-@media (max-width: 576px) {
-  .featured-products-carousel .slick-prev,
-  .featured-products-carousel .slick-next {
-    width: 40px;
-    height: 60px;
-  }
-
-  .featured-products-carousel .slick-prev:before,
-  .featured-products-carousel .slick-next:before {
-    font-size: 24px;
-  }
-}
-
-.slick-dots {
-  bottom: -40px;
-}
-
-.slick-dots li button:before {
-  font-size: 12px;
-  color: #1d1d1f;
-}
-
-.slick-dots li.slick-active button:before {
-  color: #0066cc;
 }
 
 /* Innovation Section */
@@ -334,31 +152,6 @@
   color: #86868b;
   text-transform: uppercase;
   letter-spacing: 1px;
-}
-
-/* Responsive adjustments for Innovation section */
-@media (max-width: 768px) {
-  .innovation-content h2 {
-    font-size: 2.5rem;
-  }
-
-  .innovation-subtitle {
-    font-size: 1.2rem;
-  }
-
-  .innovation-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .innovation-stats {
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .stat-number {
-    font-size: 2rem;
-  }
 }
 
 /* Call to Action Section */
@@ -507,139 +300,6 @@
   color: #ff3b30;
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .featured-products-carousel .slick-list {
-    padding: 0 15px;
-  }
-  
-  .product-card {
-    padding: 16px;
-    margin: 6px;
-    min-height: 380px;
-  }
-  
-  .product-image {
-    height: 240px;
-  }
-}
-
-@media (max-width: 992px) {
-  .featured-products-carousel .slick-list {
-    padding: 0 15px;
-  }
-  
-  .product-card {
-    padding: 14px;
-    margin: 5px;
-    min-height: 350px;
-  }
-  
-  .product-image {
-    height: 220px;
-  }
-}
-
-@media (max-width: 768px) {
-  .hero-content h1 {
-    font-size: 3rem;
-  }
-  
-  .hero-content p {
-    font-size: 1.2rem;
-  }
-  
-  .section-title {
-    font-size: 2rem;
-  }
-  
-  .innovation-content h2,
-  .cta-content h2 {
-    font-size: 2rem;
-  }
-  
-  .innovation-content p,
-  .cta-content p {
-    font-size: 1.2rem;
-  }
-  
-  /* Show smaller arrows on tablet */
-  .slick-prev,
-  .slick-next {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .slick-prev:before,
-  .slick-next:before {
-    font-size: 20px;
-  }
-  
-  .featured-products-carousel .slick-list {
-    padding: 0 10px;
-  }
-  
-  .product-image {
-    height: 200px;
-  }
-  
-  .cta-content h2 {
-    font-size: 2.5rem;
-  }
-  
-  .cta-content p {
-    font-size: 1.2rem;
-  }
-  
-  .cta-features {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .cta-feature {
-    font-size: 1rem;
-  }
-  
-  .cta-buttons {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .cta-button {
-    width: 100%;
-  }
-}
-
-@media (max-width: 576px) {
-  /* Hide carousel arrows on mobile to prevent overlap */
-  .slick-prev,
-  .slick-next {
-    display: none !important;
-  }
-  
-  .featured-products-carousel .slick-list {
-    padding: 0 10px;
-  }
-  
-  .product-card {
-    padding: 18px;
-    margin: 8px;
-    min-height: 380px;
-  }
-  
-  .product-image {
-    height: 240px;
-  }
-  
-  .product-info h2 {
-    font-size: 1.3rem;
-  }
-  
-  .product-info p {
-    font-size: 1rem;
-  }
-}
-
 /* Information Block */
 .info-section {
   background-color: #ffffff;
@@ -690,7 +350,71 @@
   hyphens: auto;
 }
 
-/* Responsive adjustments for Info section */
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 3rem;
+  }
+  
+  .hero-content p {
+    font-size: 1.2rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .innovation-content h2,
+  .cta-content h2 {
+    font-size: 2rem;
+  }
+  
+  .innovation-content p,
+  .cta-content p {
+    font-size: 1.2rem;
+  }
+  
+  .innovation-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .innovation-stats {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+  
+  .cta-content h2 {
+    font-size: 2.5rem;
+  }
+  
+  .cta-content p {
+    font-size: 1.2rem;
+  }
+  
+  .cta-features {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .cta-feature {
+    font-size: 1rem;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .cta-button {
+    width: 100%;
+  }
+}
+
 @media (max-width: 576px) {
   .info-card {
     padding: 1.5rem;
