@@ -35,6 +35,30 @@ const ProductView = () => {
     };
   }, [id, getProduct, clearProduct]);
 
+  // Add to recently viewed products
+  useEffect(() => {
+    if (product) {
+      const addToRecentlyViewed = (product) => {
+        const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+        
+        // Remove the product if it already exists
+        const filteredProducts = recentlyViewed.filter(p => p.id !== product.id);
+        
+        // Add the product to the beginning of the array
+        const updatedProducts = [{
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.imageUrl
+        }, ...filteredProducts].slice(0, 6); // Keep only last 6 products
+        
+        localStorage.setItem('recentlyViewedProducts', JSON.stringify(updatedProducts));
+      };
+
+      addToRecentlyViewed(product);
+    }
+  }, [product]);
+
   const handleAddToCart = () => {
     if (product) {
       addToCart({ ...product, quantity });
