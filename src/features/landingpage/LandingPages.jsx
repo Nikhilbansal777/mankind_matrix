@@ -8,6 +8,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import HighlightedProductsCarousel from '../products/HighlightedProductsCarousel';
 import "slick-carousel/slick/slick-theme.css";
+import RecentlyViewedProducts from '../RecentlyViewedProducts.jsx';
 
 
 const LandingPages = () => {
@@ -93,6 +94,7 @@ const LandingPages = () => {
           <button className="cta-button">Learn More</button>
         </div>
       </section>
+      
 
       {/* Featured Products Section */}
       <section className="featured-products">
@@ -104,6 +106,7 @@ const LandingPages = () => {
         ) : (
           <div className="featured-products-carousel">
             <HighlightedProductsCarousel />
+            <RecentlyViewedProducts />
           </div>
         )}
       </section>

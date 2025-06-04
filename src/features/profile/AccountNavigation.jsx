@@ -7,6 +7,7 @@ const AccountNavigation = () => {
   const navItems = [
     { path: '/profile', label: 'Your Profile' },
     { path: '/orders', label: 'Your Orders' },
+    { path: '/return-orders', label: 'returnorders' },
     { path: '/addresses', label: 'Your Addresses' },
     { path: '/payments', label: 'Payment Methods' },
     { path: '/help', label: 'Help & FAQ' }
