@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, memo } from 'react';
 import ProductCard from './ProductCard';
 import Pagination from './Pagination';
 import useProducts from '../../../hooks/useProducts';
@@ -6,10 +6,13 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './ProductGrid.css';
 
-const ProductGrid = ({ searchQuery, category }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage, setProductsPerPage] = useState(12);
-  
+const ProductGrid = memo(({ 
+  searchQuery, 
+  category,
+  currentPage,
+  productsPerPage,
+  onPageChange,
+}) => {
   const {
     products,
     loading,
@@ -25,58 +28,50 @@ const ProductGrid = ({ searchQuery, category }) => {
         const pageIndex = currentPage - 1; // API uses 0-based indexing
         await getProducts(pageIndex, productsPerPage);
       } catch (err) {
-        console.error('Error fetching products:', err);
+        // Error is handled by the error state
       }
     };
     
     loadProducts();
   }, [currentPage, productsPerPage, getProducts]);
 
-  // Adjust products per page based on screen size
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 576) {
-        setProductsPerPage(4);
-      } else if (window.innerWidth <= 992) {
-        setProductsPerPage(6);
-      } else {
-        setProductsPerPage(8);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   // Filter products using useMemo for better performance
   const filteredProducts = useMemo(() => {
+    if (!Array.isArray(products)) return [];
+    
     let result = products;
     
     if (category) {
-      result = result.filter(p => p.category === category);
+      result = result.filter(p => {
+        const productCategory = typeof p.category === 'object' ? p.category?.name : p.category;
+        return productCategory === category;
+      });
     }
     
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(p =>
-        p.name.toLowerCase().includes(query) ||
-        (p.shortDescription && p.shortDescription.toLowerCase().includes(query))
+        (p.name?.toLowerCase() || '').includes(query) ||
+        ((p.shortDescription?.toLowerCase() || '').includes(query))
       );
     }
     
     return result;
   }, [products, searchQuery, category]);
 
-  // Handle page change
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    // Scroll to top of product grid when changing pages
-    window.scrollTo({
-      top: document.querySelector('.product-grid-container').offsetTop - 100,
-      behavior: 'smooth'
-    });
-  };
+  // Memoize toast container settings
+  const toastContainerProps = useMemo(() => ({
+    position: "bottom-center",
+    autoClose: 3000,
+    hideProgressBar: false,
+    newestOnTop: true,
+    closeOnClick: true,
+    rtl: false,
+    pauseOnFocusLoss: true,
+    draggable: true,
+    pauseOnHover: true,
+    theme: "light"
+  }), []);
 
   if (loading) {
     return (
@@ -107,21 +102,13 @@ const ProductGrid = ({ searchQuery, category }) => {
 
   return (
     <div className="product-grid-container">
-      <ToastContainer
-        position="bottom-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      <ToastContainer {...toastContainerProps} />
       <div className="product-grid">
         {filteredProducts.map(product => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard 
+            key={product.id} 
+            product={product} 
+          />
         ))}
       </div>
       
@@ -129,11 +116,13 @@ const ProductGrid = ({ searchQuery, category }) => {
         <Pagination 
           currentPage={currentPage}
           totalPages={pagination.totalPages}
-          onPageChange={handlePageChange}
+          onPageChange={onPageChange}
         />
       )}
     </div>
   );
-};
+});
+
+ProductGrid.displayName = 'ProductGrid';
 
 export default ProductGrid;

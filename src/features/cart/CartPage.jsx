@@ -56,7 +56,7 @@ const CartPage = () => {
         <div className={styles.cartItems}>
           {items.map(item => {
             // Calculate item total
-            const priceValue = parseFloat(item.price.replace('$', '').replace(',', '')) || 0;
+            const priceValue = typeof item.price === 'number' ? item.price : parseFloat(String(item.price).replace('$', '').replace(',', '')) || 0;
             const itemTotal = priceValue * item.quantity;
             
             return (
@@ -64,8 +64,10 @@ const CartPage = () => {
                 <div className={styles.productInfo}>
                   <div className={styles.productImage}>
                     {/* Display product image if available */}
-                    {item.imageUrl ? (
-                      <img src={item.imageUrl} alt={item.name} />
+                    {item.images && item.images[0] ? (
+                      <img src={item.images[0]} alt={item.name} />
+                    ) : item.image ? (
+                      <img src={item.image} alt={item.name} />
                     ) : (
                       <div className={styles.placeholderImage}>{item.name.charAt(0)}</div>
                     )}
@@ -74,11 +76,15 @@ const CartPage = () => {
                     <Link to={`/product/${item.id}`} className={styles.productName}>
                       <h3>{item.name}</h3>
                     </Link>
-                    <p className={styles.productCategory}>{item.category}</p>
+                    <p className={styles.productCategory}>{
+                      typeof item.category === 'object' && item.category !== null
+                        ? item.category.name
+                        : item.category
+                    }</p>
                   </div>
                 </div>
                 
-                <div className={styles.productPrice}>{item.price}</div>
+                <div className={styles.productPrice}>{typeof item.price === 'number' ? `$${item.price.toFixed(2)}` : item.price}</div>
                 
                 <div className={styles.productQuantity}>
                   <button 

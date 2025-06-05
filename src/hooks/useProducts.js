@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchProducts,
@@ -8,6 +8,8 @@ import {
   selectFeaturedProducts,
   selectCurrentProduct,
   selectProductsLoading,
+  selectFeaturedProductsLoading,
+  selectCurrentProductLoading,
   selectProductsError,
   selectProductsPagination,
   clearCurrentProduct,
@@ -21,7 +23,9 @@ export const useProducts = () => {
   const products = useSelector(selectProducts);
   const featuredProducts = useSelector(selectFeaturedProducts);
   const currentProduct = useSelector(selectCurrentProduct);
-  const loading = useSelector(selectProductsLoading);
+  const productsLoading = useSelector(selectProductsLoading);
+  const featuredLoading = useSelector(selectFeaturedProductsLoading);
+  const currentProductLoading = useSelector(selectCurrentProductLoading);
   const error = useSelector(selectProductsError);
   const pagination = useSelector(selectProductsPagination);
 
@@ -65,12 +69,15 @@ export const useProducts = () => {
     dispatch(clearError());
   }, [dispatch]);
 
-  return {
+  // Memoize the return value to prevent unnecessary re-renders
+  return useMemo(() => ({
     // State
     products,
     featuredProducts,
     currentProduct,
-    loading,
+    loading: productsLoading,
+    featuredLoading,
+    currentProductLoading,
     error,
     pagination,
     
@@ -80,7 +87,21 @@ export const useProducts = () => {
     getProduct,
     clearProduct,
     resetError
-  };
+  }), [
+    products,
+    featuredProducts,
+    currentProduct,
+    productsLoading,
+    featuredLoading,
+    currentProductLoading,
+    error,
+    pagination,
+    getProducts,
+    getFeaturedProducts,
+    getProduct,
+    clearProduct,
+    resetError
+  ]);
 };
 
 export default useProducts; 
