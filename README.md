@@ -53,9 +53,50 @@ git clone --branch master https://github.com/Nikhilbansal777/mankind_matrix
 cd mankind_matrix
 ```
 
----
+### 4. Environment Setup
 
-### 4. Install Project Dependencies
+The project requires environment variables to be set up before running. Follow these steps:
+
+1. Create a `.env` file in the project root directory
+2. Copy the contents from `.env.example` to your new `.env` file
+3. Update the variables as needed
+
+The `.env.example` file contains all the necessary variables that the system needs to function properly.
+
+### 5. Backend Connection
+
+There are two ways to connect to the backend services:
+
+#### Option 1: Using Deployed API (Recommended for Production)
+
+The backend services are deployed and accessible through the following URLs:
+
+**API Documentation:**
+- Product Service: https://mankind-product-service.onrender.com/swagger-ui/index.html
+- User Service: https://mankind-user-service.onrender.com/swagger-ui/index.html
+- Wishlist Service: https://mankind-wishlist-service.onrender.com/swagger-ui/index.html
+- Cart Service: https://mankind-cart-service.onrender.com/swagger-ui/index.html
+
+#### Option 2: Running Backend Locally (Development)
+
+To run the backend services locally:
+
+1. Clone the backend repository:
+```bash
+git clone https://github.com/rebeccayilma/mankind-backend
+```
+
+2. Follow the instructions in the backend repository to run the services using Docker
+
+3. Update your `.env` file with the following local development URLs
+
+**Local API Documentation:**
+- Product Service: http://localhost:8080/swagger-ui/index.html
+- User Service: http://localhost:8081/swagger-ui/index.html
+- Wishlist Service: http://localhost:8082/swagger-ui/index.html
+- Cart Service: http://localhost:8083/swagger-ui/index.html
+
+### 6. Install Project Dependencies
 
 Install all required packages:
 
@@ -65,7 +106,7 @@ npm install
 
 ---
 
-### 5. Run the Development Server
+### 7. Run the Development Server
 
 Start the development server:
 
@@ -78,7 +119,7 @@ Your application should now be running at:
 ```
 http://localhost:3000
 ```
-### 6. Backend Integration
+### 8. Backend Integration
 
 [Reference to backend Integration](backendIntegration.md)
 
