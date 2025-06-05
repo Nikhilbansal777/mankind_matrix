@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './LandingPages.css';
 import withLayout from '../../layouts/HOC/withLayout';
 import { getAllProducts } from '../../api/productService';
@@ -9,6 +9,8 @@ import "slick-carousel/slick/slick.css";
 import HighlightedProductsCarousel from '../products/HighlightedProductsCarousel';
 import "slick-carousel/slick/slick-theme.css";
 
+// Memoize the HighlightedProductsCarousel component
+const MemoizedHighlightedProductsCarousel = React.memo(HighlightedProductsCarousel);
 
 const LandingPages = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -103,7 +105,7 @@ const LandingPages = () => {
           <div className="error">{error}</div>
         ) : (
           <div className="featured-products-carousel">
-            <HighlightedProductsCarousel />
+            <MemoizedHighlightedProductsCarousel />
           </div>
         )}
       </section>

@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getAllProducts, getFeaturedProducts, getProductById } from '../../api/productService';
+import productService from '../../api2/services/productService';
 
 // Async thunks for API calls
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async ({ page, size }, { rejectWithValue }) => {
     try {
-      const response = await getAllProducts(page, size);
+      const response = await productService.getProducts({ page, size });
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -18,7 +18,7 @@ export const fetchFeaturedProducts = createAsyncThunk(
   'products/fetchFeaturedProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const products = await getFeaturedProducts();
+      const products = await productService.getFeaturedProducts();
       return products;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -30,7 +30,7 @@ export const fetchProductById = createAsyncThunk(
   'products/fetchProductById',
   async (id, { rejectWithValue }) => {
     try {
-      const product = await getProductById(id);
+      const product = await productService.getProduct(id);
       return product;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -42,7 +42,11 @@ const initialState = {
   items: [],
   featuredItems: [],
   currentProduct: null,
-  loading: false,
+  loading: {
+    products: false,
+    featured: false,
+    current: false
+  },
   error: null,
   pagination: {
     currentPage: 0,
@@ -67,11 +71,11 @@ const productSlice = createSlice({
     builder
       // Handle fetchProducts
       .addCase(fetchProducts.pending, (state) => {
-        state.loading = true;
+        state.loading.products = true;
         state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loading.products = false;
         state.items = action.payload.content;
         state.pagination = {
           currentPage: action.payload.number,
@@ -81,35 +85,35 @@ const productSlice = createSlice({
         };
       })
       .addCase(fetchProducts.rejected, (state, action) => {
-        state.loading = false;
+        state.loading.products = false;
         state.error = action.payload;
       })
       
       // Handle fetchFeaturedProducts
       .addCase(fetchFeaturedProducts.pending, (state) => {
-        state.loading = true;
+        state.loading.featured = true;
         state.error = null;
       })
       .addCase(fetchFeaturedProducts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.featuredItems = action.payload;
+        state.loading.featured = false;
+        state.featuredItems = action.payload.content || action.payload;
       })
       .addCase(fetchFeaturedProducts.rejected, (state, action) => {
-        state.loading = false;
+        state.loading.featured = false;
         state.error = action.payload;
       })
       
       // Handle fetchProductById
       .addCase(fetchProductById.pending, (state) => {
-        state.loading = true;
+        state.loading.current = true;
         state.error = null;
       })
       .addCase(fetchProductById.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loading.current = false;
         state.currentProduct = action.payload;
       })
       .addCase(fetchProductById.rejected, (state, action) => {
-        state.loading = false;
+        state.loading.current = false;
         state.error = action.payload;
       });
   }
@@ -119,7 +123,9 @@ const productSlice = createSlice({
 export const selectProducts = (state) => state.products.items;
 export const selectFeaturedProducts = (state) => state.products.featuredItems;
 export const selectCurrentProduct = (state) => state.products.currentProduct;
-export const selectProductsLoading = (state) => state.products.loading;
+export const selectProductsLoading = (state) => state.products.loading.products;
+export const selectFeaturedProductsLoading = (state) => state.products.loading.featured;
+export const selectCurrentProductLoading = (state) => state.products.loading.current;
 export const selectProductsError = (state) => state.products.error;
 export const selectProductsPagination = (state) => state.products.pagination;
 
