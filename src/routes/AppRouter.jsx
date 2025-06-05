@@ -18,6 +18,7 @@ import LandingPages from '../features/landingpage/LandingPages.jsx';
 import ProductView from '../features/products/ProductView/ProductView.jsx';
 import AboutUs from '../features/about/AboutUs.jsx';
 import DeliveryPage from '../features/cart/Delivery.jsx';
+import WishlistPage from '../features/wishlist/WishlistPage.jsx';
 
 const AppRouter = () => {
     
@@ -43,6 +44,7 @@ const AppRouter = () => {
         <Route path="AI" element={<CartPage></CartPage>}></Route>
         <Route path='product/:id' element={<ProductView></ProductView>}></Route>
         <Route path='contact' element={<ContactPage>/</ContactPage>}></Route>
+        <Route path='wishlist' element={<WishlistPage></WishlistPage>}></Route>
       </Routes>
     </Router>
   );
