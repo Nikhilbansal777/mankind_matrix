@@ -36,7 +36,11 @@ const ProductHighlightCard = memo(({ product }) => {
       });
       return;
     }
-    addToCart(product);
+    addToCart({
+      ...product,
+      price: product.inventoryStatus?.price,
+      quantity: 1
+    });
     navigate('/cart');
   }, [addToCart, navigate, product, getInventoryStatus]);
 
