@@ -89,7 +89,7 @@ const ProductView = memo(() => {
       
       const formattedProduct = {
         ...product,
-        price: formatCurrency(price),
+        price,
         quantity
       };
       addToCart(formattedProduct);
