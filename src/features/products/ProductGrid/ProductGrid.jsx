@@ -12,7 +12,6 @@ const ProductGrid = memo(({
   currentPage,
   productsPerPage,
   onPageChange,
-  onProductsPerPageChange
 }) => {
   const {
     products,

@@ -3,7 +3,7 @@ import config from './config';
 
 /**
  * Simple API Client
- * Handles all API requests with automatic token management
+ * Handles all API requests
  */
 class ApiClient {
   constructor(serviceName) {
@@ -68,9 +68,6 @@ class ApiClient {
             // Fallback to generic messages
             switch (error.response.status) {
               case 401:
-                // Clear tokens and redirect to login
-                localStorage.removeItem(config.settings.tokenKey);
-                localStorage.removeItem(config.settings.refreshTokenKey);
                 window.location.href = '/login';
                 error.message = 'Authentication required. Please log in again.';
                 break;

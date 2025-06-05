@@ -26,6 +26,8 @@ const NextArrow = React.memo(({ onClick }) => (
 // Memoize the ProductHighlightCard component
 const MemoizedProductHighlightCard = React.memo(ProductHighlightCard);
 
+const ITEMS_PER_PAGE = 5;
+
 const HighlightedProductsCarousel = React.memo(() => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { 
@@ -56,11 +58,10 @@ const HighlightedProductsCarousel = React.memo(() => {
 
   // Memoize products array and calculations
   const { products, totalPages } = useMemo(() => {
-    const itemsPerPage = 5; // Match slidesToShow
     const productsArray = Array.isArray(featuredProducts) ? featuredProducts : [];
     return {
       products: productsArray,
-      totalPages: Math.ceil(productsArray.length / itemsPerPage)
+      totalPages: Math.ceil(productsArray.length / ITEMS_PER_PAGE)
     };
   }, [featuredProducts]);
   
@@ -121,7 +122,7 @@ const HighlightedProductsCarousel = React.memo(() => {
 
   const goToSlide = useCallback((index) => {
     if (sliderRef.current) {
-      sliderRef.current.slickGoTo(index * 5); // itemsPerPage
+      sliderRef.current.slickGoTo(index * ITEMS_PER_PAGE);
     }
   }, []);
 

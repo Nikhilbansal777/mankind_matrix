@@ -48,7 +48,7 @@ const ProductCard = memo(({ product }) => {
 
     const formattedProduct = {
       ...product,
-      price: formatCurrency(price),
+      price: price,
       quantity: 1
     };
 
