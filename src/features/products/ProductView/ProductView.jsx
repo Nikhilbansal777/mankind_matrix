@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, memo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../../../hooks/useCart';
 import useProducts from '../../../hooks/useProducts';
 import withLayout from '../../../layouts/HOC/withLayout';
@@ -20,6 +20,46 @@ const ProductView = memo(() => {
     clearProduct 
   } = useProducts();
 
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        await getProduct(id);
+      } catch (error) {
+        console.error('Error loading product:', error);
+      }
+    };
+
+    loadProduct();
+    
+    // Cleanup function to clear the current product when component unmounts
+    return () => {
+      clearProduct();
+    };
+  }, [id, getProduct, clearProduct]);
+
+  // Add to recently viewed products
+  useEffect(() => {
+    if (product) {
+      const addToRecentlyViewed = (product) => {
+        const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+        
+        // Remove the product if it already exists
+        const filteredProducts = recentlyViewed.filter(p => p.id !== product.id);
+        
+        // Add the product to the beginning of the array
+        const updatedProducts = [{
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.imageUrl
+        }, ...filteredProducts].slice(0, 6); // Keep only last 6 products
+        
+        localStorage.setItem('recentlyViewedProducts', JSON.stringify(updatedProducts));
+      };
+
+      addToRecentlyViewed(product);
+    }
+  }, [product]);
   // Safely get category name
   const getCategoryName = useCallback(() => {
     if (!product?.category) return 'Uncategorized';
@@ -82,7 +122,7 @@ const ProductView = memo(() => {
     <div className={styles.errorContainer}>
       <h2>Error Loading Product</h2>
       <p>{error || 'There was an error loading the product details. Please try again later.'}</p>
-      <a href="/products">Back to Products</a>
+      <Link to="/products">Back to Products</Link>
     </div>
   ), [error]);
 

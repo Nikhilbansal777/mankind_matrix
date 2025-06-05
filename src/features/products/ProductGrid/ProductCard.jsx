@@ -73,7 +73,7 @@ const ProductCard = memo(({ product }) => {
 
   return (
     <div className="product-card">
-      <Link to={`/products/${product.id}`} className="product-link">
+      <Link to={`/product/${product.id}`} className="product-link">
         {productImage && (
           <div className="product-image-container">
             <img 
