@@ -42,21 +42,17 @@ const ProductView = memo(() => {
     if (product) {
       const addToRecentlyViewed = (product) => {
         const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
-        
         // Remove the product if it already exists
         const filteredProducts = recentlyViewed.filter(p => p.id !== product.id);
-        
-        // Add the product to the beginning of the array
+        // Add the product to the beginning of the array, saving images and inventoryStatus
         const updatedProducts = [{
           id: product.id,
           name: product.name,
-          price: product.price,
-          image: product.imageUrl
+          images: product.images,
+          inventoryStatus: product.inventoryStatus,
         }, ...filteredProducts].slice(0, 6); // Keep only last 6 products
-        
         localStorage.setItem('recentlyViewedProducts', JSON.stringify(updatedProducts));
       };
-
       addToRecentlyViewed(product);
     }
   }, [product]);

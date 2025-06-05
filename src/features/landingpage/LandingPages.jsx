@@ -96,10 +96,12 @@ const LandingPages = () => {
           <button className="cta-button">Learn More</button>
         </div>
       </section>
-      
 
-      {/* Featured Products Section */}
-      <section className="featured-products">
+      {/* Recently Viewed Products Section */}
+      <RecentlyViewedProducts />
+
+      {/* Products Section */}
+      <section className="products-section">
         <h2 className="section-title">Featured Products</h2>
         {loading ? (
           <div className="loading">Loading products...</div>
@@ -107,7 +109,6 @@ const LandingPages = () => {
           <div className="error">{error}</div>
         ) : (
           <div className="featured-products-carousel">
-            <RecentlyViewedProducts />
             <MemoizedHighlightedProductsCarousel />
           </div>
         )}
