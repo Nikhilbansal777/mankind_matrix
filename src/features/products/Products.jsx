@@ -73,7 +73,6 @@ const ProductsPage = memo(() => {
               currentPage={currentPage}
               productsPerPage={productsPerPage}
               onPageChange={handlePageChange}
-              onProductsPerPageChange={setProductsPerPage}
             />
           </div>
         </div>

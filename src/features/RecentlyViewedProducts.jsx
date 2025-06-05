@@ -26,7 +26,6 @@ const RecentlyViewedProducts = () => {
             (Array.isArray(product.images) && product.images[0]) ||
             product.image ||
             'https://placehold.co/200x150?text=No+Image';
-          console.log('Product object:', product);
           const price = product.inventoryStatus?.price;
           const formattedPrice = price != null && !isNaN(price) ? formatCurrency(price) : 'Price not available';
           return (
