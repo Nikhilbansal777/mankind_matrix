@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, memo } from 'react';
 import ProductCard from './ProductCard';
-import Pagination from './Pagination';
+import Pagination from '../../../components/Pagination/Pagination';
 import useProducts from '../../../hooks/useProducts';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
