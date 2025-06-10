@@ -11,69 +11,142 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  InputAdornment,
+  FormControlLabel,
+  Switch,
+  Typography,
+  IconButton,
+  Paper,
 } from '@mui/material';
-
-const CATEGORIES = [
-  'GPUs',
-  'AI Hardware',
-  'Data Center',
-  'Automotive',
-  'Networking',
-  'AI Software',
-  'Semiconductors',
-];
+import { Add as AddIcon, Delete as DeleteIcon, Close as CloseIcon } from '@mui/icons-material';
 
 const ProductForm = ({ product, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    price: '',
-    stock: '',
-    category: '',
-    imageUrl: '',
+    categoryId: '',
+    sku: '',
+    brand: '',
+    model: '',
+    specifications: {},
+    images: [''],
+    isFeatured: false
   });
+
+  const [specKey, setSpecKey] = useState('');
+  const [specValue, setSpecValue] = useState('');
 
   useEffect(() => {
     if (product) {
+      // Transform the product data to match the form structure
       setFormData({
         name: product.name || '',
         description: product.description || '',
-        price: product.price || '',
-        stock: product.stock || '',
-        category: product.category || '',
-        imageUrl: product.imageUrl || '',
+        categoryId: product.category?.id || '',
+        sku: product.sku || '',
+        brand: product.brand || '',
+        model: product.model || '',
+        specifications: product.specifications || {},
+        images: product.images?.length ? product.images : [''],
+        isFeatured: product.featured || false
       });
     }
   }, [product]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
+    const { name, value, type, checked } = e.target;
+    
+    setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handleImageChange = (index, value) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.map((img, i) => i === index ? value : img)
+    }));
+  };
+
+  const addImageField = () => {
+    setFormData(prev => ({
+      ...prev,
+      images: [...prev.images, '']
+    }));
+  };
+
+  const removeImageField = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleAddSpecification = () => {
+    if (specKey.trim() && specValue.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        specifications: {
+          ...prev.specifications,
+          [specKey.trim()]: specValue.trim()
+        }
+      }));
+      setSpecKey('');
+      setSpecValue('');
+    }
+  };
+
+  const handleRemoveSpecification = (key) => {
+    setFormData(prev => {
+      const newSpecs = { ...prev.specifications };
+      delete newSpecs[key];
+      return {
+        ...prev,
+        specifications: newSpecs
+      };
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Convert price to string without $ sign if it exists
+    
+    // Filter out empty image URLs
     const processedData = {
       ...formData,
-      price: formData.price.toString().replace('$', ''),
-      stock: parseInt(formData.stock, 10),
+      images: formData.images.filter(url => url.trim() !== '')
     };
+
     onSubmit(processedData);
   };
 
   return (
     <Box component="form" onSubmit={handleSubmit}>
-      <DialogTitle>
-        {product ? 'Edit Product' : 'Add New Product'}
+      <DialogTitle sx={{ 
+        m: 0, 
+        p: 2, 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center' 
+      }}>
+        <Typography variant="h6" component="div">
+          {product ? 'Edit Product' : 'Add New Product'}
+        </Typography>
+        <IconButton
+          aria-label="close"
+          onClick={onCancel}
+          sx={{
+            color: (theme) => theme.palette.grey[500],
+            '&:hover': {
+              color: (theme) => theme.palette.grey[700],
+            },
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
       </DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2} sx={{ mt: 1, flexDirection: 'column' }}>
-          <Grid item xs={12}>
+      <DialogContent dividers>
+        <Grid container spacing={2} sx={{ mt: 1 }}>
+          <Grid xs={12}>
             <TextField
               fullWidth
               label="Product Name"
@@ -84,7 +157,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
             />
           </Grid>
           
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <TextField
               fullWidth
               label="Description"
@@ -97,76 +170,172 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid xs={12} md={6}>
             <TextField
               fullWidth
-              label="Price"
-              name="price"
-              type="number"
-              value={formData.price}
-              onChange={handleChange}
-              required
-              InputProps={{
-                startAdornment: <InputAdornment position="start">$</InputAdornment>,
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Stock"
-              name="stock"
-              type="number"
-              value={formData.stock}
+              label="SKU"
+              name="sku"
+              value={formData.sku}
               onChange={handleChange}
               required
             />
           </Grid>
 
-          <Grid item xs={12}>
-            <FormControl fullWidth required sx={{ 
-              minHeight: '56px',
-              '& .MuiInputLabel-root': {
-                fontSize: '1.1rem',
-                fontWeight: 500
-              },
-              '& .MuiOutlinedInput-root': {
-                fontSize: '1.1rem',
-                '& fieldset': {
-                  borderWidth: 2
-                }
-              },
-              '& .MuiSelect-select': {
-                paddingRight: '320px !important'
-              }
-            }}>
-              <InputLabel id="category-label">Category</InputLabel>
+          <Grid xs={12} md={6}>
+            <FormControl fullWidth required>
+              <InputLabel>Category</InputLabel>
               <Select
-                name="category"
-                value={formData.category}
+                name="categoryId"
+                value={formData.categoryId}
                 onChange={handleChange}
                 label="Category"
-                labelId="category-label"
               >
-                {CATEGORIES.map((category) => (
-                  <MenuItem key={category} value={category} sx={{ fontSize: '1.1rem' }}>
-                    {category}
-                  </MenuItem>
-                ))}
+                {/* TODO: Replace with actual categories from API */}
+                <MenuItem value={1}>Electronics</MenuItem>
+                <MenuItem value={2}>Computers</MenuItem>
+                <MenuItem value={3}>Smartphones</MenuItem>
               </Select>
             </FormControl>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid xs={12} md={6}>
             <TextField
               fullWidth
-              label="Image URL"
-              name="imageUrl"
-              value={formData.imageUrl}
+              label="Brand"
+              name="brand"
+              value={formData.brand}
               onChange={handleChange}
               required
-              helperText="Enter a valid image URL (e.g., https://example.com/image.jpg)"
+            />
+          </Grid>
+
+          <Grid xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Model"
+              name="model"
+              value={formData.model}
+              onChange={handleChange}
+              required
+            />
+          </Grid>
+
+          <Grid xs={12}>
+            <Typography variant="subtitle2" gutterBottom>
+              Specifications
+            </Typography>
+            <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid xs={12} md={5}>
+                  <TextField
+                    fullWidth
+                    label="Specification Key"
+                    value={specKey}
+                    onChange={(e) => setSpecKey(e.target.value)}
+                    placeholder="e.g., Color, Storage, RAM"
+                  />
+                </Grid>
+                <Grid xs={12} md={5}>
+                  <TextField
+                    fullWidth
+                    label="Specification Value"
+                    value={specValue}
+                    onChange={(e) => setSpecValue(e.target.value)}
+                    placeholder="e.g., Black, 256GB, 8GB"
+                  />
+                </Grid>
+                <Grid xs={12} md={2}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    onClick={handleAddSpecification}
+                    startIcon={<AddIcon />}
+                    disabled={!specKey.trim() || !specValue.trim()}
+                  >
+                    Add
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+
+            {Object.entries(formData.specifications).length > 0 && (
+              <Box sx={{ mt: 2 }}>
+                {Object.entries(formData.specifications).map(([key, value]) => (
+                  <Paper
+                    key={key}
+                    variant="outlined"
+                    sx={{
+                      p: 1,
+                      mb: 1,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="subtitle2" component="span">
+                        {key}:
+                      </Typography>
+                      <Typography component="span" sx={{ ml: 1 }}>
+                        {value}
+                      </Typography>
+                    </Box>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => handleRemoveSpecification(key)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Paper>
+                ))}
+              </Box>
+            )}
+          </Grid>
+
+          <Grid xs={12}>
+            <Typography variant="subtitle2" gutterBottom>
+              Images
+            </Typography>
+            {formData.images.map((image, index) => (
+              <Box key={index} sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                <TextField
+                  fullWidth
+                  label={`Image URL ${index + 1}`}
+                  value={image}
+                  onChange={(e) => handleImageChange(index, e.target.value)}
+                  required={index === 0}
+                />
+                {index > 0 && (
+                  <Button
+                    color="error"
+                    onClick={() => removeImageField(index)}
+                    sx={{ minWidth: '40px' }}
+                  >
+                    ×
+                  </Button>
+                )}
+              </Box>
+            ))}
+            <Button
+              variant="outlined"
+              onClick={addImageField}
+              sx={{ mt: 1 }}
+            >
+              Add Another Image
+            </Button>
+          </Grid>
+
+          <Grid xs={12}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formData.isFeatured}
+                  onChange={handleChange}
+                  name="isFeatured"
+                />
+              }
+              label="Featured Product"
             />
           </Grid>
         </Grid>
