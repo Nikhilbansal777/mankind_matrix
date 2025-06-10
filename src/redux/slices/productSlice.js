@@ -38,6 +38,42 @@ export const fetchProductById = createAsyncThunk(
   }
 );
 
+export const createProduct = createAsyncThunk(
+  'products/createProduct',
+  async (data, { rejectWithValue }) => {
+    try {
+      const product = await productService.createProduct(data);
+      return product;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateProduct = createAsyncThunk(
+  'products/updateProduct',
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const product = await productService.updateProduct(id, data);
+      return product;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  'products/deleteProduct',
+  async (id, { rejectWithValue }) => {
+    try {
+      await productService.deleteProduct(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const initialState = {
   items: [],
   featuredItems: [],
@@ -45,7 +81,10 @@ const initialState = {
   loading: {
     products: false,
     featured: false,
-    current: false
+    current: false,
+    create: false,
+    update: false,
+    delete: false
   },
   error: null,
   pagination: {
@@ -115,6 +154,59 @@ const productSlice = createSlice({
       .addCase(fetchProductById.rejected, (state, action) => {
         state.loading.current = false;
         state.error = action.payload;
+      })
+      
+      // Handle createProduct
+      .addCase(createProduct.pending, (state) => {
+        state.loading.create = true;
+        state.error = null;
+      })
+      .addCase(createProduct.fulfilled, (state, action) => {
+        state.loading.create = false;
+        state.items.unshift(action.payload);
+        state.pagination.totalItems += 1;
+      })
+      .addCase(createProduct.rejected, (state, action) => {
+        state.loading.create = false;
+        state.error = action.payload;
+      })
+      
+      // Handle updateProduct
+      .addCase(updateProduct.pending, (state) => {
+        state.loading.update = true;
+        state.error = null;
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        state.loading.update = false;
+        const index = state.items.findIndex(item => item.id === action.payload.id);
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
+        if (state.currentProduct?.id === action.payload.id) {
+          state.currentProduct = action.payload;
+        }
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.loading.update = false;
+        state.error = action.payload;
+      })
+      
+      // Handle deleteProduct
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading.delete = true;
+        state.error = null;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading.delete = false;
+        state.items = state.items.filter(item => item.id !== action.payload);
+        state.pagination.totalItems -= 1;
+        if (state.currentProduct?.id === action.payload) {
+          state.currentProduct = null;
+        }
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.loading.delete = false;
+        state.error = action.payload;
       });
   }
 });
@@ -128,6 +220,9 @@ export const selectFeaturedProductsLoading = (state) => state.products.loading.f
 export const selectCurrentProductLoading = (state) => state.products.loading.current;
 export const selectProductsError = (state) => state.products.error;
 export const selectProductsPagination = (state) => state.products.pagination;
+export const selectCreateProductLoading = (state) => state.products.loading.create;
+export const selectUpdateProductLoading = (state) => state.products.loading.update;
+export const selectDeleteProductLoading = (state) => state.products.loading.delete;
 
 export const { clearCurrentProduct, clearError } = productSlice.actions;
 export default productSlice.reducer; 

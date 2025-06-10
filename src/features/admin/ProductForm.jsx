@@ -16,14 +16,112 @@ import {
   Typography,
   IconButton,
   Paper,
+  ListItemText,
+  Collapse,
+  List,
+  ListItem,
+  InputAdornment,
+  CircularProgress,
 } from '@mui/material';
-import { Add as AddIcon, Delete as DeleteIcon, Close as CloseIcon } from '@mui/icons-material';
+import { 
+  Add as AddIcon, 
+  Delete as DeleteIcon, 
+  Close as CloseIcon,
+  ExpandMore as ExpandMoreIcon,
+  ExpandLess as ExpandLessIcon,
+} from '@mui/icons-material';
+import useCategories from '../../hooks/useCategories';
+import styles from './ProductForm.module.css';
 
-const ProductForm = ({ product, onSubmit, onCancel }) => {
+// Helper function to flatten categories for value validation
+const flattenCategories = (categories) => {
+  return categories.reduce((acc, category) => {
+    acc.push(category.id);
+    if (category.subcategories && category.subcategories.length > 0) {
+      acc.push(...flattenCategories(category.subcategories));
+    }
+    return acc;
+  }, []);
+};
+
+// Recursive component for category tree
+const CategoryTreeItem = ({ category, level = 0, onSelect, selectedId }) => {
+  const [open, setOpen] = useState(false);
+  const hasChildren = category.subcategories && category.subcategories.length > 0;
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onSelect(category);
+  };
+
+  const handleExpandClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen(!open);
+  };
+
+  return (
+    <>
+      <MenuItem
+        value={category.id}
+        onClick={handleClick}
+        sx={{ pl: level * 2 }}
+        selected={selectedId === category.id}
+      >
+        <ListItemText 
+          primary={category.name}
+          secondary={category.description || ''}
+        />
+        {hasChildren && (
+          <IconButton
+            size="small"
+            onClick={handleExpandClick}
+            sx={{ ml: 1 }}
+          >
+            {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </IconButton>
+        )}
+      </MenuItem>
+      {hasChildren && (
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          {category.subcategories.map((subcategory) => (
+            <CategoryTreeItem
+              key={subcategory.id}
+              category={subcategory}
+              level={level + 1}
+              onSelect={onSelect}
+              selectedId={selectedId}
+            />
+          ))}
+        </Collapse>
+      )}
+    </>
+  );
+};
+
+// Helper to render categories recursively
+const renderCategoryOptions = (categories, level = 0) => {
+  return categories.flatMap(category => [
+    <MenuItem
+      key={category.id}
+      value={category.id.toString()}
+      style={{ paddingLeft: `${level * 24 + 16}px` }}
+    >
+      {category.name}
+    </MenuItem>,
+    ...(category.subcategories && category.subcategories.length > 0
+      ? renderCategoryOptions(category.subcategories, level + 1)
+      : [])
+  ]);
+};
+
+const ProductForm = ({ product, onSubmit, onCancel, loading = false }) => {
+  const { categories, loading: categoriesLoadingState, getCategories } = useCategories();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    categoryId: '',
+    categoryId: null,
     sku: '',
     brand: '',
     model: '',
@@ -34,14 +132,20 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
 
   const [specKey, setSpecKey] = useState('');
   const [specValue, setSpecValue] = useState('');
+  const [selectValue, setSelectValue] = useState('');
 
+  // Fetch categories on component mount
+  useEffect(() => {
+    getCategories();
+  }, [getCategories]);
+
+  // Update form data when product changes
   useEffect(() => {
     if (product) {
-      // Transform the product data to match the form structure
       setFormData({
         name: product.name || '',
         description: product.description || '',
-        categoryId: product.category?.id || '',
+        categoryId: null,
         sku: product.sku || '',
         brand: product.brand || '',
         model: product.model || '',
@@ -49,15 +153,48 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         images: product.images?.length ? product.images : [''],
         isFeatured: product.featured || false
       });
+      setSelectValue('');
     }
   }, [product]);
+
+  // Update select value only when categories are available
+  useEffect(() => {
+    if (!categoriesLoadingState.categories && categories.length > 0) {
+      const productCategoryId = product?.category?.id;
+      if (productCategoryId && categories.some(cat => cat.id === productCategoryId)) {
+        setSelectValue(productCategoryId.toString());
+        setFormData(prev => ({
+          ...prev,
+          categoryId: productCategoryId
+        }));
+      }
+    }
+  }, [categoriesLoadingState.categories, categories, product]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     
+    if (name === 'categoryId') {
+      setSelectValue(value);
+      const numValue = value === '' ? null : Number(value);
+      setFormData(prev => ({
+        ...prev,
+        [name]: numValue
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
+  };
+
+  const handleCategorySelect = (category) => {
+    const value = category.id.toString();
+    setSelectValue(value);
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      categoryId: category.id
     }));
   };
 
@@ -109,241 +246,212 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Filter out empty image URLs
     const processedData = {
       ...formData,
-      images: formData.images.filter(url => url.trim() !== '')
+      categoryId: formData.categoryId || null
     };
-
     onSubmit(processedData);
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
-      <DialogTitle sx={{ 
-        m: 0, 
-        p: 2, 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center' 
-      }}>
+    <Box component="form" onSubmit={handleSubmit} className={styles.productFormWrapper}>
+      <DialogTitle sx={{ m: 0, p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h6" component="div">
           {product ? 'Edit Product' : 'Add New Product'}
         </Typography>
-        <IconButton
-          aria-label="close"
-          onClick={onCancel}
-          sx={{
-            color: (theme) => theme.palette.grey[500],
-            '&:hover': {
-              color: (theme) => theme.palette.grey[700],
-            },
-          }}
+        <IconButton 
+          aria-label="close" 
+          onClick={onCancel} 
+          sx={{ color: (theme) => theme.palette.grey[500], '&:hover': { color: (theme) => theme.palette.grey[700] } }}
+          disabled={loading}
         >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent dividers>
-        <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid xs={12}>
-            <TextField
-              fullWidth
-              label="Product Name"
-              name="name"
-              value={formData.name}
+        <div className={styles.productFormRow}>
+          <TextField
+            fullWidth
+            label="Product Name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className={styles.productFormCol}
+          />
+        </div>
+        <div className={styles.productFormRow}>
+          <TextField
+            fullWidth
+            label="Brand"
+            name="brand"
+            value={formData.brand}
+            onChange={handleChange}
+            required
+            className={styles.productFormCol}
+          />
+          <TextField
+            fullWidth
+            label="Model"
+            name="model"
+            value={formData.model}
+            onChange={handleChange}
+            required
+            className={styles.productFormCol}
+          />
+        </div>
+        <div className={styles.productFormRow}>
+          <TextField
+            fullWidth
+            label="SKU"
+            name="sku"
+            value={formData.sku}
+            onChange={handleChange}
+            required
+            className={styles.productFormCol}
+          />
+          <FormControl fullWidth required className={styles.productFormCol}>
+            <InputLabel>Category</InputLabel>
+            <Select
+              name="categoryId"
+              value={selectValue}
               onChange={handleChange}
-              required
-            />
-          </Grid>
-          
-          <Grid xs={12}>
-            <TextField
-              fullWidth
-              label="Description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              multiline
-              rows={4}
-              required
-            />
-          </Grid>
-
-          <Grid xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="SKU"
-              name="sku"
-              value={formData.sku}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-
-          <Grid xs={12} md={6}>
-            <FormControl fullWidth required>
-              <InputLabel>Category</InputLabel>
-              <Select
-                name="categoryId"
-                value={formData.categoryId}
-                onChange={handleChange}
-                label="Category"
-              >
-                {/* TODO: Replace with actual categories from API */}
-                <MenuItem value={1}>Electronics</MenuItem>
-                <MenuItem value={2}>Computers</MenuItem>
-                <MenuItem value={3}>Smartphones</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Brand"
-              name="brand"
-              value={formData.brand}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-
-          <Grid xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Model"
-              name="model"
-              value={formData.model}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-
-          <Grid xs={12}>
-            <Typography variant="subtitle2" gutterBottom>
-              Specifications
-            </Typography>
-            <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid xs={12} md={5}>
-                  <TextField
-                    fullWidth
-                    label="Specification Key"
-                    value={specKey}
-                    onChange={(e) => setSpecKey(e.target.value)}
-                    placeholder="e.g., Color, Storage, RAM"
-                  />
-                </Grid>
-                <Grid xs={12} md={5}>
-                  <TextField
-                    fullWidth
-                    label="Specification Value"
-                    value={specValue}
-                    onChange={(e) => setSpecValue(e.target.value)}
-                    placeholder="e.g., Black, 256GB, 8GB"
-                  />
-                </Grid>
-                <Grid xs={12} md={2}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={handleAddSpecification}
-                    startIcon={<AddIcon />}
-                    disabled={!specKey.trim() || !specValue.trim()}
-                  >
-                    Add
-                  </Button>
-                </Grid>
-              </Grid>
-            </Paper>
-
-            {Object.entries(formData.specifications).length > 0 && (
-              <Box sx={{ mt: 2 }}>
-                {Object.entries(formData.specifications).map(([key, value]) => (
-                  <Paper
-                    key={key}
-                    variant="outlined"
-                    sx={{
-                      p: 1,
-                      mb: 1,
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="subtitle2" component="span">
-                        {key}:
-                      </Typography>
-                      <Typography component="span" sx={{ ml: 1 }}>
-                        {value}
-                      </Typography>
-                    </Box>
-                    <IconButton
-                      size="small"
-                      color="error"
-                      onClick={() => handleRemoveSpecification(key)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Paper>
-                ))}
-              </Box>
-            )}
-          </Grid>
-
-          <Grid xs={12}>
-            <Typography variant="subtitle2" gutterBottom>
-              Images
-            </Typography>
-            {formData.images.map((image, index) => (
-              <Box key={index} sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                <TextField
-                  fullWidth
-                  label={`Image URL ${index + 1}`}
-                  value={image}
-                  onChange={(e) => handleImageChange(index, e.target.value)}
-                  required={index === 0}
-                />
-                {index > 0 && (
-                  <Button
-                    color="error"
-                    onClick={() => removeImageField(index)}
-                    sx={{ minWidth: '40px' }}
-                  >
-                    ×
-                  </Button>
-                )}
-              </Box>
-            ))}
-            <Button
-              variant="outlined"
-              onClick={addImageField}
-              sx={{ mt: 1 }}
+              label="Category"
+              disabled={categoriesLoadingState.categories || !categories.length}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 300
+                  }
+                }
+              }}
             >
-              Add Another Image
-            </Button>
-          </Grid>
-
-          <Grid xs={12}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formData.isFeatured}
-                  onChange={handleChange}
-                  name="isFeatured"
-                />
-              }
-              label="Featured Product"
-            />
-          </Grid>
-        </Grid>
+              {renderCategoryOptions(categories)}
+            </Select>
+          </FormControl>
+        </div>
+        <div className={styles.productFormRow}>
+          <TextField
+            fullWidth
+            label="Description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            multiline
+            rows={4}
+            required
+            className={styles.productFormCol}
+          />
+        </div>
+        <div className={styles.productFormRow}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.isFeatured}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  isFeatured: e.target.checked
+                }))}
+              />
+            }
+            label="Featured Product"
+            className={styles.productFormCol}
+          />
+        </div>
+        <div className={styles.productFormRow}>
+          <span className={styles.productFormSpecTitle}>Set Specifications</span>
+        </div>
+        <div className={styles.productFormRow}>
+          <TextField
+            fullWidth
+            label="Key"
+            value={specKey}
+            onChange={(e) => setSpecKey(e.target.value)}
+            className={styles.productFormCol}
+          />
+          <TextField
+            fullWidth
+            label="Value"
+            value={specValue}
+            onChange={(e) => setSpecValue(e.target.value)}
+            className={styles.productFormCol}
+          />
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={handleAddSpecification}
+            disabled={!specKey || !specValue}
+            className={styles.productFormCol}
+            sx={{ height: '100%' }}
+          >
+            Add
+          </Button>
+        </div>
+        <div className={styles.productFormRow}>
+          <List className={styles.productFormCol}>
+            {Object.entries(formData.specifications).map(([key, value]) => (
+              <ListItem
+                key={key}
+                secondaryAction={
+                  <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveSpecification(key)}>
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                <ListItemText primary={key} secondary={value} />
+              </ListItem>
+            ))}
+          </List>
+        </div>
+        <div className={styles.productFormRow}>
+          <span className={styles.productFormHeader}>Images</span>
+        </div>
+        <div className={styles.productFormImagesStack}>
+          {formData.images.map((image, index) => (
+            <Box key={index}>
+              <TextField
+                fullWidth
+                label={`Image URL ${index + 1}`}
+                value={image}
+                onChange={(e) => handleImageChange(index, e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {index > 0 && (
+                        <IconButton onClick={() => removeImageField(index)} edge="end">
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+          ))}
+          <Button
+            variant="outlined"
+            onClick={addImageField}
+            startIcon={<AddIcon />}
+            className={styles.productFormAddImageBtn}
+          >
+            Add Image
+          </Button>
+        </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel}>Cancel</Button>
-        <Button type="submit" variant="contained" color="primary">
-          {product ? 'Update' : 'Create'} Product
+        <Button onClick={onCancel} disabled={loading}>
+          Cancel
+        </Button>
+        <Button 
+          type="submit" 
+          variant="contained" 
+          color="primary"
+          disabled={loading}
+          startIcon={loading ? <CircularProgress size={20} /> : null}
+        >
+          {loading 
+            ? (product ? 'Updating...' : 'Creating...') 
+            : (product ? 'Update' : 'Create')} Product
         </Button>
       </DialogActions>
     </Box>

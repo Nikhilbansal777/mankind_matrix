@@ -44,6 +44,9 @@ const ProductManagement = () => {
     pagination,
     getProducts,
     getProduct,
+    createProduct,
+    updateProduct,
+    deleteProduct,
     clearProduct,
     resetError
   } = useProducts();
@@ -80,11 +83,15 @@ const ProductManagement = () => {
   const handleDeleteProduct = async (productId) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        // TODO: Implement delete product API call
+        await deleteProduct(productId);
         showNotification('Product deleted successfully', 'success');
-        // Refresh the list
-        const pageIndex = currentPage - 1;
-        await getProducts(pageIndex, productsPerPage);
+        // Refresh the list if we're on the last page and it's now empty
+        if (products.length === 1 && currentPage > 1) {
+          setCurrentPage(prev => prev - 1);
+        } else {
+          const pageIndex = currentPage - 1;
+          await getProducts(pageIndex, productsPerPage);
+        }
       } catch (error) {
         console.error('Error deleting product:', error);
         showNotification('Error deleting product', 'error');
@@ -100,10 +107,11 @@ const ProductManagement = () => {
 
   const handleFormSubmit = async (productData) => {
     try {
-      // TODO: Implement create/update product API calls
       if (selectedProduct) {
+        await updateProduct(selectedProduct.id, productData);
         showNotification('Product updated successfully', 'success');
       } else {
+        await createProduct(productData);
         showNotification('Product created successfully', 'success');
       }
       // Refresh the list
@@ -155,7 +163,7 @@ const ProductManagement = () => {
 
     const price = inventoryStatus?.price;
     const stock = inventoryStatus?.availableQuantity;
-    const categoryName = typeof category === 'object' ? category.name : category;
+    const categoryName = category?.name || 'Uncategorized';
     const imageUrl = images?.[0];
     const specs = specifications ? Object.entries(specifications).slice(0, 2).map(([key, value]) => `${key}: ${value}`).join(', ') + 
       (Object.keys(specifications).length > 2 ? ` (+${Object.keys(specifications).length - 2} more)` : '') : 'N/A';
@@ -212,7 +220,7 @@ const ProductManagement = () => {
         </TableCell>
         <TableCell>
           <Box>
-            <Typography variant="body2">{categoryName || 'Uncategorized'}</Typography>
+            <Typography variant="body2">{categoryName}</Typography>
             <Typography variant="caption" color="textSecondary">
               {featured ? 'Featured' : 'Regular'}
             </Typography>
@@ -235,6 +243,7 @@ const ProductManagement = () => {
               onClick={() => handleViewProduct(product)}
               size="small"
               sx={{ mr: 1 }}
+              disabled={loading.update || loading.delete}
             >
               <VisibilityIcon />
             </IconButton>
@@ -245,6 +254,7 @@ const ProductManagement = () => {
               onClick={() => handleEditProduct(product)}
               size="small"
               sx={{ mr: 1 }}
+              disabled={loading.update || loading.delete}
             >
               <EditIcon />
             </IconButton>
@@ -254,8 +264,13 @@ const ProductManagement = () => {
               color="error"
               onClick={() => handleDeleteProduct(id)}
               size="small"
+              disabled={loading.update || loading.delete}
             >
-              <DeleteIcon />
+              {loading.delete && product.id === selectedProduct?.id ? (
+                <CircularProgress size={20} />
+              ) : (
+                <DeleteIcon />
+              )}
             </IconButton>
           </Tooltip>
         </TableCell>
@@ -282,12 +297,13 @@ const ProductManagement = () => {
           color="primary"
           startIcon={<AddIcon />}
           onClick={handleAddProduct}
+          disabled={loading.create}
         >
-          Add Product
+          {loading.create ? 'Creating...' : 'Add Product'}
         </Button>
       </Box>
 
-      {loading ? (
+      {loading.products ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
           <CircularProgress />
         </Box>
@@ -335,6 +351,7 @@ const ProductManagement = () => {
           product={selectedProduct}
           onSubmit={handleFormSubmit}
           onCancel={handleFormClose}
+          loading={loading.create || loading.update}
         />
       </Dialog>
 
