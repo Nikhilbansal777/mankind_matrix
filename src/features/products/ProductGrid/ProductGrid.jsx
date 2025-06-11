@@ -29,6 +29,7 @@ const ProductGrid = memo(({
         await getProducts(pageIndex, productsPerPage);
       } catch (err) {
         // Error is handled by the error state
+        console.error('Error loading products:', err);
       }
     };
     
@@ -73,7 +74,7 @@ const ProductGrid = memo(({
     theme: "light"
   }), []);
 
-  if (loading) {
+  if (loading.products) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
@@ -112,7 +113,7 @@ const ProductGrid = memo(({
         ))}
       </div>
       
-      {pagination.totalPages > 1 && (
+      {pagination && pagination.totalPages > 1 && (
         <Pagination 
           currentPage={currentPage}
           totalPages={pagination.totalPages}
