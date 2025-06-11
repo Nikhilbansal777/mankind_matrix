@@ -91,10 +91,17 @@ const ProductManagement = () => {
       try {
         await deleteProduct(productId);
         showNotification('Product deleted successfully', 'success');
-        // Refresh the list if we're on the last page and it's now empty
-        if (products.length === 1 && currentPage > 1) {
+        
+        // Use pagination metadata to determine if we need to change pages
+        const totalItemsAfterDeletion = pagination.totalItems - 1;
+        const itemsInCurrentPage = products.length;
+        const totalPagesAfterDeletion = Math.ceil(totalItemsAfterDeletion / productsPerPage);
+        
+        // If we're on the last page and it's not the only page, and we just deleted the last item
+        if (currentPage === pagination.totalPages && itemsInCurrentPage === 1 && totalPagesAfterDeletion < pagination.totalPages) {
           setCurrentPage(prev => prev - 1);
         } else {
+          // Refresh the current page to show updated data
           const pageIndex = currentPage - 1;
           await getProducts(pageIndex, productsPerPage);
         }

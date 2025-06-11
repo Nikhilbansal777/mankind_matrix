@@ -3,7 +3,7 @@ import config from './config';
 
 /**
  * Simple API Client
- * Handles all API requests
+ * Handles all API requests with retry logic
  */
 class ApiClient {
   constructor(serviceName) {
@@ -16,7 +16,7 @@ class ApiClient {
     this.client = this.createClient();
   }
 
-  // Create axios instance
+  // Create axios instance with retry logic
   createClient() {
     const client = axios.create({
       baseURL: this.baseURL,
@@ -39,7 +39,7 @@ class ApiClient {
       }
     );
 
-    // Add response interceptor
+    // Add response interceptor with retry logic
     client.interceptors.response.use(
       (response) => {
         if (config.settings.enableLogging) {
@@ -47,7 +47,30 @@ class ApiClient {
         }
         return response;
       },
-      (error) => {
+      async (error) => {
+        const originalRequest = error.config;
+
+        // Only retry on network errors or timeout
+        const shouldRetry = (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK') && 
+          !originalRequest._retry && 
+          originalRequest._retryCount < config.settings.retryAttempts;
+
+        if (shouldRetry) {
+          originalRequest._retry = true;
+          originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
+
+          if (config.settings.enableLogging) {
+            console.log(`[${this.serviceName}] Retrying request (${originalRequest._retryCount}/${config.settings.retryAttempts}):`, originalRequest.url);
+          }
+
+          // Wait before retrying
+          await new Promise(resolve => setTimeout(resolve, config.settings.retryDelay));
+
+          // Reset retry flag for next attempt
+          originalRequest._retry = false;
+          return client(originalRequest);
+        }
+
         if (config.settings.enableLogging) {
           console.error(`[${this.serviceName}] Response Error:`, {
             status: error.response?.status,
@@ -55,7 +78,8 @@ class ApiClient {
             data: error.response?.data,
             code: error.code,
             url: error.config?.url,
-            method: error.config?.method?.toUpperCase()
+            method: error.config?.method?.toUpperCase(),
+            retryCount: originalRequest._retryCount || 0
           });
         }
 
@@ -111,29 +135,34 @@ class ApiClient {
     return client;
   }
 
-  // HTTP Methods
+  // HTTP Methods with retry count tracking
   async get(url, params = {}) {
-    const response = await this.client.get(url, { params });
+    const config = { params, _retryCount: 0 };
+    const response = await this.client.get(url, config);
     return response.data;
   }
 
   async post(url, data = {}) {
-    const response = await this.client.post(url, data);
+    const config = { _retryCount: 0 };
+    const response = await this.client.post(url, data, config);
     return response.data;
   }
 
   async put(url, data = {}) {
-    const response = await this.client.put(url, data);
+    const config = { _retryCount: 0 };
+    const response = await this.client.put(url, data, config);
     return response.data;
   }
 
   async patch(url, data = {}) {
-    const response = await this.client.patch(url, data);
+    const config = { _retryCount: 0 };
+    const response = await this.client.patch(url, data, config);
     return response.data;
   }
 
   async delete(url) {
-    const response = await this.client.delete(url);
+    const config = { _retryCount: 0 };
+    const response = await this.client.delete(url, config);
     return response.data;
   }
 }
