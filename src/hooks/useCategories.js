@@ -37,7 +37,6 @@ export const useCategories = () => {
       await dispatch(fetchCategories()).unwrap();
     } catch (err) {
       console.error('Error fetching categories:', err);
-      throw err;
     }
   }, [dispatch]);
 
@@ -47,7 +46,6 @@ export const useCategories = () => {
       await dispatch(fetchCategoryById(id)).unwrap();
     } catch (err) {
       console.error('Error fetching category:', err);
-      throw err;
     }
   }, [dispatch]);
 
