@@ -23,11 +23,15 @@ import {
   Edit as EditIcon, 
   Delete as DeleteIcon,
   Visibility as VisibilityIcon,
+  Inventory as InventoryIcon,
 } from '@mui/icons-material';
 import ProductForm from './ProductForm';
+import InventoryForm from './InventoryForm';
 import useProducts from '../../hooks/useProducts';
 import Pagination from '../../components/Pagination/Pagination';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProductManagement = () => {
   const navigate = useNavigate();
@@ -36,6 +40,8 @@ const ProductManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10);
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
+  const [openInventoryForm, setOpenInventoryForm] = useState(false);
+  const [selectedProductForInventory, setSelectedProductForInventory] = useState(null);
 
   const {
     products,
@@ -144,6 +150,22 @@ const ProductManagement = () => {
     setNotification({ ...notification, open: false });
   };
 
+  const handleInventoryManagement = (product) => {
+    setSelectedProductForInventory(product);
+    setOpenInventoryForm(true);
+  };
+
+  const handleInventoryFormClose = () => {
+    setOpenInventoryForm(false);
+    setSelectedProductForInventory(null);
+  };
+
+  const handleInventorySuccess = async () => {
+    // Refresh the product list to get updated inventory data
+    const pageIndex = currentPage - 1;
+    await getProducts(pageIndex, productsPerPage);
+  };
+
   const renderProductRow = (product) => {
     const {
       id,
@@ -228,51 +250,73 @@ const ProductManagement = () => {
         </TableCell>
         <TableCell>
           <Box>
-            <Typography variant="caption" color="textSecondary">
-              Created: {new Date(createdAt).toLocaleDateString()}
-            </Typography>
-            <Typography variant="caption" color="textSecondary" display="block">
-              Updated: {new Date(updatedAt).toLocaleDateString()}
-            </Typography>
+            <Box mb={1}>
+              <Typography variant="caption" color="text.secondary" display="block">
+                Created
+              </Typography>
+              <Typography variant="body2">
+                {new Date(createdAt).toLocaleDateString()}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" color="text.secondary" display="block">
+                Updated
+              </Typography>
+              <Typography variant="body2">
+                {new Date(updatedAt).toLocaleDateString()}
+              </Typography>
+            </Box>
           </Box>
         </TableCell>
         <TableCell align="right">
-          <Tooltip title="View Details">
-            <IconButton
-              color="primary"
-              onClick={() => handleViewProduct(product)}
-              size="small"
-              sx={{ mr: 1 }}
-              disabled={loading.update || loading.delete}
-            >
-              <VisibilityIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Edit">
-            <IconButton
-              color="primary"
-              onClick={() => handleEditProduct(product)}
-              size="small"
-              sx={{ mr: 1 }}
-              disabled={loading.update || loading.delete}
-            >
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton
-              color="error"
-              onClick={() => handleDeleteProduct(id)}
-              size="small"
-              disabled={loading.update || loading.delete}
-            >
-              {loading.delete && product.id === selectedProduct?.id ? (
-                <CircularProgress size={20} />
-              ) : (
+          <Box sx={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(2, 1fr)', 
+            gap: 1,
+            width: 'fit-content',
+            ml: 'auto'
+          }}>
+            <Tooltip title="Edit Product">
+              <IconButton
+                color="primary"
+                onClick={() => handleEditProduct(product)}
+                size="small"
+                disabled={loading.update || loading.delete}
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="View Details">
+              <IconButton
+                color="primary"
+                onClick={() => handleViewProduct(product)}
+                size="small"
+                disabled={loading.update || loading.delete}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Manage Inventory">
+              <IconButton
+                color="primary"
+                onClick={() => handleInventoryManagement(product)}
+                size="small"
+                disabled={loading.update || loading.delete}
+              >
+                <InventoryIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete Product">
+              <IconButton
+                color="error"
+                onClick={() => handleDeleteProduct(id)}
+                size="small"
+                disabled={loading.update || loading.delete}
+              >
                 <DeleteIcon />
-              )}
-            </IconButton>
-          </Tooltip>
+              </IconButton>
+            </Tooltip>
+          </Box>
         </TableCell>
       </TableRow>
     );
@@ -365,6 +409,15 @@ const ProductManagement = () => {
           {notification.message}
         </Alert>
       </Snackbar>
+
+      {selectedProductForInventory && (
+        <InventoryForm
+          product={selectedProductForInventory}
+          open={openInventoryForm}
+          onClose={handleInventoryFormClose}
+          onSuccess={handleInventorySuccess}
+        />
+      )}
     </Box>
   );
 };

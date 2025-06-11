@@ -50,11 +50,6 @@ export const useInventory = () => {
     }
   }, [dispatch]);
 
-  // Get inventory for a specific product
-  const getInventoryByProductId = useCallback((productId) => {
-    return useSelector(state => selectInventoryByProductId(state, productId));
-  }, []);
-
   // Clear all inventory data
   const clearInventoryData = useCallback(() => {
     dispatch(clearInventory());
@@ -76,7 +71,7 @@ export const useInventory = () => {
     getInventory,
     createInventory: createNewInventory,
     updateInventory: updateExistingInventory,
-    getInventoryByProductId,
+    getInventoryByProductId: (productId) => inventory[productId],
     clearInventory: clearInventoryData,
     resetError
   }), [
@@ -86,7 +81,6 @@ export const useInventory = () => {
     getInventory,
     createNewInventory,
     updateExistingInventory,
-    getInventoryByProductId,
     clearInventoryData,
     resetError
   ]);
