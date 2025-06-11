@@ -105,10 +105,6 @@ const InventoryForm = ({ product, open, onClose, onSuccess }) => {
         maxQuantityPerPurchase: formData.maxQuantityPerPurchase ? Number(formData.maxQuantityPerPurchase) : null,
       };
 
-      // Check if we have actual inventory data or just NO_INVENTORY status
-      const hasInventory = product?.inventoryStatus && 
-                          product.inventoryStatus.status !== 'NO_INVENTORY';
-
       if (hasInventory) {
         await updateInventory(product.id, inventoryData);
         toast.success('Inventory updated successfully');
