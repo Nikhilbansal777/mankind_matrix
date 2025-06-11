@@ -1,4 +1,5 @@
 import React, { memo, useCallback, useMemo } from 'react';
+import styles from './Pagination.module.css';
 
 const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
   const handlePrevPage = useCallback(() => {
@@ -19,9 +20,9 @@ const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
   );
 
   return (
-    <div className="pagination flex justify-center mt-4 gap-2">
+    <div className={styles.pagination}>
       <button
-        className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+        className={`${styles.pageButton} ${styles.prevButton}`}
         onClick={handlePrevPage}
         disabled={currentPage === 1}
         aria-label="Previous page"
@@ -31,10 +32,8 @@ const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
       {pageNumbers.map((pageNumber) => (
         <button
           key={pageNumber}
-          className={`px-3 py-1 rounded ${
-            currentPage === pageNumber 
-              ? 'bg-blue-500 text-white' 
-              : 'bg-gray-200'
+          className={`${styles.pageButton} ${
+            currentPage === pageNumber ? styles.activeButton : ''
           }`}
           onClick={() => handlePageClick(pageNumber)}
           aria-label={`Go to page ${pageNumber}`}
@@ -44,7 +43,7 @@ const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
         </button>
       ))}
       <button
-        className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+        className={`${styles.pageButton} ${styles.nextButton}`}
         onClick={handleNextPage}
         disabled={currentPage === totalPages}
         aria-label="Next page"
@@ -57,4 +56,4 @@ const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
 
 Pagination.displayName = 'Pagination';
 
-export default Pagination;
+export default Pagination; 

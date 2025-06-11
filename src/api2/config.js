@@ -29,8 +29,11 @@ export const services = {
 
 // API Settings
 export const settings = {
-  // Timeouts
-  timeout: parseInt(process.env.REACT_APP_API_TIMEOUT || '30000', 10),
+  // Timeouts and Retry Configuration
+  timeout: parseInt(process.env.REACT_APP_API_TIMEOUT || '10000', 10),
+  retryAttempts: parseInt(process.env.REACT_APP_API_RETRY_ATTEMPTS || '3', 10),
+  retryDelay: parseInt(process.env.REACT_APP_API_RETRY_DELAY || '1000', 10),
+  maxConcurrentRequests: parseInt(process.env.REACT_APP_MAX_CONCURRENT_REQUESTS || '5', 10),
   
   // Features
   enableLogging: IS_DEV,

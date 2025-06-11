@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, memo } from 'react';
 import ProductCard from './ProductCard';
-import Pagination from './Pagination';
+import Pagination from '../../../components/Pagination/Pagination';
 import useProducts from '../../../hooks/useProducts';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -29,6 +29,7 @@ const ProductGrid = memo(({
         await getProducts(pageIndex, productsPerPage);
       } catch (err) {
         // Error is handled by the error state
+        console.error('Error loading products:', err);
       }
     };
     
@@ -73,7 +74,7 @@ const ProductGrid = memo(({
     theme: "light"
   }), []);
 
-  if (loading) {
+  if (loading.products) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
@@ -112,7 +113,7 @@ const ProductGrid = memo(({
         ))}
       </div>
       
-      {pagination.totalPages > 1 && (
+      {pagination && pagination.totalPages > 1 && (
         <Pagination 
           currentPage={currentPage}
           totalPages={pagination.totalPages}
