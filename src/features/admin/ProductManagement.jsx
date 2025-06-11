@@ -86,19 +86,36 @@ const ProductManagement = () => {
     }
   };
 
+  const calculatePaginationAfterDeletion = (currentPage, totalItems, itemsInCurrentPage, productsPerPage) => {
+    const totalItemsAfterDeletion = totalItems - 1;
+    const totalPagesAfterDeletion = Math.ceil(totalItemsAfterDeletion / productsPerPage);
+    
+    // If we're on the last page and it's not the only page, and we just deleted the last item
+    const shouldGoToPreviousPage = currentPage === Math.ceil(totalItems / productsPerPage) && 
+                                  itemsInCurrentPage === 1 && 
+                                  totalPagesAfterDeletion < Math.ceil(totalItems / productsPerPage);
+    
+    return {
+      shouldGoToPreviousPage,
+      totalItemsAfterDeletion,
+      totalPagesAfterDeletion
+    };
+  };
+
   const handleDeleteProduct = async (productId) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         await deleteProduct(productId);
         showNotification('Product deleted successfully', 'success');
         
-        // Use pagination metadata to determine if we need to change pages
-        const totalItemsAfterDeletion = pagination.totalItems - 1;
-        const itemsInCurrentPage = products.length;
-        const totalPagesAfterDeletion = Math.ceil(totalItemsAfterDeletion / productsPerPage);
+        const { shouldGoToPreviousPage } = calculatePaginationAfterDeletion(
+          currentPage,
+          pagination.totalItems,
+          products.length,
+          productsPerPage
+        );
         
-        // If we're on the last page and it's not the only page, and we just deleted the last item
-        if (currentPage === pagination.totalPages && itemsInCurrentPage === 1 && totalPagesAfterDeletion < pagination.totalPages) {
+        if (shouldGoToPreviousPage) {
           setCurrentPage(prev => prev - 1);
         } else {
           // Refresh the current page to show updated data
