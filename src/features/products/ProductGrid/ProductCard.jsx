@@ -4,6 +4,7 @@ import { useCart } from '../../../hooks/useCart';
 import { toast } from 'react-toastify';
 import { formatCurrency } from '../../../utils/formatCurrency';
 import './ProductCard.css';
+import StarRating from '../../../api/Starrating';
 
 const ProductCard = memo(({ product }) => {
   const { addToCart } = useCart();
@@ -92,10 +93,11 @@ const ProductCard = memo(({ product }) => {
           <p className="product-description">{productDescription}</p>
           <div className="product-details">
             <span className="product-category">{categoryName}</span>
-            <span className={`product-price ${!price ? 'price-not-available' : ''}`}>
-              {formattedPrice}
-            </span>
+            <span className={`product-price ${!price ? 'price-not-available' : ''}`}>{formattedPrice}</span>
           </div>
+          <ul>
+     <li><StarRating rating={product.rating||4} /></li> 
+      </ul>
           {isAvailable && inventoryStatus.quantity > 0 && (
             <div className="stock-info">
               {inventoryStatus.quantity} units available

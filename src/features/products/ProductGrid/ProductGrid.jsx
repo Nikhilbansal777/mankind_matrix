@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './ProductGrid.css';
 
+
 const ProductGrid = memo(({ 
   searchQuery, 
   category,
