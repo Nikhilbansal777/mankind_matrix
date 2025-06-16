@@ -19,6 +19,7 @@ import ProductView from '../features/products/ProductView/ProductView.jsx';
 import AboutUs from '../features/about/AboutUs.jsx';
 import DeliveryPage from '../features/cart/Delivery.jsx';
 import WishlistPage from '../features/wishlist/WishlistPage.jsx';
+import InvoiceTest from '../features/invoice/InvoiceTest';
 
 const AppRouter = () => {
     
@@ -45,6 +46,7 @@ const AppRouter = () => {
         <Route path='product/:id' element={<ProductView></ProductView>}></Route>
         <Route path='contact' element={<ContactPage>/</ContactPage>}></Route>
         <Route path='wishlist' element={<WishlistPage></WishlistPage>}></Route>
+        <Route path='invoice-test' element={<InvoiceTest />} />
       </Routes>
     </Router>
   );

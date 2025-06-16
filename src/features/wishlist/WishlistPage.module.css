@@ -462,4 +462,44 @@
   .removeBtn {
     width: 100%;
   }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+  padding: 2rem;
+}
+
+.error p {
+  color: #d32f2f;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.retryButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: 500;
+}
+
+.retryButton:hover {
+  background-color: #d81b60;
 } 

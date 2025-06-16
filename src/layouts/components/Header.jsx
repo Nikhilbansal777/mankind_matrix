@@ -3,6 +3,7 @@ import './Header.css';
 import { Link } from 'react-router';
 import { FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa';
 import NotificationsUI from '../../features/profile/NotificationsUI';
+import WishlistButton from '../../features/wishlist/WishlistButton';
 import { useCart } from '../../hooks/useCart';
 
 function Header({ onSearch }) {
@@ -48,7 +49,7 @@ function Header({ onSearch }) {
       </div>
       
       <div className={`header-right ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-      <nav className="nav-links">
+        <nav className="nav-links">
           <Link to='/products'>Products</Link>
           <a href="#blog">Blog</a>
           <Link to='/about'>About</Link>
@@ -64,10 +65,13 @@ function Header({ onSearch }) {
         </div>
       </div>
      
-      {/* Actions section with Notifications and Cart */}
+      {/* Actions section with Notifications, Wishlist and Cart */}
       <div className={`header-actions ${isMobile ? 'mobile-transparent' : ''}`}>
         {/* Notifications Component */}
         <NotificationsUI />
+        
+        {/* Wishlist Button */}
+        <WishlistButton />
        
         {/* Cart icon with item count */}
         <Link
