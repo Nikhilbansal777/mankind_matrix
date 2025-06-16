@@ -1,13 +1,21 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchProducts,
   fetchFeaturedProducts,
   fetchProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
   selectProducts,
   selectFeaturedProducts,
   selectCurrentProduct,
   selectProductsLoading,
+  selectFeaturedProductsLoading,
+  selectCurrentProductLoading,
+  selectCreateProductLoading,
+  selectUpdateProductLoading,
+  selectDeleteProductLoading,
   selectProductsError,
   selectProductsPagination,
   clearCurrentProduct,
@@ -21,7 +29,12 @@ export const useProducts = () => {
   const products = useSelector(selectProducts);
   const featuredProducts = useSelector(selectFeaturedProducts);
   const currentProduct = useSelector(selectCurrentProduct);
-  const loading = useSelector(selectProductsLoading);
+  const productsLoading = useSelector(selectProductsLoading);
+  const featuredLoading = useSelector(selectFeaturedProductsLoading);
+  const currentProductLoading = useSelector(selectCurrentProductLoading);
+  const createLoading = useSelector(selectCreateProductLoading);
+  const updateLoading = useSelector(selectUpdateProductLoading);
+  const deleteLoading = useSelector(selectDeleteProductLoading);
   const error = useSelector(selectProductsError);
   const pagination = useSelector(selectProductsPagination);
 
@@ -55,6 +68,36 @@ export const useProducts = () => {
     }
   }, [dispatch]);
 
+  // Create new product
+  const createNewProduct = useCallback(async (data) => {
+    try {
+      await dispatch(createProduct(data)).unwrap();
+    } catch (err) {
+      console.error('Error creating product:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
+  // Update existing product
+  const updateExistingProduct = useCallback(async (id, data) => {
+    try {
+      await dispatch(updateProduct({ id, data })).unwrap();
+    } catch (err) {
+      console.error('Error updating product:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
+  // Delete product
+  const deleteExistingProduct = useCallback(async (id) => {
+    try {
+      await dispatch(deleteProduct(id)).unwrap();
+    } catch (err) {
+      console.error('Error deleting product:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
   // Clear current product
   const clearProduct = useCallback(() => {
     dispatch(clearCurrentProduct());
@@ -65,12 +108,20 @@ export const useProducts = () => {
     dispatch(clearError());
   }, [dispatch]);
 
-  return {
+  // Memoize the return value to prevent unnecessary re-renders
+  return useMemo(() => ({
     // State
     products,
     featuredProducts,
     currentProduct,
-    loading,
+    loading: {
+      products: productsLoading,
+      featured: featuredLoading,
+      current: currentProductLoading,
+      create: createLoading,
+      update: updateLoading,
+      delete: deleteLoading
+    },
     error,
     pagination,
     
@@ -78,9 +129,32 @@ export const useProducts = () => {
     getProducts,
     getFeaturedProducts,
     getProduct,
+    createProduct: createNewProduct,
+    updateProduct: updateExistingProduct,
+    deleteProduct: deleteExistingProduct,
     clearProduct,
     resetError
-  };
+  }), [
+    products,
+    featuredProducts,
+    currentProduct,
+    productsLoading,
+    featuredLoading,
+    currentProductLoading,
+    createLoading,
+    updateLoading,
+    deleteLoading,
+    error,
+    pagination,
+    getProducts,
+    getFeaturedProducts,
+    getProduct,
+    createNewProduct,
+    updateExistingProduct,
+    deleteExistingProduct,
+    clearProduct,
+    resetError
+  ]);
 };
 
 export default useProducts; 

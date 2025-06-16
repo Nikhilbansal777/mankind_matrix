@@ -1,87 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './LandingPages.css';
 import withLayout from '../../layouts/HOC/withLayout';
-import { getAllProducts } from '../../api/productService';
-import { Link } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import Slider from 'react-slick';
+import { ToastContainer } from 'react-toastify';
 import "slick-carousel/slick/slick.css";
 import HighlightedProductsCarousel from '../products/HighlightedProductsCarousel';
 import "slick-carousel/slick/slick-theme.css";
+import RecentlyViewedProducts from '../RecentlyViewedProducts.jsx';
 
+// Memoize the HighlightedProductsCarousel component
+const MemoizedHighlightedProductsCarousel = React.memo(HighlightedProductsCarousel);
 
 const LandingPages = () => {
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await getAllProducts(0, 6); // Get first 6 products
-        setFeaturedProducts(response.content);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to load products');
-        setLoading(false);
-        console.error('Error loading products:', err);
-      }
-    };
-    
-    loadProducts();
-  }, []);
-
-  const showToaster = (type) => {
-    if (type === "success") {
-      toast.success("Success message !!", {
-        position: 'bottom-center'
-      });
-    }
-    else if (type === "error") {
-      toast.error("Error message !!", {
-        position: 'bottom-center'
-      });
-    }
-  }
-
-  // Carousel settings
-  const carouselSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    arrows: true,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          arrows: true
-        }
-      },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          arrows: true
-        }
-      },
-      {
-        breakpoint: 576,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          arrows: true
-        }
-      }
-    ]
-  };
 
   return (
     <div className="landing-page">
@@ -94,18 +23,17 @@ const LandingPages = () => {
         </div>
       </section>
 
-      {/* Featured Products Section */}
-      <section className="featured-products">
+      {/* Recently Viewed Products Section */}
+      <RecentlyViewedProducts />
+
+      {/* Products Section */}
+      <section className="products-section">
         <h2 className="section-title">Featured Products</h2>
-        {loading ? (
-          <div className="loading">Loading products...</div>
-        ) : error ? (
-          <div className="error">{error}</div>
-        ) : (
+
           <div className="featured-products-carousel">
-            <HighlightedProductsCarousel />
+            <MemoizedHighlightedProductsCarousel />
           </div>
-        )}
+
       </section>
 
       {/* Innovation Section */}

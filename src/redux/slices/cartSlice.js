@@ -34,7 +34,7 @@ const saveCartToStorage = (cart) => {
 // Calculate cart total
 const calculateTotal = (items) => {
   return items.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace('$', '').replace(',', '')) || 0;
+    const price = typeof item.price === 'number' ? item.price : parseFloat(String(item.price).replace('$', '').replace(',', '')) || 0;
     return sum + (price * item.quantity);
   }, 0);
 };
