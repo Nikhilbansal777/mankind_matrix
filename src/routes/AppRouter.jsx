@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Product from '../features/products/Products.jsx';
 import Login from '../features/auth/login.jsx';
-import Signup from '../features/auth/Signup.jsx';
+import Signup from '../features/auth/signup.jsx';
 import ProfilePage from '../features/profile/ProfilePage.jsx';
 import AccountPage from '../features/profile/AccountPage.jsx';
 import EditProfile from '../features/profile/Edit-Profile.jsx';
