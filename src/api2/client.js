@@ -3,7 +3,7 @@ import config from './config';
 
 /**
  * Simple API Client
- * Handles all API requests with retry logic
+ * Handles all API requests with retry logic and authentication
  */
 class ApiClient {
   constructor(serviceName) {
@@ -16,7 +16,47 @@ class ApiClient {
     this.client = this.createClient();
   }
 
-  // Create axios instance with retry logic
+  // Get stored token
+  getAuthToken() {
+    try {
+      return localStorage.getItem('authToken');
+    } catch (error) {
+      console.error('Error reading auth token:', error);
+      return null;
+    }
+  }
+
+  // Get stored refresh token
+  getRefreshToken() {
+    try {
+      return localStorage.getItem('refreshToken');
+    } catch (error) {
+      console.error('Error reading refresh token:', error);
+      return null;
+    }
+  }
+
+  // Save new token
+  saveToken(token) {
+    try {
+      localStorage.setItem('authToken', token);
+    } catch (error) {
+      console.error('Error saving auth token:', error);
+    }
+  }
+
+  // Clear all tokens
+  clearTokens() {
+    try {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+    } catch (error) {
+      console.error('Error clearing tokens:', error);
+    }
+  }
+
+  // Create axios instance with retry logic and auth
   createClient() {
     const client = axios.create({
       baseURL: this.baseURL,
@@ -29,28 +69,97 @@ class ApiClient {
     // Add request interceptor
     client.interceptors.request.use(
       (config) => {
+        // Initialize retry count if not present
+        if (config._retryCount === undefined) {
+          config._retryCount = 0;
+        }
+
+        // Add auth token if available
+        const token = this.getAuthToken();
+        const hasAuth = !!token;
+        
+        if (hasAuth) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        
+        if (config.settings?.enableLogging) {
+          console.log(`[${this.serviceName}] Request:`, {
+            method: config.method?.toUpperCase(),
+            url: config.url,
+            hasAuth: hasAuth,
+            retryCount: config._retryCount
+          });
+        }
+        
         return config;
       },
       (error) => {
-        if (config.settings.enableLogging) {
+        if (config.settings?.enableLogging) {
           console.error(`[${this.serviceName}] Request Error:`, error);
         }
         return Promise.reject(error);
       }
     );
 
-    // Add response interceptor with retry logic
+    // Add response interceptor with retry logic and token refresh
     client.interceptors.response.use(
       (response) => {
-        if (config.settings.enableLogging) {
-          console.log(`[${this.serviceName}] Response:`, response.status, response.data);
+        if (config.settings?.enableLogging) {
+          console.log(`[${this.serviceName}] Response:`, {
+            status: response.status,
+            url: response.config.url,
+            hasAuth: !!response.config.headers.Authorization
+          });
         }
         return response;
       },
       async (error) => {
         const originalRequest = error.config;
 
-        // Only retry on network errors or timeout
+        // Initialize retry count if not present
+        if (originalRequest._retryCount === undefined) {
+          originalRequest._retryCount = 0;
+        }
+
+        // Handle token refresh for 401 errors
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          
+          if (config.settings?.enableLogging) {
+            console.log(`[${this.serviceName}] Attempting token refresh for:`, originalRequest.url);
+          }
+          
+          try {
+            const refreshToken = this.getRefreshToken();
+            if (refreshToken) {
+              // Try to refresh the token
+              const response = await axios.post(`${this.baseURL}/auth/refresh`, {
+                refreshToken
+              });
+              
+              const { token } = response.data;
+              this.saveToken(token);
+              
+              if (config.settings?.enableLogging) {
+                console.log(`[${this.serviceName}] Token refreshed successfully`);
+              }
+              
+              // Retry the original request with new token
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              return client(originalRequest);
+            }
+          } catch (refreshError) {
+            if (config.settings?.enableLogging) {
+              console.error(`[${this.serviceName}] Token refresh failed:`, refreshError.message);
+            }
+            // If refresh fails, clear tokens and redirect to login
+            this.clearTokens();
+            window.location.href = '/login';
+            return Promise.reject(refreshError);
+          }
+        }
+
+        // Only retry on network errors or timeout (not auth errors)
         const shouldRetry = (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK') && 
           !originalRequest._retry && 
           originalRequest._retryCount < config.settings.retryAttempts;
@@ -59,7 +168,7 @@ class ApiClient {
           originalRequest._retry = true;
           originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
 
-          if (config.settings.enableLogging) {
+          if (config.settings?.enableLogging) {
             console.log(`[${this.serviceName}] Retrying request (${originalRequest._retryCount}/${config.settings.retryAttempts}):`, originalRequest.url);
           }
 
@@ -71,7 +180,7 @@ class ApiClient {
           return client(originalRequest);
         }
 
-        if (config.settings.enableLogging) {
+        if (config.settings?.enableLogging) {
           console.error(`[${this.serviceName}] Response Error:`, {
             status: error.response?.status,
             message: error.message,
@@ -79,20 +188,35 @@ class ApiClient {
             code: error.code,
             url: error.config?.url,
             method: error.config?.method?.toUpperCase(),
-            retryCount: originalRequest._retryCount || 0
+            retryCount: originalRequest._retryCount || 0,
+            hasAuth: !!error.config?.headers?.Authorization
           });
         }
 
         // Handle common errors
         if (error.response) {
+          // Log the full error response for debugging
+          if (config.settings?.enableLogging) {
+            console.log(`[${this.serviceName}] Full error response:`, {
+              status: error.response.status,
+              statusText: error.response.statusText,
+              data: error.response.data,
+              headers: error.response.headers
+            });
+          }
+          
           // Use server error message if available
           if (error.response.data?.message) {
             error.message = error.response.data.message;
+          } else if (error.response.data?.error) {
+            error.message = error.response.data.error;
+          } else if (typeof error.response.data === 'string') {
+            error.message = error.response.data;
           } else {
             // Fallback to generic messages
             switch (error.response.status) {
               case 401:
-                window.location.href = '/login';
+                // Don't redirect here as we handle it in the interceptor
                 error.message = 'Authentication required. Please log in again.';
                 break;
               case 403:
@@ -135,34 +259,29 @@ class ApiClient {
     return client;
   }
 
-  // HTTP Methods with retry count tracking
+  // HTTP Methods with proper retry count handling
   async get(url, params = {}) {
-    const config = { params, _retryCount: 0 };
-    const response = await this.client.get(url, config);
+    const response = await this.client.get(url, { params });
     return response.data;
   }
 
   async post(url, data = {}) {
-    const config = { _retryCount: 0 };
-    const response = await this.client.post(url, data, config);
+    const response = await this.client.post(url, data);
     return response.data;
   }
 
   async put(url, data = {}) {
-    const config = { _retryCount: 0 };
-    const response = await this.client.put(url, data, config);
+    const response = await this.client.put(url, data);
     return response.data;
   }
 
   async patch(url, data = {}) {
-    const config = { _retryCount: 0 };
-    const response = await this.client.patch(url, data, config);
+    const response = await this.client.patch(url, data);
     return response.data;
   }
 
   async delete(url) {
-    const config = { _retryCount: 0 };
-    const response = await this.client.delete(url, config);
+    const response = await this.client.delete(url);
     return response.data;
   }
 }

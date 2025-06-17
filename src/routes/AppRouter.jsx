@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Product from '../features/products/Products.jsx';
 import Login from '../features/auth/login.jsx';
+import Signup from '../features/auth/Signup.jsx';
 import ProfilePage from '../features/profile/ProfilePage.jsx';
 import AccountPage from '../features/profile/AccountPage.jsx';
 import EditProfile from '../features/profile/Edit-Profile.jsx';
@@ -19,32 +20,125 @@ import ProductView from '../features/products/ProductView/ProductView.jsx';
 import AboutUs from '../features/about/AboutUs.jsx';
 import DeliveryPage from '../features/cart/Delivery.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
+import ProtectedRoute from './ProtectedRoute.jsx';
 
 const AppRouter = () => {
     
   return (
     <Router>
       <Routes>
+        {/* Public Routes - No authentication required */}
         <Route path="/" element={<LandingPages />} />
-        <Route path='products' element={<Product></Product>}></Route>
-        <Route path='login' element={<Login></Login>}></Route>
-        <Route path='admin' element={<AdminPage></AdminPage>}></Route>
-        <Route path='return-request' element={<ReturnRequest></ReturnRequest>}></Route>
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/account" element={<AccountPage />} />
-        <Route path="/addresses" element={<ManageAddressesPage />} />
-        <Route path="/orders" element={<OrderManager />} />
-        <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/payments" element={<PaymentMethods/>} />
-        <Route path="/help" element={<Help />} />
+        <Route path="/products" element={<Product />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/about" element={<AboutUs />} />
-        <Route path='delivery' element={<DeliveryPage></DeliveryPage>}></Route>
-        <Route path='cart' element={<CartPage></CartPage>}></Route>
-        <Route path='checkout' element={<CheckoutPage></CheckoutPage>}></Route>
-        <Route path="AI" element={<CartPage></CartPage>}></Route>
-        <Route path='product/:id' element={<ProductView></ProductView>}></Route>
-        <Route path='contact' element={<ContactPage>/</ContactPage>}></Route>
-        <Route path='oldLadingPage' element={<LandingPage></LandingPage>}></Route>
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/product/:id" element={<ProductView />} />
+        <Route path="/oldLadingPage" element={<LandingPage />} />
+        
+        {/* Protected Routes - Authentication required */}
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/account" 
+          element={
+            <ProtectedRoute>
+              <AccountPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/addresses" 
+          element={
+            <ProtectedRoute>
+              <ManageAddressesPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/orders" 
+          element={
+            <ProtectedRoute>
+              <OrderManager />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/edit-profile" 
+          element={
+            <ProtectedRoute>
+              <EditProfile />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/payments" 
+          element={
+            <ProtectedRoute>
+              <PaymentMethods />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/help" 
+          element={
+            <ProtectedRoute>
+              <Help />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/return-request" 
+          element={
+            <ProtectedRoute>
+              <ReturnRequest />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/cart" 
+          element={
+            <ProtectedRoute>
+              <CartPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/checkout" 
+          element={
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/delivery" 
+          element={
+            <ProtectedRoute>
+              <DeliveryPage />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Admin Routes - Authentication + Admin role required */}
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminPage />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Legacy/Redirect Routes */}
+        <Route path="AI" element={<CartPage />} />
       </Routes>
     </Router>
   );
