@@ -6,15 +6,6 @@ import { manualLogout } from '../redux/slices/userSlice';
 // Create Auth Context
 const AuthContext = createContext();
 
-// Custom hook to use auth context
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
 /**
  * AuthProvider Component
  * Provides authentication context and handles token management
