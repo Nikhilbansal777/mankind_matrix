@@ -95,14 +95,14 @@ const ProductCard = memo(({ product }) => {
             <span className="product-category">{categoryName}</span>
             <span className={`product-price ${!price ? 'price-not-available' : ''}`}>{formattedPrice}</span>
           </div>
-          <ul>
-     <li><StarRating rating={product.rating||4} /></li> 
-      </ul>
-          {isAvailable && inventoryStatus.quantity > 0 && (
-            <div className="stock-info">
-              {inventoryStatus.quantity} units available
-            </div>
-          )}
+          <div className="rating-stock-container">
+            <StarRating rating={product.rating||4} />
+            {isAvailable && inventoryStatus.quantity > 0 && (
+              <div className="stock-info">
+                {inventoryStatus.quantity} units available
+              </div>
+            )}
+          </div>
         </div>
       </Link>
       <button 
