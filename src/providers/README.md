@@ -248,61 +248,48 @@ User fills login form
    User sees authenticated content
 ```
 
-## 🎣 Available Hooks
+## 🎣 Need to verify authentication? 
 
 ### useUser
 Comprehensive user management hook (use this for all authentication needs).
-
 ```jsx
 import useUser from '../hooks/useUser';
 
 function MyComponent() {
-  const { login, logout, isAuthenticated, user, loading, error } = useUser();
+  const { 
+    isAuthenticated, 
+    user, 
+    login, 
+    logout, 
+    updateProfile,
+    loading,
+    error 
+  } = useUser();
   
-  // Component logic
+  // All your authentication needs in one hook
 }
 ```
-
-## 🔐 Authentication System Components
-
-### Core Providers
-- `src/providers/AuthProvider.jsx` - Global authentication context
-
+## 🎣 Need to verify to protect a route? 
 ### Route Protection
-- `src/routes/ProtectedRoute.jsx` - Route protection component
-- `src/routes/AppRouter.jsx` - Main router with protected routes
+```jsx
+// In AppRouter.jsx
+<Route 
+  path="/dashboard" 
+  element={
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  } 
+/>
+```
+## 🎯 Best Practices
 
-### Authentication UI Components
-- `src/features/auth/login.jsx` - Login form
-- `src/features/auth/signup.jsx` - Registration form
-- `src/features/auth/LogoutButton.jsx` - Logout button
-- `src/features/auth/loginForm.css` - Authentication styling
+1. **Use `useUser` hook** for all authentication needs
+2. **Wrap protected routes** with `ProtectedRoute` component
+3. **Handle loading states** in your components
+4. **Provide user feedback** for authentication actions
 
-### State Management (Redux)
-- `src/redux/store.js` - Redux store configuration
-- `src/redux/slices/userSlice.js` - User state management with async thunks
-
-### Custom Hooks
-- `src/hooks/useUser.js` - User management hook (main authentication hook)
-
-### API Integration
-- `src/api2/client.js` - API client with auth integration
-- `src/api2/config.js` - API configuration
-- `src/api2/services/userService.js` - User API service
-
-### Profile Management
-- `src/features/profile/AccountPage.jsx` - User account page
-- `src/features/profile/Edit-Profile.jsx` - Profile editing
-- `src/features/profile/Edit-Profile.css` - Profile styling
-- `src/features/profile/ProfilePage.jsx` - Profile display
-- `src/features/profile/ProfilePage.css` - Profile styling
-
-### Layout Components
-- `src/layouts/components/Header.jsx` - Header with auth status
-- `src/layouts/components/Header.css` - Header styling
-- `src/layouts/MainLayout.jsx` - Main layout wrapper
-- `src/layouts/MainLayout.css` - Layout styling
-
+   
 ## 🔒 Security Features
 
 ### Token Management
@@ -321,49 +308,4 @@ function MyComponent() {
 - **User Feedback**: Clear error messages for authentication issues
 - **Automatic Recovery**: Token refresh attempts on authentication failures
 
-## 🔧 Configuration
 
-### Environment Variables
-```bash
-# Development
-REACT_APP_DEV_USER_SERVICE_URL=http://localhost:8080/api
-
-# Production
-REACT_APP_PROD_USER_SERVICE_URL=https://your-api.com/api
-
-# API Settings
-REACT_APP_API_TIMEOUT=10000
-REACT_APP_API_RETRY_ATTEMPTS=3
-REACT_APP_API_RETRY_DELAY=1000
-```
-
-## 🚀 Getting Started
-
-1. **Provider is already integrated** in `src/App.js`
-2. **Routes are protected** in `src/routes/AppRouter.jsx`
-3. **Use the useUser hook** in your components:
-
-```jsx
-import useUser from '../hooks/useUser';
-
-function MyComponent() {
-  const { 
-    isAuthenticated, 
-    user, 
-    login, 
-    logout, 
-    updateProfile,
-    loading,
-    error 
-  } = useUser();
-  
-  // All your authentication needs in one hook
-}
-```
-
-## 🎯 Best Practices
-
-1. **Use `useUser` hook** for all authentication needs
-2. **Wrap protected routes** with `ProtectedRoute` component
-3. **Handle loading states** in your components
-4. **Provide user feedback** for authentication actions
