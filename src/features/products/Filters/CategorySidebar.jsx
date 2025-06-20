@@ -31,7 +31,7 @@ const CategoryItem = memo(({
 
   return (
     <li className={`sidenav-list-item ${isSelected ? 'selected' : ''}`}>
-      <div className="category-item" style={{ paddingLeft: `${level * 20}px` }}>
+      <div className="category-item" style={{ '--level': level }}>
         {hasSubcategories && (
           <button 
             className={`expand-button ${isExpanded ? 'expanded' : ''}`}
