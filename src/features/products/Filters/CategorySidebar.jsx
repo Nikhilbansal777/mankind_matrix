@@ -37,6 +37,7 @@ const CategoryItem = memo(({
             className={`expand-button ${isExpanded ? 'expanded' : ''}`}
             onClick={handleClick}
             aria-label={isExpanded ? 'Collapse' : 'Expand'}
+            aria-expanded={isExpanded}
           >
             <span className="expand-icon">▶</span>
           </button>
