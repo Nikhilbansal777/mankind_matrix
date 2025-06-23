@@ -13,6 +13,7 @@ const ProductGrid = memo(({
   currentPage,
   productsPerPage,
   onPageChange,
+  sortOption,
 }) => {
   const {
     products,
@@ -27,14 +28,14 @@ const ProductGrid = memo(({
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const pageIndex = currentPage - 1; // API uses 0-based indexing
-        
+        const pageIndex = currentPage - 1;
+        const sortArr = sortOption ? [sortOption] : [];
         if (category) {
           // If category is selected, fetch products by category
-          await getProductsByCategory(category, pageIndex, productsPerPage);
+          await getProductsByCategory(category, pageIndex, productsPerPage, sortArr);
         } else {
           // If no category selected (null), fetch all products
-          await getProducts(pageIndex, productsPerPage);
+          await getProducts(pageIndex, productsPerPage, sortArr);
         }
       } catch (err) {
         // Error is handled by the error state
@@ -43,7 +44,7 @@ const ProductGrid = memo(({
     };
     
     loadProducts();
-  }, [currentPage, productsPerPage, category, getProducts, getProductsByCategory]);
+  }, [currentPage, productsPerPage, category, sortOption, getProducts, getProductsByCategory]);
 
   // Filter products using useMemo for better performance (only search filtering now)
   const filteredProducts = useMemo(() => {
