@@ -10,7 +10,7 @@ const MemoizedCategorySidebar = memo(CategorySidebar);
 
 const ProductsPage = memo(() => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(12);
   const [sortOption, setSortOption] = useState('');
@@ -22,8 +22,8 @@ const ProductsPage = memo(() => {
   }, []);
 
   // Handler for category filter
-  const handleCategoryFilter = useCallback((category) => {
-    setSelectedCategory(category);
+  const handleCategoryFilter = useCallback((categoryId) => {
+    setSelectedCategory(categoryId);
     setCurrentPage(1); // Reset to first page when category changes
   }, []);
 

@@ -13,21 +13,21 @@ const CategoryItem = memo(({
 }) => {
   const hasSubcategories = category.subcategories && category.subcategories.length > 0;
   const isExpanded = expandedCategories.includes(category.id);
-  const isSelected = selectedCategory === category.name;
+  const isSelected = selectedCategory === category.id;
   
   const handleClick = useCallback((e) => {
     e.preventDefault();
     if (hasSubcategories) {
       onToggleExpand(category.id);
     } else {
-      onCategorySelect(category.name);
+      onCategorySelect(category.id);
     }
   }, [category, hasSubcategories, onCategorySelect, onToggleExpand]);
 
   const handleCategorySelect = useCallback((e) => {
     e.stopPropagation();
-    onCategorySelect(category.name);
-  }, [category.name, onCategorySelect]);
+    onCategorySelect(category.id);
+  }, [category.id, onCategorySelect]);
 
   return (
     <li className={`sidenav-list-item ${isSelected ? 'selected' : ''}`}>
@@ -92,13 +92,13 @@ function CategorySidebar({ onCategorySelect, selectedCategory }) {
   }, []);
 
   // Handle category selection
-  const handleCategorySelect = useCallback((categoryName) => {
-    onCategorySelect(categoryName);
+  const handleCategorySelect = useCallback((categoryId) => {
+    onCategorySelect(categoryId);
   }, [onCategorySelect]);
 
   // Handle "All Products" selection
   const handleAllProducts = useCallback(() => {
-    onCategorySelect('');
+    onCategorySelect(null);
   }, [onCategorySelect]);
 
   if (loading.categories) {
@@ -120,9 +120,9 @@ function CategorySidebar({ onCategorySelect, selectedCategory }) {
       
       <ul className="sidenav-list">
         {/* All Products Option */}
-        <li className={`sidenav-list-item ${selectedCategory === '' ? 'selected' : ''}`}>
+        <li className={`sidenav-list-item ${selectedCategory === null ? 'selected' : ''}`}>
           <button 
-            className={`category-button all-products ${selectedCategory === '' ? 'selected' : ''}`}
+            className={`category-button all-products ${selectedCategory === null ? 'selected' : ''}`}
             onClick={handleAllProducts}
           >
             <span className="category-name">All Products</span>
