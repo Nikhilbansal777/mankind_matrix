@@ -8,10 +8,8 @@ const sortOptions = [
   { value: 'inventory.price,asc', label: 'Price (Low to High)' },
   { value: 'inventory.price,desc', label: 'Price (High to Low)' },
   { value: 'createdAt,desc', label: 'Newest Arrivals' },
-  { value: 'brand,asc', label: 'Brand (A-Z)' },
-  { value: 'brand,desc', label: 'Brand (Z-A)' },
-  { value: 'inventoryStatus.availableQuantity,desc', label: 'Stock (High to Low)' },
-  { value: 'inventoryStatus.availableQuantity,asc', label: 'Stock (Low to High)' },
+  { value: 'inventory.availableQuantity,desc', label: 'Stock (High to Low)' },
+  { value: 'inventory.availableQuantity,asc', label: 'Stock (Low to High)' },
 ];
 
 const SortDropdown = ({ onSortChange, selectedSort }) => {

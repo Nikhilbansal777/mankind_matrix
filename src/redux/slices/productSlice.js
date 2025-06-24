@@ -4,9 +4,9 @@ import productService from '../../api2/services/productService';
 // Async thunks for API calls
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async ({ page, size }, { rejectWithValue }) => {
+  async ({ page, size, sort }, { rejectWithValue }) => {
     try {
-      const response = await productService.getProducts({ page, size });
+      const response = await productService.getProducts({ page, size, sort: sort && sort.length > 0 ? sort : undefined });
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -16,9 +16,9 @@ export const fetchProducts = createAsyncThunk(
 
 export const fetchProductsByCategory = createAsyncThunk(
   'products/fetchProductsByCategory',
-  async ({ categoryId, page, size }, { rejectWithValue }) => {
+  async ({ categoryId, page, size, sort }, { rejectWithValue }) => {
     try {
-      const response = await productService.getProductsByCategory(categoryId, { page, size });
+      const response = await productService.getProductsByCategory(categoryId, { page, size, sort: sort && sort.length > 0 ? sort : undefined });
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
