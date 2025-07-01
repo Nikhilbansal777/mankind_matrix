@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Box, Typography, Paper, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import withLayout from '../../layouts/HOC/withLayout';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(6),
@@ -44,6 +46,8 @@ const TotalBox = styled(Box)(({ theme }) => ({
 }));
 
 const InvoiceGenerator = ({ orderData }) => {
+  const invoiceRef = useRef();
+
   // This would typically come from your order data
   const invoiceData = {
     invoiceNumber: 'INV-2024-001',
@@ -73,6 +77,22 @@ const InvoiceGenerator = ({ orderData }) => {
     total: 384.96
   };
 
+  const handleDownloadPDF = async () => {
+    const input = invoiceRef.current;
+    if (!input) return;
+    const canvas = await html2canvas(input, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    // Calculate image dimensions to fit A4
+    const imgProps = pdf.getImageProperties(imgData);
+    const imgWidth = pdfWidth;
+    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    pdf.save(`Invoice_${invoiceData.invoiceNumber}.pdf`);
+  };
+
   return (
     <Box sx={{ 
       minHeight: '100vh',
@@ -80,171 +100,187 @@ const InvoiceGenerator = ({ orderData }) => {
       py: 4,
       px: 2
     }}>
-      <StyledPaper>
-        {/* Header */}
-        <Box sx={{ mb: 6 }}>
-          <Grid container justifyContent="space-between" alignItems="flex-start">
-            <Grid item xs={12} md={6}>
-              <HeaderTypography variant="h4" gutterBottom>
-                {invoiceData.company.name}
-              </HeaderTypography>
-              <Box sx={{ mt: 2 }}>
-                <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
-                  {invoiceData.company.address}
-                </SubHeaderTypography>
-                <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
-                  {invoiceData.company.city}, {invoiceData.company.country}
-                </SubHeaderTypography>
-                <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
-                  {invoiceData.company.email}
-                </SubHeaderTypography>
-                <SubHeaderTypography variant="body1">
-                  {invoiceData.company.phone}
-                </SubHeaderTypography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Box sx={{ 
-                backgroundColor: '#000000', 
-                color: 'white', 
-                p: 4, 
-                borderRadius: '12px',
-                textAlign: 'center',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                transform: 'translateY(-10px)',
-                position: 'relative'
-              }}>
-                <Typography 
-                  variant="h4" 
-                  gutterBottom 
-                  sx={{ 
-                    fontWeight: 700,
-                    letterSpacing: '2px',
-                    textTransform: 'uppercase',
-                    mb: 2
-                  }}
-                >
-                  Invoice
-                </Typography>
-                <Box sx={{ 
-                  borderTop: '1px solid rgba(255,255,255,0.2)',
-                  pt: 2
-                }}>
-                  <Typography variant="body1" sx={{ mb: 1, fontWeight: 500 }}>
-                    Invoice #: {invoiceData.invoiceNumber}
-                  </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                    Date: {invoiceData.date}
-                  </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, maxWidth: '1000px', margin: '0 auto' }}>
+        <button onClick={handleDownloadPDF} style={{
+          background: '#1976d2',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '6px',
+          padding: '10px 20px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          boxShadow: '0 2px 8px rgba(25, 118, 210, 0.08)'
+        }}>
+          Download as PDF
+        </button>
+      </Box>
+      <div ref={invoiceRef}>
+        <StyledPaper>
+          {/* Header */}
+          <Box sx={{ mb: 6 }}>
+            <Grid container justifyContent="space-between" alignItems="flex-start">
+              <Grid item xs={12} md={6}>
+                <HeaderTypography variant="h4" gutterBottom>
+                  {invoiceData.company.name}
+                </HeaderTypography>
+                <Box sx={{ mt: 2 }}>
+                  <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
+                    {invoiceData.company.address}
+                  </SubHeaderTypography>
+                  <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
+                    {invoiceData.company.city}, {invoiceData.company.country}
+                  </SubHeaderTypography>
+                  <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
+                    {invoiceData.company.email}
+                  </SubHeaderTypography>
+                  <SubHeaderTypography variant="body1">
+                    {invoiceData.company.phone}
+                  </SubHeaderTypography>
                 </Box>
-              </Box>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Box sx={{ 
+                  backgroundColor: '#000000', 
+                  color: 'white', 
+                  p: 4, 
+                  borderRadius: '12px',
+                  textAlign: 'center',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  transform: 'translateY(-10px)',
+                  position: 'relative'
+                }}>
+                  <Typography 
+                    variant="h4" 
+                    gutterBottom 
+                    sx={{ 
+                      fontWeight: 700,
+                      letterSpacing: '2px',
+                      textTransform: 'uppercase',
+                      mb: 2
+                    }}
+                  >
+                    Invoice
+                  </Typography>
+                  <Box sx={{ 
+                    borderTop: '1px solid rgba(255,255,255,0.2)',
+                    pt: 2
+                  }}>
+                    <Typography variant="body1" sx={{ mb: 1, fontWeight: 500 }}>
+                      Invoice #: {invoiceData.invoiceNumber}
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                      Date: {invoiceData.date}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
+          </Box>
 
-        <Divider sx={{ my: 4 }} />
+          <Divider sx={{ my: 4 }} />
 
-        {/* Customer Information */}
-        <Box sx={{ mb: 6 }}>
-          <HeaderTypography variant="h6" gutterBottom>
-            Bill To:
-          </HeaderTypography>
+          {/* Customer Information */}
+          <Box sx={{ mb: 6 }}>
+            <HeaderTypography variant="h6" gutterBottom>
+              Bill To:
+            </HeaderTypography>
+            <Box sx={{ 
+              backgroundColor: '#f8f9fa', 
+              p: 3, 
+              borderRadius: '8px',
+              mt: 2
+            }}>
+              <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
+                {invoiceData.customer.name}
+              </SubHeaderTypography>
+              <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
+                {invoiceData.customer.address}
+              </SubHeaderTypography>
+              <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
+                {invoiceData.customer.city}, {invoiceData.customer.country}
+              </SubHeaderTypography>
+              <SubHeaderTypography variant="body1">
+                {invoiceData.customer.email}
+              </SubHeaderTypography>
+            </Box>
+          </Box>
+
+          {/* Items Table */}
+          <TableContainer sx={{ mb: 4 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Item</StyledTableCell>
+                  <StyledTableCell align="right">Quantity</StyledTableCell>
+                  <StyledTableCell align="right">Price</StyledTableCell>
+                  <StyledTableCell align="right">Total</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {invoiceData.items.map((item) => (
+                  <TableRow key={item.id}>
+                    <StyledTableCell>{item.name}</StyledTableCell>
+                    <StyledTableCell align="right">{item.quantity}</StyledTableCell>
+                    <StyledTableCell align="right">${item.price.toFixed(2)}</StyledTableCell>
+                    <StyledTableCell align="right">
+                      ${(item.quantity * item.price).toFixed(2)}
+                    </StyledTableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* Totals */}
+          <TotalBox>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <SubHeaderTypography variant="body1">Subtotal:</SubHeaderTypography>
+              </Grid>
+              <Grid item xs={6}>
+                <SubHeaderTypography variant="body1" align="right">
+                  ${invoiceData.subtotal.toFixed(2)}
+                </SubHeaderTypography>
+              </Grid>
+              <Grid item xs={6}>
+                <SubHeaderTypography variant="body1">Tax (10%):</SubHeaderTypography>
+              </Grid>
+              <Grid item xs={6}>
+                <SubHeaderTypography variant="body1" align="right">
+                  ${invoiceData.tax.toFixed(2)}
+                </SubHeaderTypography>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider sx={{ my: 2 }} />
+              </Grid>
+              <Grid item xs={6}>
+                <HeaderTypography variant="h6">Total:</HeaderTypography>
+              </Grid>
+              <Grid item xs={6}>
+                <HeaderTypography variant="h6" align="right">
+                  ${invoiceData.total.toFixed(2)}
+                </HeaderTypography>
+              </Grid>
+            </Grid>
+          </TotalBox>
+
+          {/* Payment Information */}
           <Box sx={{ 
-            backgroundColor: '#f8f9fa', 
+            mt: 4, 
             p: 3, 
+            backgroundColor: '#f8f9fa', 
             borderRadius: '8px',
-            mt: 2
+            textAlign: 'center'
           }}>
             <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
-              {invoiceData.customer.name}
+              Payment Method: {invoiceData.paymentMethod}
             </SubHeaderTypography>
-            <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
-              {invoiceData.customer.address}
-            </SubHeaderTypography>
-            <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
-              {invoiceData.customer.city}, {invoiceData.customer.country}
-            </SubHeaderTypography>
-            <SubHeaderTypography variant="body1">
-              {invoiceData.customer.email}
-            </SubHeaderTypography>
+            <Typography variant="body2" color="text.secondary">
+              Thank you for your business!
+            </Typography>
           </Box>
-        </Box>
-
-        {/* Items Table */}
-        <TableContainer sx={{ mb: 4 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Item</StyledTableCell>
-                <StyledTableCell align="right">Quantity</StyledTableCell>
-                <StyledTableCell align="right">Price</StyledTableCell>
-                <StyledTableCell align="right">Total</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {invoiceData.items.map((item) => (
-                <TableRow key={item.id}>
-                  <StyledTableCell>{item.name}</StyledTableCell>
-                  <StyledTableCell align="right">{item.quantity}</StyledTableCell>
-                  <StyledTableCell align="right">${item.price.toFixed(2)}</StyledTableCell>
-                  <StyledTableCell align="right">
-                    ${(item.quantity * item.price).toFixed(2)}
-                  </StyledTableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        {/* Totals */}
-        <TotalBox>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <SubHeaderTypography variant="body1">Subtotal:</SubHeaderTypography>
-            </Grid>
-            <Grid item xs={6}>
-              <SubHeaderTypography variant="body1" align="right">
-                ${invoiceData.subtotal.toFixed(2)}
-              </SubHeaderTypography>
-            </Grid>
-            <Grid item xs={6}>
-              <SubHeaderTypography variant="body1">Tax (10%):</SubHeaderTypography>
-            </Grid>
-            <Grid item xs={6}>
-              <SubHeaderTypography variant="body1" align="right">
-                ${invoiceData.tax.toFixed(2)}
-              </SubHeaderTypography>
-            </Grid>
-            <Grid item xs={12}>
-              <Divider sx={{ my: 2 }} />
-            </Grid>
-            <Grid item xs={6}>
-              <HeaderTypography variant="h6">Total:</HeaderTypography>
-            </Grid>
-            <Grid item xs={6}>
-              <HeaderTypography variant="h6" align="right">
-                ${invoiceData.total.toFixed(2)}
-              </HeaderTypography>
-            </Grid>
-          </Grid>
-        </TotalBox>
-
-        {/* Payment Information */}
-        <Box sx={{ 
-          mt: 4, 
-          p: 3, 
-          backgroundColor: '#f8f9fa', 
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
-          <SubHeaderTypography variant="body1" sx={{ mb: 1 }}>
-            Payment Method: {invoiceData.paymentMethod}
-          </SubHeaderTypography>
-          <Typography variant="body2" color="text.secondary">
-            Thank you for your business!
-          </Typography>
-        </Box>
-      </StyledPaper>
+        </StyledPaper>
+      </div>
     </Box>
   );
 };

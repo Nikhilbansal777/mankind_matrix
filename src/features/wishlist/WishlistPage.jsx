@@ -4,13 +4,7 @@ import { FaHeart, FaTrash, FaShoppingCart, FaShare, FaRegHeart } from 'react-ico
 import withLayout from '../../layouts/HOC/withLayout';
 import styles from './WishlistPage.module.css';
 import { toast } from 'react-toastify';
-import axios from 'axios';
-
-const API_BASE_URL = 'https://api.mankindmatrix.com';
-
-// Configure axios defaults
-axios.defaults.headers.common['Content-Type'] = 'application/json';
-axios.defaults.withCredentials = true; // Enable sending cookies if needed
+import api from '../../api/axiosConfig';
 
 const WishlistPage = () => {
   const navigate = useNavigate();
@@ -24,8 +18,14 @@ const WishlistPage = () => {
       setIsLoading(true);
       setError(null);
       
+      // Get userId from localStorage or your auth system
+      const userId = localStorage.getItem('userId') || '1'; // Default to 1 for testing
+      
       // Add timeout and validate response
-      const response = await axios.get(`${API_BASE_URL}/api/wishlist`, {
+      const response = await api.get('/wishlist', {
+        params: {
+          userId: userId
+        },
         timeout: 5000, // 5 second timeout
         validateStatus: function (status) {
           return status >= 200 && status < 300; // Only accept 2xx status codes
@@ -50,7 +50,7 @@ const WishlistPage = () => {
       } else if (error.response.status === 401) {
         errorMessage += 'Please log in to view your wishlist.';
       } else if (error.response.status === 404) {
-        errorMessage += 'Wishlist endpoint not found.';
+        errorMessage += 'Wishlist not found.';
       } else {
         errorMessage += error.response?.data?.message || 'Please try again later.';
       }
@@ -65,12 +65,12 @@ const WishlistPage = () => {
   useEffect(() => {
     const testConnection = async () => {
       try {
-        await axios.get(`${API_BASE_URL}/api/health`, { timeout: 3000 });
+        await api.get('/api/health', { timeout: 3000 });
         // If health check passes, fetch wishlist
         fetchWishlist();
       } catch (error) {
         console.error('API Connection test failed:', error);
-        setError('Cannot connect to server. Please check if the server is running at ' + API_BASE_URL);
+        setError('Cannot connect to server. Please check if the server is running.');
         setIsLoading(false);
         toast.error('Cannot connect to server. Please check if the server is running.');
       }
@@ -81,11 +81,15 @@ const WishlistPage = () => {
 
   const handleRemoveFromWishlist = async (productId) => {
     try {
-      await axios.delete(`${API_BASE_URL}/api/wishlist`, {
+      const userId = localStorage.getItem('userId') || '1'; // Default to 1 for testing
+      await api.delete('/wishlist', {
+        params: {
+          userId: userId
+        },
         data: { productId }
       });
       
-      setWishlistItems(prevItems => prevItems.filter(item => item.id !== productId));
+      setWishlistItems(prevItems => prevItems.filter(item => item.productId !== productId));
       setSelectedItems(prevSelected => prevSelected.filter(id => id !== productId));
       toast.success('Item removed from wishlist');
     } catch (error) {
