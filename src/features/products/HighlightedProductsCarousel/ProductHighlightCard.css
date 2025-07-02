@@ -91,6 +91,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: #1d1d1f;
+  margin-bottom:30px;
 }
 
 .category {
@@ -98,12 +99,15 @@
   color: #86868b;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-bottom:30px;
 }
 
 .stock-info {
   font-size: 0.8rem;
   color: #4CAF50;
   font-weight: 500;
+  margin-top:-20px;
+
 }
 
 .card-actions {

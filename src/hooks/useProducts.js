@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchProducts,
+  fetchProductsByCategory,
   fetchFeaturedProducts,
   fetchProductById,
   createProduct,
@@ -39,11 +40,21 @@ export const useProducts = () => {
   const pagination = useSelector(selectProductsPagination);
 
   // Fetch all products with pagination
-  const getProducts = useCallback(async (page = 0, size = 10) => {
+  const getProducts = useCallback(async (page = 0, size = 10, sort = []) => {
     try {
-      await dispatch(fetchProducts({ page, size })).unwrap();
+      await dispatch(fetchProducts({ page, size, sort: sort && sort.length > 0 ? sort : undefined })).unwrap();
     } catch (err) {
       console.error('Error fetching products:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
+  // Fetch products by category with pagination
+  const getProductsByCategory = useCallback(async (categoryId, page = 0, size = 10, sort = []) => {
+    try {
+      await dispatch(fetchProductsByCategory({ categoryId, page, size, sort: sort && sort.length > 0 ? sort : undefined })).unwrap();
+    } catch (err) {
+      console.error('Error fetching products by category:', err);
       throw err;
     }
   }, [dispatch]);
@@ -127,6 +138,7 @@ export const useProducts = () => {
     
     // Actions
     getProducts,
+    getProductsByCategory,
     getFeaturedProducts,
     getProduct,
     createProduct: createNewProduct,
@@ -147,6 +159,7 @@ export const useProducts = () => {
     error,
     pagination,
     getProducts,
+    getProductsByCategory,
     getFeaturedProducts,
     getProduct,
     createNewProduct,
