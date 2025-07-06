@@ -33,7 +33,7 @@ const Login = () => {
     const errors = {};
 
     if (!formData.username.trim()) {
-      errors.username = 'Username or email is required';
+      errors.username = 'Username is required';
     }
 
     if (!formData.password) {
@@ -108,11 +108,11 @@ const Login = () => {
             )}
 
             <div className="form-group">
-              <label>Username or Email</label>
+              <label>Username</label>
               <input
                 type="text"
                 name="username"
-                placeholder="Enter your username or email"
+                placeholder="Enter your username"
                 value={formData.username}
                 onChange={handleInputChange}
                 disabled={loading.login}

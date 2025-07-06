@@ -104,16 +104,16 @@ export const useUser = () => {
     dispatch(clearCurrentUser());
   }, [dispatch]);
 
-  // Auto-fetch current user on mount if authenticated
+  // Auto-fetch current user on mount if authenticated and no user data
   useEffect(() => {
-    if (isAuthenticated && token) {
+    if (isAuthenticated && token && !user) {
       // Fetch current user to validate the session
       fetchCurrentUser().catch(() => {
         // If fetching current user fails, logout
         dispatch(manualLogout());
       });
     }
-  }, [isAuthenticated, token, fetchCurrentUser, dispatch]);
+  }, [isAuthenticated, token, user, dispatch]);
 
   // Memoize the return value to prevent unnecessary re-renders
   return useMemo(() => ({

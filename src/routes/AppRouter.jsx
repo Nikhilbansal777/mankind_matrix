@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Product from '../features/products/Products.jsx';
 import Login from '../features/auth/login.jsx';
 import Signup from '../features/auth/signup.jsx';
+import Unauthorized from '../features/auth/Unauthorized.jsx';
 import ProfilePage from '../features/profile/ProfilePage.jsx';
 import AccountPage from '../features/profile/AccountPage.jsx';
 import EditProfile from '../features/profile/Edit-Profile.jsx';
@@ -32,6 +33,7 @@ const AppRouter = () => {
         <Route path="/products" element={<Product />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/product/:id" element={<ProductView />} />
@@ -102,14 +104,7 @@ const AppRouter = () => {
             </ProtectedRoute>
           } 
         />
-        <Route 
-          path="/cart" 
-          element={
-            <ProtectedRoute>
-              <CartPage />
-            </ProtectedRoute>
-          } 
-        />
+        <Route path="/cart" element={<CartPage />} />
         <Route 
           path="/checkout" 
           element={
