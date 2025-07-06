@@ -6,15 +6,11 @@ import { api } from '../client';
  */
 const productService = {
   // Get all products with pagination and sorting
-  getProducts: ({ 
-    page = 0, 
-    size = 10, 
-    sort = [] 
-  } = {}) => 
+  getProducts: ({ page = 0, size = 10, sort } = {}) =>
     api.product.get('/products', {
       page,
       size,
-      sort: sort.length > 0 ? sort : undefined
+      ...(sort && sort.length > 0 ? { sort } : {})
     }),
 
   // Get a single product by ID
@@ -22,15 +18,11 @@ const productService = {
     api.product.get(`/products/${id}`),
 
   // Get products by category
-  getProductsByCategory: (categoryId, { 
-    page = 0, 
-    size = 10, 
-    sort = [] 
-  } = {}) => 
+  getProductsByCategory: (categoryId, { page = 0, size = 10, sort } = {}) =>
     api.product.get(`/products/category/${categoryId}`, {
       page,
       size,
-      sort: sort.length > 0 ? sort : undefined
+      ...(sort && sort.length > 0 ? { sort } : {})
     }),
 
   // Get featured products

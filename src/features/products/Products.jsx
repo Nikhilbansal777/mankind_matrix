@@ -1,18 +1,19 @@
 import React, { useState, useCallback, memo } from 'react';
 import withLayout from '../../layouts/HOC/withLayout';
 import ProductGrid from './ProductGrid';
-import SidebarFilters from './Filters/SidebarFilters';
+import CategorySidebar from './Filters/CategorySidebar';
+import SortDropdown from './Filters/SortDropdown';
 import './Products.css';
-import Sidebar from '../../layouts/components/sidebar';
 
 // Memoize the Sidebar component to prevent unnecessary re-renders
-const MemoizedSidebar = memo(Sidebar);
+const MemoizedCategorySidebar = memo(CategorySidebar);
 
 const ProductsPage = memo(() => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(12);
+  const [sortOption, setSortOption] = useState('');
 
   // Handler for search input with debounce
   const handleSearch = useCallback((query) => {
@@ -21,9 +22,14 @@ const ProductsPage = memo(() => {
   }, []);
 
   // Handler for category filter
-  const handleCategoryFilter = useCallback((category) => {
-    setSelectedCategory(category);
+  const handleCategoryFilter = useCallback((categoryId) => {
+    setSelectedCategory(categoryId);
     setCurrentPage(1); // Reset to first page when category changes
+  }, []);
+
+  const handleSortChange = useCallback((sort) => {
+    setSortOption(sort);
+    setCurrentPage(1); // Reset to first page when sort changes
   }, []);
 
   // Handler for page change
@@ -45,14 +51,18 @@ const ProductsPage = memo(() => {
   }, [handleSearch]);
 
   return (
-    <div className='d-flex'>
-      <MemoizedSidebar />
+    <div className='products-layout'>
+      <MemoizedCategorySidebar
+        selectedCategory={selectedCategory}
+        onCategorySelect={handleCategoryFilter}
+      />
       <div className="products-page">
         <div className="products-header">
           <h1>Our Products</h1>
-          <div className="filter-container">
-            <SidebarFilters onFilterChange={handleCategoryFilter} />
-          </div>
+          <SortDropdown 
+            onSortChange={handleSortChange}
+            selectedSort={sortOption}
+          />
         </div>
         
         <div className="products-content">
@@ -70,6 +80,7 @@ const ProductsPage = memo(() => {
             <ProductGrid 
               searchQuery={searchQuery} 
               category={selectedCategory}
+              sortOption={sortOption}
               currentPage={currentPage}
               productsPerPage={productsPerPage}
               onPageChange={handlePageChange}

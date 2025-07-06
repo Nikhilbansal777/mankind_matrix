@@ -261,7 +261,25 @@ class ApiClient {
 
   // HTTP Methods with proper retry count handling
   async get(url, params = {}) {
-    const response = await this.client.get(url, { params });
+    const config = { 
+      params, 
+      _retryCount: 0,
+      paramsSerializer: {
+        serialize: (params) => {
+          const searchParams = new URLSearchParams();
+          Object.entries(params).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+              // Convert arrays to comma-separated strings
+              searchParams.append(key, value.join(','));
+            } else if (value !== undefined && value !== null) {
+              searchParams.append(key, value);
+            }
+          });
+          return searchParams.toString();
+        }
+      }
+    };
+    const response = await this.client.get(url, config);
     return response.data;
   }
 
