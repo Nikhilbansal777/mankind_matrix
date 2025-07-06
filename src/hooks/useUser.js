@@ -4,7 +4,6 @@ import {
   loginUser,
   registerUser,
   logoutUser,
-  refreshToken,
   getCurrentUser,
   updateUserProfile,
   changePassword,
@@ -62,15 +61,7 @@ export const useUser = () => {
     }
   }, [dispatch]);
 
-  const refreshUserToken = useCallback(async () => {
-    try {
-      await dispatch(refreshToken()).unwrap();
-      return true;
-    } catch (err) {
-      console.error('Token refresh error:', err);
-      throw err;
-    }
-  }, [dispatch]);
+
 
   // User management actions
   const fetchCurrentUser = useCallback(async () => {
@@ -113,20 +104,16 @@ export const useUser = () => {
     dispatch(clearCurrentUser());
   }, [dispatch]);
 
-  // Auto-refresh token on mount if authenticated
+  // Auto-fetch current user on mount if authenticated
   useEffect(() => {
     if (isAuthenticated && token) {
-      // Check if token is about to expire (you can implement token expiration check here)
-      // For now, we'll just fetch current user to validate the session
+      // Fetch current user to validate the session
       fetchCurrentUser().catch(() => {
-        // If fetching current user fails, try to refresh token
-        refreshUserToken().catch(() => {
-          // If refresh fails, logout
-          dispatch(manualLogout());
-        });
+        // If fetching current user fails, logout
+        dispatch(manualLogout());
       });
     }
-  }, [isAuthenticated, token, fetchCurrentUser, refreshUserToken, dispatch]);
+  }, [isAuthenticated, token, fetchCurrentUser, dispatch]);
 
   // Memoize the return value to prevent unnecessary re-renders
   return useMemo(() => ({
@@ -142,7 +129,6 @@ export const useUser = () => {
     login,
     register,
     logout,
-    refreshToken: refreshUserToken,
     
     // User management actions
     getCurrentUser: fetchCurrentUser,
@@ -168,7 +154,7 @@ export const useUser = () => {
     login,
     register,
     logout,
-    refreshUserToken,
+
     fetchCurrentUser,
     updateProfile,
     changeUserPassword,

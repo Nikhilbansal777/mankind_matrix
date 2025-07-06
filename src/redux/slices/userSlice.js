@@ -117,31 +117,7 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-export const refreshToken = createAsyncThunk(
-  'user/refreshToken',
-  async (_, { rejectWithValue, getState }) => {
-    try {
-      const refreshToken = getStoredRefreshToken();
-      if (!refreshToken) {
-        throw new Error('No refresh token available');
-      }
-      
-      const response = await authService.refreshToken(refreshToken);
-      const { access_token } = response;
-      
-      // Update token in localStorage
-      const currentUser = getStoredUser();
-      const currentRefreshToken = getStoredRefreshToken();
-      saveAuthData(access_token, currentRefreshToken, currentUser);
-      
-      return { token: access_token };
-    } catch (error) {
-      // If refresh fails, clear all auth data
-      clearAuthData();
-      return rejectWithValue(error.message);
-    }
-  }
-);
+
 
 export const getCurrentUser = createAsyncThunk(
   'user/getCurrentUser',
@@ -191,10 +167,9 @@ export const changePassword = createAsyncThunk(
 
 const initialState = {
   // Authentication state
-  user: getStoredUser(),
-  token: getStoredToken(),
-  refreshToken: getStoredRefreshToken(),
-  isAuthenticated: !!getStoredToken(),
+  user: null,
+  token: null,
+  isAuthenticated: false,
   
   // User management state
   currentUser: null,
@@ -204,7 +179,6 @@ const initialState = {
     login: false,
     register: false,
     logout: false,
-    refresh: false,
     currentUser: false,
     updateProfile: false,
     changePassword: false
@@ -228,11 +202,19 @@ const userSlice = createSlice({
     manualLogout: (state) => {
       state.user = null;
       state.token = null;
-      state.refreshToken = null;
       state.isAuthenticated = false;
       state.currentUser = null;
       state.error = null;
       clearAuthData();
+    },
+    // Initialize auth state from localStorage
+    initializeAuth: (state) => {
+      const storedToken = getStoredToken();
+      const storedUser = getStoredUser();
+      
+      state.user = storedUser;
+      state.token = storedToken;
+      state.isAuthenticated = !!storedToken;
     }
   },
   extraReducers: (builder) => {
@@ -246,7 +228,6 @@ const userSlice = createSlice({
         state.loading.login = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
-        state.refreshToken = action.payload.refreshToken;
         state.isAuthenticated = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -263,7 +244,6 @@ const userSlice = createSlice({
         state.loading.register = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
-        state.refreshToken = action.payload.refreshToken;
         state.isAuthenticated = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -280,7 +260,6 @@ const userSlice = createSlice({
         state.loading.logout = false;
         state.user = null;
         state.token = null;
-        state.refreshToken = null;
         state.isAuthenticated = false;
         state.currentUser = null;
       })
@@ -288,30 +267,12 @@ const userSlice = createSlice({
         state.loading.logout = false;
         state.user = null;
         state.token = null;
-        state.refreshToken = null;
         state.isAuthenticated = false;
         state.currentUser = null;
         state.error = action.payload;
       })
       
-      // Handle refreshToken
-      .addCase(refreshToken.pending, (state) => {
-        state.loading.refresh = true;
-        state.error = null;
-      })
-      .addCase(refreshToken.fulfilled, (state, action) => {
-        state.loading.refresh = false;
-        state.token = action.payload.token;
-      })
-      .addCase(refreshToken.rejected, (state, action) => {
-        state.loading.refresh = false;
-        state.user = null;
-        state.token = null;
-        state.refreshToken = null;
-        state.isAuthenticated = false;
-        state.currentUser = null;
-        state.error = action.payload;
-      })
+
       
       // Handle getCurrentUser
       .addCase(getCurrentUser.pending, (state) => {
@@ -372,11 +333,11 @@ export const selectUserError = (state) => state.user.error;
 export const selectLoginLoading = (state) => state.user.loading.login;
 export const selectRegisterLoading = (state) => state.user.loading.register;
 export const selectLogoutLoading = (state) => state.user.loading.logout;
-export const selectRefreshLoading = (state) => state.user.loading.refresh;
+
 export const selectCurrentUserLoading = (state) => state.user.loading.currentUser;
 export const selectUpdateProfileLoading = (state) => state.user.loading.updateProfile;
 export const selectChangePasswordLoading = (state) => state.user.loading.changePassword;
 // Note: These selectors removed as fetchUsers/fetchUserById functionality is not available
 
-export const { clearError, clearCurrentUser, manualLogout } = userSlice.actions;
+export const { clearError, clearCurrentUser, manualLogout, initializeAuth } = userSlice.actions;
 export default userSlice.reducer;

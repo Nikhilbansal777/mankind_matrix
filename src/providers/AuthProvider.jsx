@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import useUser from '../hooks/useUser';
-import { manualLogout } from '../redux/slices/userSlice';
+import { manualLogout, initializeAuth } from '../redux/slices/userSlice';
 
 // Create Auth Context
 const AuthContext = createContext();
@@ -17,11 +17,15 @@ const AuthProvider = ({ children }) => {
     token, 
     user, 
     loading,
-    getCurrentUser,
-    refreshToken 
+    getCurrentUser
   } = useUser();
 
-  // Check token expiration and refresh if needed
+  // Initialize auth state from localStorage on mount
+  useEffect(() => {
+    dispatch(initializeAuth());
+  }, [dispatch]);
+
+  // Check token expiration and logout if expired
   const checkTokenExpiration = () => {
     if (!token) return;
 
@@ -30,12 +34,9 @@ const AuthProvider = ({ children }) => {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const currentTime = Date.now() / 1000;
       
-      // If token expires in less than 5 minutes, refresh it
-      if (payload.exp && payload.exp - currentTime < 300) {
-        refreshToken().catch(() => {
-          // If refresh fails, logout
-          dispatch(manualLogout());
-        });
+      // If token is expired, logout
+      if (payload.exp && payload.exp < currentTime) {
+        dispatch(manualLogout());
       }
     } catch (error) {
       console.error('Error checking token expiration:', error);

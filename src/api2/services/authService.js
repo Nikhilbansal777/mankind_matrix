@@ -74,15 +74,9 @@ const authService = {
    * @returns {Promise<void>}
    */
   logout: (refreshToken) => 
-    api.auth.post('/api/v1/auth/logout', { refreshToken }),
+    api.auth.post('/logout', { refreshToken }),
 
-  /**
-   * Refresh access token
-   * @param {string} refreshToken - Refresh token
-   * @returns {Promise<{access_token: string}>} New access token
-   */
-  refreshToken: (refreshToken) => 
-    api.auth.post('/refresh', { refreshToken }),
+
 };
 
 export default authService; 

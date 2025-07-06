@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaSpinner } from 'react-icons/fa';
 import useUser from '../../hooks/useUser';
 
 /**
@@ -35,7 +36,11 @@ const LogoutButton = ({
       disabled={loading.logout}
       className={`logout-button ${className} ${loading.logout ? 'loading' : ''}`}
     >
-      {loading.logout ? 'Logging out...' : children}
+      {loading.logout ? (
+        <FaSpinner className="logout-spinner" />
+      ) : (
+        children
+      )}
     </button>
   );
 };

@@ -131,42 +131,21 @@ class ApiClient {
           originalRequest._retryCount = 0;
         }
 
-        // Handle token refresh for 401 errors
-        if (error.response?.status === 401 && !originalRequest._retry) {
-          originalRequest._retry = true;
-          
+        // Handle 401 errors by redirecting to login
+        if (error.response?.status === 401) {
           if (config.settings?.enableLogging) {
-            console.log(`[${this.serviceName}] Attempting token refresh for:`, originalRequest.url);
+            console.log(`[${this.serviceName}] Authentication failed, redirecting to login`);
           }
           
-          try {
-            const refreshToken = this.getRefreshToken();
-            if (refreshToken) {
-              // Try to refresh the token using auth service
-              const response = await axios.post(`${config.services.auth}/refresh`, {
-                refreshToken
-              });
-              
-              const { access_token } = response.data;
-              this.saveToken(access_token);
-              
-              if (config.settings?.enableLogging) {
-                console.log(`[${this.serviceName}] Token refreshed successfully`);
-              }
-              
-              // Retry the original request with new token
-              originalRequest.headers.Authorization = `Bearer ${access_token}`;
-              return client(originalRequest);
-            }
-          } catch (refreshError) {
-            if (config.settings?.enableLogging) {
-              console.error(`[${this.serviceName}] Token refresh failed:`, refreshError.message);
-            }
-            // If refresh fails, clear tokens and redirect to login
-            this.clearTokens();
+          // Clear tokens
+          this.clearTokens();
+          
+          // Only redirect to login for auth-related requests, not for all services
+          if (this.serviceName === 'auth' || this.serviceName === 'user') {
             window.location.href = '/login';
-            return Promise.reject(refreshError);
           }
+          
+          return Promise.reject(error);
         }
 
         // Only retry on network errors or timeout (not auth errors)
