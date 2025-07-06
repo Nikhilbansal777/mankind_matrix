@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useUser from '../../hooks/useUser';
 import './loginForm.css';
 
@@ -17,6 +18,8 @@ const Signup = () => {
   });
   const [validationErrors, setValidationErrors] = useState({});
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -38,8 +41,8 @@ const Signup = () => {
       errors.username = 'Username is required';
     } else if (formData.username.length < 3) {
       errors.username = 'Username must be at least 3 characters';
-    } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
-      errors.username = 'Username can only contain letters, numbers, and underscores';
+    } else if (!/^[a-zA-Z0-9_.]+$/.test(formData.username)) {
+      errors.username = 'Username can only contain letters, numbers, underscores, and dots';
     }
 
     // First name validation
@@ -119,11 +122,15 @@ const Signup = () => {
         lastName: formData.lastName,
         email: formData.email,
         password: formData.password,
-        role: 'USER'
+        customAttributes: {}
       });
       
-      // If registration is successful, navigate to home
-      navigate('/');
+      // If registration is successful, redirect to login
+      navigate('/login', { 
+        state: { 
+          message: 'Registration successful! Please log in with your credentials.' 
+        } 
+      });
     } catch (err) {
       // Error is handled by the Redux slice and displayed via the error state
       console.error('Registration failed:', err);
@@ -142,12 +149,6 @@ const Signup = () => {
 
           <form className="login-form" onSubmit={handleSubmit}>
             <h2>Create Account</h2>
-
-            {error && (
-              <div className="form-error">
-                {error}
-              </div>
-            )}
 
             <div className="form-row">
               <div className="form-group">
@@ -213,14 +214,24 @@ const Signup = () => {
 
             <div className="form-group">
               <label>Password</label>
-              <input
-                type="password"
-                name="password"
-                placeholder="Create a password"
-                value={formData.password}
-                onChange={handleInputChange}
-                disabled={loading.register}
-              />
+              <div className="password-input-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Create a password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  disabled={loading.register}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading.register}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </button>
+              </div>
               {validationErrors.password && (
                 <div className="field-error">{validationErrors.password}</div>
               )}
@@ -228,14 +239,24 @@ const Signup = () => {
 
             <div className="form-group">
               <label>Confirm Password</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                disabled={loading.register}
-              />
+              <div className="password-input-container">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  disabled={loading.register}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  disabled={loading.register}
+                >
+                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                </button>
+              </div>
               {validationErrors.confirmPassword && (
                 <div className="field-error">{validationErrors.confirmPassword}</div>
               )}
@@ -265,6 +286,12 @@ const Signup = () => {
             >
               {loading.register ? 'Creating Account...' : 'Create Account →'}
             </button>
+
+            {error && (
+              <div className="form-error">
+                {error}
+              </div>
+            )}
 
             <p className="signup-link">
               Already have an account?{' '}

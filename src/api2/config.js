@@ -21,8 +21,9 @@ const getServiceUrl = (service) => {
 
 // Service URLs
 export const services = {
-  product: getServiceUrl('product'),
+  auth: getServiceUrl('auth'),
   user: getServiceUrl('user'),
+  product: getServiceUrl('product'),
   cart: getServiceUrl('cart'),
   wishlist: getServiceUrl('wishlist'),
 };

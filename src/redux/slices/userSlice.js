@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import authService from '../../api2/services/authService';
 import userService from '../../api2/services/userService';
 
 // Token management utilities
 const getStoredToken = () => {
   try {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('access_token');
   } catch (error) {
     console.error('Error reading token from localStorage:', error);
     return null;
@@ -13,7 +14,7 @@ const getStoredToken = () => {
 
 const getStoredRefreshToken = () => {
   try {
-    return localStorage.getItem('refreshToken');
+    return localStorage.getItem('refresh_token');
   } catch (error) {
     console.error('Error reading refresh token from localStorage:', error);
     return null;
@@ -30,10 +31,10 @@ const getStoredUser = () => {
   }
 };
 
-const saveAuthData = (token, refreshToken, user) => {
+const saveAuthData = (accessToken, refreshToken, user) => {
   try {
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('access_token', accessToken);
+    localStorage.setItem('refresh_token', refreshToken);
     localStorage.setItem('user', JSON.stringify(user));
   } catch (error) {
     console.error('Error saving auth data to localStorage:', error);
@@ -42,8 +43,8 @@ const saveAuthData = (token, refreshToken, user) => {
 
 const clearAuthData = () => {
   try {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
   } catch (error) {
     console.error('Error clearing auth data from localStorage:', error);
@@ -55,13 +56,25 @@ export const loginUser = createAsyncThunk(
   'user/loginUser',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await userService.loginUser(credentials);
-      const { token, refreshToken, user } = response;
+      const response = await authService.login(credentials);
+      const { access_token, refresh_token } = response;
       
-      // Save to localStorage
-      saveAuthData(token, refreshToken, user);
+      // Save tokens to localStorage first
+      saveAuthData(access_token, refresh_token, null);
       
-      return { token, refreshToken, user };
+      // Try to get user info, but don't fail if user service is not available
+      let user = null;
+      try {
+        user = await userService.getCurrentUser();
+        // Update localStorage with user data
+        saveAuthData(access_token, refresh_token, user);
+      } catch (userError) {
+        console.warn('User service not available, proceeding with login without user data:', userError.message);
+        // Keep the tokens but without user data
+        saveAuthData(access_token, refresh_token, null);
+      }
+      
+      return { token: access_token, refreshToken: refresh_token, user };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -72,13 +85,13 @@ export const registerUser = createAsyncThunk(
   'user/registerUser',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await userService.createUser(userData);
-      const { token, refreshToken, user } = response;
+      const user = await authService.register(userData);
       
-      // Save to localStorage
-      saveAuthData(token, refreshToken, user);
+      // After registration, user needs to login to get tokens
+      // For now, we'll just return the user data
+      // In a real app, you might want to auto-login after registration
       
-      return { token, refreshToken, user };
+      return { user };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -87,9 +100,12 @@ export const registerUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
   'user/logoutUser',
-  async (userId, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      await userService.logoutUser(userId);
+      const refreshToken = getStoredRefreshToken();
+      if (refreshToken) {
+        await authService.logout(refreshToken);
+      }
       // Clear localStorage
       clearAuthData();
       return null;
@@ -110,15 +126,15 @@ export const refreshToken = createAsyncThunk(
         throw new Error('No refresh token available');
       }
       
-      const response = await userService.refreshToken(refreshToken);
-      const { token } = response;
+      const response = await authService.refreshToken(refreshToken);
+      const { access_token } = response;
       
       // Update token in localStorage
       const currentUser = getStoredUser();
       const currentRefreshToken = getStoredRefreshToken();
-      saveAuthData(token, currentRefreshToken, currentUser);
+      saveAuthData(access_token, currentRefreshToken, currentUser);
       
-      return { token };
+      return { token: access_token };
     } catch (error) {
       // If refresh fails, clear all auth data
       clearAuthData();
@@ -169,29 +185,9 @@ export const changePassword = createAsyncThunk(
   }
 );
 
-export const fetchUsers = createAsyncThunk(
-  'user/fetchUsers',
-  async (_, { rejectWithValue }) => {
-    try {
-      const users = await userService.getUsers();
-      return users;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const fetchUserById = createAsyncThunk(
-  'user/fetchUserById',
-  async (id, { rejectWithValue }) => {
-    try {
-      const user = await userService.getUser(id);
-      return user;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
+// Note: These methods are removed as they're not part of the user service anymore
+// If you need admin functionality to fetch all users, you'll need to implement
+// separate admin service or add these methods to the user service
 
 const initialState = {
   // Authentication state
@@ -201,7 +197,6 @@ const initialState = {
   isAuthenticated: !!getStoredToken(),
   
   // User management state
-  users: [],
   currentUser: null,
   
   // Loading states
@@ -212,9 +207,7 @@ const initialState = {
     refresh: false,
     currentUser: false,
     updateProfile: false,
-    changePassword: false,
-    users: false,
-    userById: false
+    changePassword: false
   },
   
   // Error state
@@ -362,34 +355,6 @@ const userSlice = createSlice({
       .addCase(changePassword.rejected, (state, action) => {
         state.loading.changePassword = false;
         state.error = action.payload;
-      })
-      
-      // Handle fetchUsers
-      .addCase(fetchUsers.pending, (state) => {
-        state.loading.users = true;
-        state.error = null;
-      })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.loading.users = false;
-        state.users = action.payload;
-      })
-      .addCase(fetchUsers.rejected, (state, action) => {
-        state.loading.users = false;
-        state.error = action.payload;
-      })
-      
-      // Handle fetchUserById
-      .addCase(fetchUserById.pending, (state) => {
-        state.loading.userById = true;
-        state.error = null;
-      })
-      .addCase(fetchUserById.fulfilled, (state, action) => {
-        state.loading.userById = false;
-        state.currentUser = action.payload;
-      })
-      .addCase(fetchUserById.rejected, (state, action) => {
-        state.loading.userById = false;
-        state.error = action.payload;
       });
   }
 });
@@ -399,7 +364,7 @@ export const selectUser = (state) => state.user.user;
 export const selectToken = (state) => state.user.token;
 export const selectIsAuthenticated = (state) => state.user.isAuthenticated;
 export const selectCurrentUser = (state) => state.user.currentUser;
-export const selectUsers = (state) => state.user.users;
+// Note: selectUsers removed as fetchUsers functionality is not available
 export const selectUserLoading = (state) => state.user.loading;
 export const selectUserError = (state) => state.user.error;
 
@@ -411,8 +376,7 @@ export const selectRefreshLoading = (state) => state.user.loading.refresh;
 export const selectCurrentUserLoading = (state) => state.user.loading.currentUser;
 export const selectUpdateProfileLoading = (state) => state.user.loading.updateProfile;
 export const selectChangePasswordLoading = (state) => state.user.loading.changePassword;
-export const selectUsersLoading = (state) => state.user.loading.users;
-export const selectUserByIdLoading = (state) => state.user.loading.userById;
+// Note: These selectors removed as fetchUsers/fetchUserById functionality is not available
 
 export const { clearError, clearCurrentUser, manualLogout } = userSlice.actions;
 export default userSlice.reducer;

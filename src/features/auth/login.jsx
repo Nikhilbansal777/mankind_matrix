@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useUser from '../../hooks/useUser';
 import './loginForm.css';
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, loading, error, isAuthenticated, clearError } = useUser();
   
   const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ const Login = () => {
   });
   const [validationErrors, setValidationErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -98,9 +101,9 @@ const Login = () => {
           <form className="login-form" onSubmit={handleSubmit}>
             <h2>Sign in</h2>
 
-            {error && (
-              <div className="form-error">
-                {error}
+            {location.state?.message && (
+              <div className="form-success">
+                {location.state.message}
               </div>
             )}
 
@@ -121,14 +124,24 @@ const Login = () => {
 
             <div className="form-group">
               <label>Password</label>
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={handleInputChange}
-                disabled={loading.login}
-              />
+              <div className="password-input-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  disabled={loading.login}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading.login}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </button>
+              </div>
               {validationErrors.password && (
                 <div className="field-error">{validationErrors.password}</div>
               )}
@@ -161,6 +174,12 @@ const Login = () => {
             >
               {loading.login ? 'Signing in...' : 'Sign in →'}
             </button>
+
+            {error && (
+              <div className="form-error">
+                {error}
+              </div>
+            )}
 
             <p className="signup-link">
               No account?{' '}

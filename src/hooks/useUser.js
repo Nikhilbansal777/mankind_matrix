@@ -8,8 +8,6 @@ import {
   getCurrentUser,
   updateUserProfile,
   changePassword,
-  fetchUsers,
-  fetchUserById,
   selectUser,
   selectToken,
   selectIsAuthenticated,
@@ -30,7 +28,6 @@ export const useUser = () => {
   const token = useSelector(selectToken);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const currentUser = useSelector(selectCurrentUser);
-  const users = useSelector(selectUsers);
   const loading = useSelector(selectUserLoading);
   const error = useSelector(selectUserError);
 
@@ -57,18 +54,13 @@ export const useUser = () => {
 
   const logout = useCallback(async () => {
     try {
-      if (user?.id) {
-        await dispatch(logoutUser(user.id)).unwrap();
-      } else {
-        // Manual logout if no user ID
-        dispatch(manualLogout());
-      }
+      await dispatch(logoutUser()).unwrap();
     } catch (err) {
       console.error('Logout error:', err);
       // Force logout even if API fails
       dispatch(manualLogout());
     }
-  }, [dispatch, user?.id]);
+  }, [dispatch]);
 
   const refreshUserToken = useCallback(async () => {
     try {
@@ -108,23 +100,9 @@ export const useUser = () => {
     }
   }, [dispatch]);
 
-  const getAllUsers = useCallback(async () => {
-    try {
-      await dispatch(fetchUsers()).unwrap();
-    } catch (err) {
-      console.error('Error fetching users:', err);
-      throw err;
-    }
-  }, [dispatch]);
-
-  const getUserById = useCallback(async (id) => {
-    try {
-      await dispatch(fetchUserById(id)).unwrap();
-    } catch (err) {
-      console.error('Error fetching user by ID:', err);
-      throw err;
-    }
-  }, [dispatch]);
+  // Note: These methods are removed as they're not part of the user service anymore
+  // If you need admin functionality to fetch all users, you'll need to implement
+  // separate admin service or add these methods to the user service
 
   // Utility actions
   const clearUserError = useCallback(() => {
@@ -157,7 +135,6 @@ export const useUser = () => {
     token,
     isAuthenticated,
     currentUser,
-    users,
     loading,
     error,
     
@@ -171,8 +148,6 @@ export const useUser = () => {
     getCurrentUser: fetchCurrentUser,
     updateProfile,
     changePassword: changeUserPassword,
-    getUsers: getAllUsers,
-    getUserById,
     
     // Utility actions
     clearError: clearUserError,
@@ -188,7 +163,6 @@ export const useUser = () => {
     token,
     isAuthenticated,
     currentUser,
-    users,
     loading,
     error,
     login,
@@ -198,8 +172,6 @@ export const useUser = () => {
     fetchCurrentUser,
     updateProfile,
     changeUserPassword,
-    getAllUsers,
-    getUserById,
     clearUserError,
     clearCurrentUserData
   ]);

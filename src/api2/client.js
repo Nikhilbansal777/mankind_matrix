@@ -19,7 +19,7 @@ class ApiClient {
   // Get stored token
   getAuthToken() {
     try {
-      return localStorage.getItem('authToken');
+      return localStorage.getItem('access_token');
     } catch (error) {
       console.error('Error reading auth token:', error);
       return null;
@@ -29,7 +29,7 @@ class ApiClient {
   // Get stored refresh token
   getRefreshToken() {
     try {
-      return localStorage.getItem('refreshToken');
+      return localStorage.getItem('refresh_token');
     } catch (error) {
       console.error('Error reading refresh token:', error);
       return null;
@@ -39,17 +39,27 @@ class ApiClient {
   // Save new token
   saveToken(token) {
     try {
-      localStorage.setItem('authToken', token);
+      localStorage.setItem('access_token', token);
     } catch (error) {
       console.error('Error saving auth token:', error);
+    }
+  }
+
+  // Save tokens from login response
+  saveTokens(accessToken, refreshToken) {
+    try {
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem('refresh_token', refreshToken);
+    } catch (error) {
+      console.error('Error saving tokens:', error);
     }
   }
 
   // Clear all tokens
   clearTokens() {
     try {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
       localStorage.removeItem('user');
     } catch (error) {
       console.error('Error clearing tokens:', error);
@@ -132,20 +142,20 @@ class ApiClient {
           try {
             const refreshToken = this.getRefreshToken();
             if (refreshToken) {
-              // Try to refresh the token
-              const response = await axios.post(`${this.baseURL}/auth/refresh`, {
+              // Try to refresh the token using auth service
+              const response = await axios.post(`${config.services.auth}/refresh`, {
                 refreshToken
               });
               
-              const { token } = response.data;
-              this.saveToken(token);
+              const { access_token } = response.data;
+              this.saveToken(access_token);
               
               if (config.settings?.enableLogging) {
                 console.log(`[${this.serviceName}] Token refreshed successfully`);
               }
               
               // Retry the original request with new token
-              originalRequest.headers.Authorization = `Bearer ${token}`;
+              originalRequest.headers.Authorization = `Bearer ${access_token}`;
               return client(originalRequest);
             }
           } catch (refreshError) {
@@ -306,8 +316,9 @@ class ApiClient {
 
 // Create and export service clients
 export const api = {
-  product: new ApiClient('product'),
+  auth: new ApiClient('auth'),
   user: new ApiClient('user'),
+  product: new ApiClient('product'),
   cart: new ApiClient('cart'),
   wishlist: new ApiClient('wishlist'),
 };
