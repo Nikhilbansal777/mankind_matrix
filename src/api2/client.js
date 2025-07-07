@@ -78,10 +78,10 @@ class ApiClient {
 
     // Add request interceptor
     client.interceptors.request.use(
-      (config) => {
+      (requestConfig) => {
         // Initialize retry count if not present
-        if (config._retryCount === undefined) {
-          config._retryCount = 0;
+        if (requestConfig._retryCount === undefined) {
+          requestConfig._retryCount = 0;
         }
 
         // Add auth token if available
@@ -89,19 +89,19 @@ class ApiClient {
         const hasAuth = !!token;
         
         if (hasAuth) {
-          config.headers.Authorization = `Bearer ${token}`;
+          requestConfig.headers.Authorization = `Bearer ${token}`;
         }
         
-        if (config.settings.enableLogging) {
+        if (config.settings?.enableLogging) {
           console.log(`[${this.serviceName}] Request:`, {
-            method: config.method?.toUpperCase(),
-            url: config.url,
+            method: requestConfig.method?.toUpperCase(),
+            url: requestConfig.url,
             hasAuth: hasAuth,
-            retryCount: config._retryCount
+            retryCount: requestConfig._retryCount
           });
         }
         
-        return config;
+        return requestConfig;
       },
       (error) => {
         if (config.settings?.enableLogging) {
@@ -125,6 +125,11 @@ class ApiClient {
       },
       async (error) => {
         const originalRequest = error.config;
+
+        // Safety check for originalRequest
+        if (!originalRequest) {
+          return Promise.reject(error);
+        }
 
         // Initialize retry count if not present
         if (originalRequest._retryCount === undefined) {
@@ -151,18 +156,18 @@ class ApiClient {
         // Only retry on network errors or timeout (not auth errors)
         const shouldRetry = (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK') && 
           !originalRequest._retry && 
-          originalRequest._retryCount < config.settings.retryAttempts;
+          (originalRequest._retryCount || 0) < (config.settings?.retryAttempts || 3);
 
         if (shouldRetry) {
           originalRequest._retry = true;
           originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
 
           if (config.settings?.enableLogging) {
-            console.log(`[${this.serviceName}] Retrying request (${originalRequest._retryCount}/${config.settings.retryAttempts}):`, originalRequest.url);
+            console.log(`[${this.serviceName}] Retrying request (${originalRequest._retryCount}/${config.settings?.retryAttempts || 3}):`, originalRequest.url);
           }
 
           // Wait before retrying
-          await new Promise(resolve => setTimeout(resolve, config.settings.retryDelay));
+          await new Promise(resolve => setTimeout(resolve, config.settings?.retryDelay || 1000));
 
           // Reset retry flag for next attempt
           originalRequest._retry = false;
@@ -228,7 +233,7 @@ class ApiClient {
             }
           }
         } else if (error.code === 'ECONNABORTED') {
-          error.message = `Request to ${error.config?.url} timed out after ${config.settings.timeout}ms. Please try again.`;
+          error.message = `Request to ${error.config?.url} timed out after ${config.settings?.timeout || 10000}ms. Please try again.`;
         } else if (error.code === 'ERR_NETWORK') {
           if (error.message.includes('CORS')) {
             error.message = `Cannot connect to ${this.serviceName} service. CORS error: The service is not accessible from this origin.`;
@@ -273,22 +278,26 @@ class ApiClient {
   }
 
   async post(url, data = {}) {
-    const response = await this.client.post(url, data);
+    const config = { _retryCount: 0 };
+    const response = await this.client.post(url, data, config);
     return response.data;
   }
 
   async put(url, data = {}) {
-    const response = await this.client.put(url, data);
+    const config = { _retryCount: 0 };
+    const response = await this.client.put(url, data, config);
     return response.data;
   }
 
   async patch(url, data = {}) {
-    const response = await this.client.patch(url, data);
+    const config = { _retryCount: 0 };
+    const response = await this.client.patch(url, data, config);
     return response.data;
   }
 
   async delete(url) {
-    const response = await this.client.delete(url);
+    const config = { _retryCount: 0 };
+    const response = await this.client.delete(url, config);
     return response.data;
   }
 }
