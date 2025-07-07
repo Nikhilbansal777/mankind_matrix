@@ -21,7 +21,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     }
 
     // Check role-based access if roles are specified
-    if (allowedRoles.length > 0 && user && !allowedRoles.includes(user.role)) {
+    if (allowedRoles.length > 0 && user && !allowedRoles.map(role => role.toLowerCase()).includes(user.role.toLowerCase())) {
       return { type: 'redirect', component: <Navigate to="/" replace /> };
     }
 
