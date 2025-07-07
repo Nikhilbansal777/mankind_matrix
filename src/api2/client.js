@@ -92,7 +92,7 @@ class ApiClient {
           config.headers.Authorization = `Bearer ${token}`;
         }
         
-        if (config.settings?.enableLogging) {
+        if (config.settings.enableLogging) {
           console.log(`[${this.serviceName}] Request:`, {
             method: config.method?.toUpperCase(),
             url: config.url,
