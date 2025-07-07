@@ -1,55 +1,34 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import useUser from '../hooks/useUser';
+import React, { useMemo } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectUser, selectIsAuthenticated, selectIsInitialized } from '../redux/slices/userSlice';
 
-/**
- * ProtectedRoute Component
- * Wraps routes that require authentication
- * 
- * @param {Object} props
- * @param {React.ReactNode} props.children - The component to render if authenticated
- * @param {boolean} props.requireAuth - Whether authentication is required (default: true)
- * @param {string} props.redirectTo - Where to redirect if not authenticated (default: '/login')
- * @param {string[]} props.allowedRoles - Array of allowed roles (optional)
- */
-const ProtectedRoute = ({ 
-  children, 
-  requireAuth = true, 
-  redirectTo = '/login',
-  allowedRoles = []
-}) => {
-  const { isAuthenticated, user, loading } = useUser();
-  const location = useLocation();
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+  const user = useSelector(selectUser);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isInitialized = useSelector(selectIsInitialized);
 
-  // Show loading state while checking authentication
-  if (loading.currentUser) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner">Loading...</div>
-      </div>
-    );
-  }
-
-  // If authentication is not required, render children
-  if (!requireAuth) {
-    return children;
-  }
-
-  // If not authenticated, redirect to login
-  if (!isAuthenticated) {
-    return <Navigate to={redirectTo} state={{ from: location }} replace />;
-  }
-
-  // If roles are specified, check if user has required role
-  if (allowedRoles.length > 0 && user) {
-    const userRole = user.role || 'user'; // Default role if not specified
-    if (!allowedRoles.includes(userRole)) {
-      return <Navigate to="/unauthorized" replace />;
+  // Memoize the route decision to prevent unnecessary re-renders
+  const routeDecision = useMemo(() => {
+    // Wait for initialization before making any decisions
+    if (!isInitialized) {
+      return { type: 'loading', component: <div>Loading...</div> };
     }
-  }
 
-  // User is authenticated and authorized, render children
-  return children;
+    // Check authentication
+    if (!isAuthenticated) {
+      return { type: 'redirect', component: <Navigate to="/login" replace /> };
+    }
+
+    // Check role-based access if roles are specified
+    if (allowedRoles.length > 0 && user && !allowedRoles.includes(user.role)) {
+      return { type: 'redirect', component: <Navigate to="/" replace /> };
+    }
+
+    return { type: 'granted', component: children };
+  }, [isAuthenticated, isInitialized, user, allowedRoles, children]);
+
+  return routeDecision.component;
 };
 
 export default ProtectedRoute;

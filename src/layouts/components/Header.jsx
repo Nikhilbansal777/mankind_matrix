@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { FaShoppingCart, FaBars, FaTimes, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import NotificationsUI from '../../features/profile/NotificationsUI';
 import { useCart } from '../../hooks/useCart';

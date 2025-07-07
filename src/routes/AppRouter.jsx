@@ -24,20 +24,15 @@ import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 
 const AppRouter = () => {
-    
   return (
     <Router>
       <Routes>
-        {/* Public Routes - No authentication required */}
-        <Route path="/" element={<LandingPages />} />
-        <Route path="/products" element={<Product />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/product/:id" element={<ProductView />} />
-        <Route path="/oldLadingPage" element={<LandingPage />} />
+        {/* Admin Routes - Authentication + Admin role required (must come before other routes) */}
+        <Route path="/admin" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AdminPage />
+          </ProtectedRoute>
+        } />
         
         {/* Protected Routes - Authentication required */}
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
@@ -48,13 +43,22 @@ const AppRouter = () => {
         <Route path="/payments" element={<ProtectedRoute><PaymentMethods /></ProtectedRoute>} />
         <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
         <Route path="/return-request" element={<ProtectedRoute><ReturnRequest /></ProtectedRoute>} />
-        <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
         <Route path="/delivery" element={<ProtectedRoute><DeliveryPage /></ProtectedRoute>} />
         
-        {/* Admin Routes - Authentication + Admin role required */}
-        <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+        {/* Public Routes - No authentication required */}
+        <Route path="/products" element={<Product />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/product/:id" element={<ProductView />} />
+        <Route path="/oldLadingPage" element={<LandingPage />} />
         
+        {/* Home route - must be last */}
+        <Route path="/" element={<LandingPages />} />
       </Routes>
     </Router>
   );

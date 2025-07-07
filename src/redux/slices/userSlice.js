@@ -180,6 +180,7 @@ const initialState = {
   user: null,
   token: null,
   isAuthenticated: false,
+  isInitialized: false, // Add initialization flag
   
   // User management state
   currentUser: null,
@@ -235,6 +236,7 @@ const userSlice = createSlice({
       state.user = storedUser;
       state.token = storedToken;
       state.isAuthenticated = !!storedToken;
+      state.isInitialized = true;
     }
   },
   extraReducers: (builder) => {
@@ -352,6 +354,7 @@ const userSlice = createSlice({
 export const selectUser = (state) => state.user.user;
 export const selectToken = (state) => state.user.token;
 export const selectIsAuthenticated = (state) => state.user.isAuthenticated;
+export const selectIsInitialized = (state) => state.user.isInitialized;
 export const selectCurrentUser = (state) => state.user.currentUser;
 // Note: selectUsers removed as fetchUsers functionality is not available
 export const selectUserLoading = (state) => state.user.loading;

@@ -1,98 +1,39 @@
-import React, { createContext, useContext, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import useUser from '../hooks/useUser';
-import { manualLogout, initializeAuth } from '../redux/slices/userSlice';
+import React, { createContext, useContext, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { initializeAuth, getCurrentUser, selectUser, selectToken } from '../redux/slices/userSlice';
 
 // Create Auth Context
 const AuthContext = createContext();
 
 /**
  * AuthProvider Component
- * Provides authentication context and handles token management
+ * Handles authentication state initialization and user data fetching
  */
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
-  const { 
-    isAuthenticated, 
-    token, 
-    user, 
-    loading,
-    getCurrentUser
-  } = useUser();
+  const user = useSelector(selectUser);
+  const token = useSelector(selectToken);
+  const hasInitialized = useRef(false);
 
-  // Initialize auth state from localStorage on mount
+  // Initialize auth state from localStorage on mount (only once)
   useEffect(() => {
-    dispatch(initializeAuth());
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      dispatch(initializeAuth());
+    }
   }, [dispatch]);
 
-  // Check token expiration and logout if expired
-  const checkTokenExpiration = () => {
-    if (!token) return;
-
-    try {
-      // Decode JWT token to check expiration
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const currentTime = Date.now() / 1000;
-      
-      // If token is expired, logout
-      if (payload.exp && payload.exp < currentTime) {
-        dispatch(manualLogout());
-      }
-    } catch (error) {
-      console.error('Error checking token expiration:', error);
-      // If token is malformed, logout
-      dispatch(manualLogout());
-    }
-  };
-
-  // Set up token expiration check interval
+  // Fetch user data if we have a token but no user (only once after initialization)
   useEffect(() => {
-    if (isAuthenticated && token) {
-      // Check immediately
-      checkTokenExpiration();
-      
-      // Set up interval to check every minute
-      const interval = setInterval(checkTokenExpiration, 60000);
-      
-      return () => clearInterval(interval);
-    }
-  }, [isAuthenticated, token]);
-
-  // Fetch current user on mount if authenticated
-  useEffect(() => {
-    if (isAuthenticated && !user) {
-      getCurrentUser().catch(() => {
-        // If fetching user fails, logout
-        dispatch(manualLogout());
+    if (hasInitialized.current && token && !user) {
+      dispatch(getCurrentUser()).catch((error) => {
+        console.error('Failed to fetch user data:', error);
       });
     }
-  }, [isAuthenticated, user, getCurrentUser, dispatch]);
-
-  // Handle page visibility change to refresh token when user returns
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden && isAuthenticated && token) {
-        checkTokenExpiration();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [isAuthenticated, token]);
-
-  // Context value
-  const contextValue = {
-    isAuthenticated,
-    user,
-    token,
-    loading,
-    checkTokenExpiration
-  };
+  }, [token, user, dispatch]);
 
   return (
-    <AuthContext.Provider value={contextValue}>
+    <AuthContext.Provider value={{}}>
       {children}
     </AuthContext.Provider>
   );

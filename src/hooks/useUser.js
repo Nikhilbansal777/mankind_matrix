@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   loginUser,
@@ -11,7 +11,6 @@ import {
   selectToken,
   selectIsAuthenticated,
   selectCurrentUser,
-  selectUsers,
   selectUserLoading,
   selectUserError,
   clearError,
@@ -29,8 +28,6 @@ export const useUser = () => {
   const currentUser = useSelector(selectCurrentUser);
   const loading = useSelector(selectUserLoading);
   const error = useSelector(selectUserError);
-
-
 
   // Authentication actions
   const login = useCallback(async (credentials) => {
@@ -58,12 +55,9 @@ export const useUser = () => {
       await dispatch(logoutUser()).unwrap();
     } catch (err) {
       console.error('Logout error:', err);
-      // Force logout even if API fails
       dispatch(manualLogout());
     }
   }, [dispatch]);
-
-
 
   // User management actions
   const fetchCurrentUser = useCallback(async () => {
@@ -93,10 +87,6 @@ export const useUser = () => {
     }
   }, [dispatch]);
 
-  // Note: These methods are removed as they're not part of the user service anymore
-  // If you need admin functionality to fetch all users, you'll need to implement
-  // separate admin service or add these methods to the user service
-
   // Utility actions
   const clearUserError = useCallback(() => {
     dispatch(clearError());
@@ -106,23 +96,9 @@ export const useUser = () => {
     dispatch(clearCurrentUser());
   }, [dispatch]);
 
-
-
-  // Auto-fetch current user on mount if authenticated and no user data
-  useEffect(() => {
-    if (isAuthenticated && token && !user) {
-      // Fetch current user to validate the session
-      fetchCurrentUser().catch(() => {
-        // If fetching current user fails, logout
-        dispatch(manualLogout());
-      });
-    }
-  }, [isAuthenticated, token, user, dispatch]);
-
-  // Memoize the return value to prevent unnecessary re-renders
-  return useMemo(() => ({
+  return {
     // State
-    user: user || currentUser, // Use currentUser as fallback
+    user: user || currentUser,
     token,
     isAuthenticated,
     currentUser,
@@ -148,23 +124,7 @@ export const useUser = () => {
     hasToken: !!token,
     userFullName: (user || currentUser) ? `${(user || currentUser).firstName} ${(user || currentUser).lastName}` : '',
     userInitials: (user || currentUser) ? `${(user || currentUser).firstName?.[0]}${(user || currentUser).lastName?.[0]}` : ''
-  }), [
-    user,
-    token,
-    isAuthenticated,
-    currentUser,
-    loading,
-    error,
-    login,
-    register,
-    logout,
-
-    fetchCurrentUser,
-    updateProfile,
-    changeUserPassword,
-    clearUserError,
-    clearCurrentUserData
-  ]);
+  };
 };
 
 export default useUser; 
