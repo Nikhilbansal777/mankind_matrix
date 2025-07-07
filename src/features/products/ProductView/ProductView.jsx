@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, memo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../../hooks/useCart';
 import useProducts from '../../../hooks/useProducts';
 import withLayout from '../../../layouts/HOC/withLayout';
@@ -7,6 +7,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import { formatCurrency } from '../../../utils/formatCurrency';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './ProductView.module.css';
+import ProductReviews from './ProductReviews';
+import ProductAverageRating from './ProductAverageRating';
+import reviewService from '../../../api2/services/reviewService';
 
 const ProductView = memo(() => {
   const [quantity, setQuantity] = useState(1);
@@ -19,6 +22,13 @@ const ProductView = memo(() => {
     getProduct,
     clearProduct 
   } = useProducts();
+  const location = useLocation();
+  const { averageRating, reviewCount, reviews: navReviews } = location.state || {};
+  const [reviews, setReviews] = useState(navReviews || []);
+  const [productRatings, setProductRatings] = useState({
+    average: averageRating ?? null,
+    count: reviewCount ?? 0,
+  });
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -56,6 +66,21 @@ const ProductView = memo(() => {
       addToRecentlyViewed(product);
     }
   }, [product]);
+
+  // Fetch reviews if not present
+  useEffect(() => {
+    if ((!reviews || reviews.length === 0) && product?.id) {
+      reviewService.getReviews(product.id).then(fetched => setReviews(Array.isArray(fetched) ? fetched : []));
+    }
+  }, [product?.id]);
+
+  // Recalculate average/count when reviews change
+  useEffect(() => {
+    const valid = Array.isArray(reviews) ? reviews.filter(r => r && typeof r.rating === 'number') : [];
+    const average = valid.length > 0 ? (valid.reduce((sum, r) => sum + r.rating, 0) / valid.length) : null;
+    setProductRatings({ average, count: valid.length });
+  }, [reviews]);
+
   // Safely get category name
   const getCategoryName = useCallback(() => {
     if (!product?.category) return 'Uncategorized';
@@ -172,6 +197,9 @@ const ProductView = memo(() => {
               )}
             </div>
             
+            {/* Average rating above description */}
+            <ProductAverageRating average={productRatings.average} count={productRatings.count} />
+            
             <div className={styles.productDescription}>
               <h3>Description</h3>
               <p>{product.shortDescription || product.description || 'No description available'}</p>
@@ -216,26 +244,11 @@ const ProductView = memo(() => {
             )}
           </div>
         </div>
+        {/* Product Reviews Section */}
+        <ProductReviews productId={product.id} reviews={reviews} setReviews={setReviews} average={productRatings.average} />
       </div>
     );
-  }, [product, quantity, getCategoryName, getProductPrice, handleQuantityChange, handleAddToCart]);
-
-  useEffect(() => {
-    const loadProduct = async () => {
-      try {
-        await getProduct(id);
-      } catch (error) {
-        console.error('Error loading product:', error);
-      }
-    };
-
-    loadProduct();
-    
-    // Cleanup function to clear the current product when component unmounts
-    return () => {
-      clearProduct();
-    };
-  }, [id, getProduct, clearProduct]);
+  }, [product, quantity, getCategoryName, getProductPrice, handleQuantityChange, handleAddToCart, productRatings, reviews]);
 
   // Render logic after all hooks
   if (loading) return loadingContent;

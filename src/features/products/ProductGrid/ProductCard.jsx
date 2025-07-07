@@ -4,9 +4,9 @@ import { useCart } from '../../../hooks/useCart';
 import { toast } from 'react-toastify';
 import { formatCurrency } from '../../../utils/formatCurrency';
 import './ProductCard.css';
-import StarRating from '../../../api/Starrating';
+import ProductAverageRating from '../ProductView/ProductAverageRating';
 
-const ProductCard = memo(({ product }) => {
+const ProductCard = memo(({ product, averageRating, reviewCount, reviews }) => {
   const { addToCart } = useCart();
 
   // Safely get category name
@@ -74,7 +74,11 @@ const ProductCard = memo(({ product }) => {
 
   return (
     <div className="product-card">
-      <Link to={`/product/${product.id}`} className="product-link">
+      <Link
+        to={`/product/${product.id}`}
+        className="product-link"
+        state={{ averageRating, reviewCount, reviews }}
+      >
         {productImage && (
           <div className="product-image-container">
             <img 
@@ -96,7 +100,7 @@ const ProductCard = memo(({ product }) => {
             <span className={`product-price ${!price ? 'price-not-available' : ''}`}>{formattedPrice}</span>
           </div>
           <div className="rating-stock-container">
-            <StarRating rating={product.rating||4} />
+            <ProductAverageRating average={averageRating} starsOnly={true} />
             {isAvailable && inventoryStatus.quantity > 0 && (
               <div className="stock-info">
                 {inventoryStatus.quantity} units available
