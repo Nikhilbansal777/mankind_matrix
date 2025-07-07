@@ -24,7 +24,11 @@ const getStoredRefreshToken = () => {
 const getStoredUser = () => {
   try {
     const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+    // Handle the case where "undefined" was stored as a string
+    if (!userStr || userStr === 'undefined' || userStr === 'null') {
+      return null;
+    }
+    return JSON.parse(userStr);
   } catch (error) {
     console.error('Error reading user from localStorage:', error);
     return null;
@@ -35,7 +39,12 @@ const saveAuthData = (accessToken, refreshToken, user) => {
   try {
     localStorage.setItem('access_token', accessToken);
     localStorage.setItem('refresh_token', refreshToken);
-    localStorage.setItem('user', JSON.stringify(user));
+    // Only save user data if it's not null or undefined
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
   } catch (error) {
     console.error('Error saving auth data to localStorage:', error);
   }
@@ -57,22 +66,23 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await authService.login(credentials);
-      const { access_token, refresh_token } = response;
+      const { access_token, refresh_token, user: authUser } = response;
       
-      // Save tokens to localStorage first
-      saveAuthData(access_token, refresh_token, null);
+      // If auth service returns user data directly, use it
+      let user = authUser;
       
-      // Try to get user info, but don't fail if user service is not available
-      let user = null;
-      try {
-        user = await userService.getCurrentUser();
-        // Update localStorage with user data
-        saveAuthData(access_token, refresh_token, user);
-      } catch (userError) {
-        console.warn('User service not available, proceeding with login without user data:', userError.message);
-        // Keep the tokens but without user data
-        saveAuthData(access_token, refresh_token, null);
+      // If no user data from auth service, try to get it from user service
+      if (!user) {
+        try {
+          user = await userService.getCurrentUser();
+        } catch (userError) {
+          console.warn('User service not available, proceeding with login without user data:', userError.message);
+          // Don't fail the login if user service is unavailable
+        }
       }
+      
+      // Save auth data to localStorage
+      saveAuthData(access_token, refresh_token, user);
       
       return { token: access_token, refreshToken: refresh_token, user };
     } catch (error) {
@@ -212,6 +222,16 @@ const userSlice = createSlice({
       const storedToken = getStoredToken();
       const storedUser = getStoredUser();
       
+      // Clean up corrupted localStorage data
+      try {
+        const userStr = localStorage.getItem('user');
+        if (userStr === 'undefined' || userStr === 'null') {
+          localStorage.removeItem('user');
+        }
+      } catch (error) {
+        console.error('Error cleaning up localStorage:', error);
+      }
+      
       state.user = storedUser;
       state.token = storedToken;
       state.isAuthenticated = !!storedToken;
@@ -282,6 +302,14 @@ const userSlice = createSlice({
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.loading.currentUser = false;
         state.currentUser = action.payload;
+        // Also update the main user state if it's null
+        if (!state.user && action.payload) {
+          state.user = action.payload;
+          // Update localStorage with user data
+          const currentToken = getStoredToken();
+          const currentRefreshToken = getStoredRefreshToken();
+          saveAuthData(currentToken, currentRefreshToken, action.payload);
+        }
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
         state.loading.currentUser = false;

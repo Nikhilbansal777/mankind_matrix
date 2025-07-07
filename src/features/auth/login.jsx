@@ -92,6 +92,8 @@ const Login = () => {
     navigate('/signup');
   };
 
+
+
   return (
     <div className="login-page">
       <div className="login-wrapper">
@@ -191,6 +193,8 @@ const Login = () => {
                 Sign up
               </button>
             </p>
+
+
           </form>
         </div>
       </div>

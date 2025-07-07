@@ -30,6 +30,8 @@ export const useUser = () => {
   const loading = useSelector(selectUserLoading);
   const error = useSelector(selectUserError);
 
+
+
   // Authentication actions
   const login = useCallback(async (credentials) => {
     try {
@@ -104,6 +106,8 @@ export const useUser = () => {
     dispatch(clearCurrentUser());
   }, [dispatch]);
 
+
+
   // Auto-fetch current user on mount if authenticated and no user data
   useEffect(() => {
     if (isAuthenticated && token && !user) {
@@ -118,7 +122,7 @@ export const useUser = () => {
   // Memoize the return value to prevent unnecessary re-renders
   return useMemo(() => ({
     // State
-    user,
+    user: user || currentUser, // Use currentUser as fallback
     token,
     isAuthenticated,
     currentUser,
@@ -142,8 +146,8 @@ export const useUser = () => {
     // Convenience getters
     isLoggedIn: isAuthenticated,
     hasToken: !!token,
-    userFullName: user ? `${user.firstName} ${user.lastName}` : '',
-    userInitials: user ? `${user.firstName?.[0]}${user.lastName?.[0]}` : ''
+    userFullName: (user || currentUser) ? `${(user || currentUser).firstName} ${(user || currentUser).lastName}` : '',
+    userInitials: (user || currentUser) ? `${(user || currentUser).firstName?.[0]}${(user || currentUser).lastName?.[0]}` : ''
   }), [
     user,
     token,

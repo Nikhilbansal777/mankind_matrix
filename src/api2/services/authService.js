@@ -39,6 +39,7 @@ import { api } from '../client';
  * @property {string} access_token - JWT access token
  * @property {string} refresh_token - JWT refresh token
  * @property {number} expires_in - Token expiration time in seconds
+ * @property {User} [user] - User data (optional, may be included in response)
  */
 
 const authService = {
