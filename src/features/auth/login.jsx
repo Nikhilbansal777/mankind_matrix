@@ -1,40 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import useUser from '../../hooks/useUser';
 import './loginForm.css';
 
-const Login = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [formMessage, setFormMessage] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login, loading, error, isAuthenticated, clearError } = useUser();
+  
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  });
+  const [validationErrors, setValidationErrors] = useState({});
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const validateEmail = (email) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSubmitted(true);
-
-    setEmailError('');
-    setPasswordError('');
-    setFormMessage('');
-    let valid = true;
-
-    if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email address.');
-      valid = false;
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
     }
-    if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters.');
-      valid = false;
+  }, [isAuthenticated, navigate]);
+
+  // Clear error when component mounts
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
+
+  const validateForm = () => {
+    const errors = {};
+
+    if (!formData.username.trim()) {
+      errors.username = 'Username is required';
     }
 
-    if (valid) {
-      setFormMessage('Login successful!');
-      if (onLogin) onLogin();
+    if (!formData.password) {
+      errors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Clear validation error when user starts typing
+    if (validationErrors[name]) {
+      setValidationErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      await login({
+        username: formData.username,
+        password: formData.password
+      });
+      
+      // If login is successful, navigate to home or intended page
+      navigate('/');
+    } catch (err) {
+      // Error is handled by the Redux slice and displayed via the error state
+      console.error('Login failed:', err);
+    }
+  };
+
+  const handleForgotPassword = () => {
+    // TODO: Implement forgot password functionality
+    console.log('Forgot password clicked');
+  };
+
+  const handleSignUp = () => {
+    navigate('/signup');
+  };
+
+
 
   return (
     <div className="login-page">
@@ -45,40 +103,98 @@ const Login = ({ onLogin }) => {
           <form className="login-form" onSubmit={handleSubmit}>
             <h2>Sign in</h2>
 
-            {formMessage && <div className="form-success">{formMessage}</div>}
+            {location.state?.message && (
+              <div className="form-success">
+                {location.state.message}
+              </div>
+            )}
 
-            <label>Email</label>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {submitted && emailError && <div className="field-error">{emailError}</div>}
+            <div className="form-group">
+              <label>Username</label>
+              <input
+                type="text"
+                name="username"
+                placeholder="Enter your username"
+                value={formData.username}
+                onChange={handleInputChange}
+                disabled={loading.login}
+              />
+              {validationErrors.username && (
+                <div className="field-error">{validationErrors.username}</div>
+              )}
+            </div>
 
-            <label>Password</label>
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {submitted && passwordError && <div className="field-error">{passwordError}</div>}
+            <div className="form-group">
+              <label>Password</label>
+              <div className="password-input-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  disabled={loading.login}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading.login}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </button>
+              </div>
+              {validationErrors.password && (
+                <div className="field-error">{validationErrors.password}</div>
+              )}
+            </div>
 
             <div className="form-options">
               <label>
-                <input type="checkbox" /> Remember me
+                <input 
+                  type="checkbox" 
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                /> 
+                Remember me
               </label>
               <div className="forgot">
-                <button type="button" className="link-button">Forgot password?</button>
+                <button 
+                  type="button" 
+                  className="link-button"
+                  onClick={handleForgotPassword}
+                >
+                  Forgot password?
+                </button>
               </div>
             </div>
 
-            <button type="submit">Sign in →</button>
+            <button 
+              type="submit" 
+              disabled={loading.login}
+              className={loading.login ? 'loading' : ''}
+            >
+              {loading.login ? 'Signing in...' : 'Sign in →'}
+            </button>
+
+            {error && (
+              <div className="form-error">
+                {error}
+              </div>
+            )}
 
             <p className="signup-link">
-              No account? <button type="button" className="link-button">Sign up</button>
+              No account?{' '}
+              <button 
+                type="button" 
+                className="link-button"
+                onClick={handleSignUp}
+              >
+                Sign up
+              </button>
             </p>
+
+
           </form>
         </div>
       </div>
