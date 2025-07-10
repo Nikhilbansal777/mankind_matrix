@@ -1,158 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaHeart, FaTrash, FaShoppingCart, FaShare, FaRegHeart } from 'react-icons/fa';
 import withLayout from '../../layouts/HOC/withLayout';
 import styles from './WishlistPage.module.css';
-import { toast } from 'react-toastify';
-import api from '../../api/axiosConfig';
+import { useSelector } from 'react-redux';
 
 const WishlistPage = () => {
   const navigate = useNavigate();
   const [selectedItems, setSelectedItems] = useState([]);
-  const [wishlistItems, setWishlistItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetchWishlist = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
-      // Get userId from localStorage or your auth system
-      const userId = localStorage.getItem('userId') || '1'; // Default to 1 for testing
-      
-      // Add timeout and validate response
-      const response = await api.get('/wishlist', {
-        params: {
-          userId: userId
-        },
-        timeout: 5000, // 5 second timeout
-        validateStatus: function (status) {
-          return status >= 200 && status < 300; // Only accept 2xx status codes
-        }
-      });
-
-      if (!response.data) {
-        throw new Error('No data received from server');
-      }
-
-      setWishlistItems(response.data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error fetching wishlist:', error);
-      
-      let errorMessage = 'Failed to load wishlist. ';
-      
-      if (error.code === 'ECONNABORTED') {
-        errorMessage += 'Request timed out. Please check your internet connection.';
-      } else if (!error.response) {
-        errorMessage += 'Cannot connect to server. Please check if the server is running.';
-      } else if (error.response.status === 401) {
-        errorMessage += 'Please log in to view your wishlist.';
-      } else if (error.response.status === 404) {
-        errorMessage += 'Wishlist not found.';
-      } else {
-        errorMessage += error.response?.data?.message || 'Please try again later.';
-      }
-      
-      setError(errorMessage);
-      setIsLoading(false);
-      toast.error(errorMessage);
-    }
+  const wishlistItems = useSelector(state => state.wishlist.items);
+  
+  const handleRemoveFromWishlist = (productId) => {
+    // TODO: Implement remove from wishlist functionality
+    console.log('Remove from wishlist:', productId);
   };
 
-  // Test API connection on component mount
-  useEffect(() => {
-    const testConnection = async () => {
-      try {
-        await api.get('/api/health', { timeout: 3000 });
-        // If health check passes, fetch wishlist
-        fetchWishlist();
-      } catch (error) {
-        console.error('API Connection test failed:', error);
-        setError('Cannot connect to server. Please check if the server is running.');
-        setIsLoading(false);
-        toast.error('Cannot connect to server. Please check if the server is running.');
-      }
-    };
-
-    testConnection();
-  }, []);
-
-  const handleRemoveFromWishlist = async (productId) => {
-    try {
-      const userId = localStorage.getItem('userId') || '1'; // Default to 1 for testing
-      await api.delete('/wishlist', {
-        params: {
-          userId: userId
-        },
-        data: { productId }
-      });
-      
-      setWishlistItems(prevItems => prevItems.filter(item => item.productId !== productId));
-      setSelectedItems(prevSelected => prevSelected.filter(id => id !== productId));
-      toast.success('Item removed from wishlist');
-    } catch (error) {
-      console.error('Error removing item from wishlist:', error);
-      toast.error('Failed to remove item from wishlist');
-    }
-  };
-
-  const handleAddToCart = async (product) => {
-    try {
-      // Get existing cart items
-      const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
-      
-      // Check if item already exists in cart
-      const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
-      
-      if (existingItemIndex >= 0) {
-        // Update quantity if item exists
-        existingCart[existingItemIndex].quantity += 1;
-      } else {
-        // Add new item to cart
-        existingCart.push({
-          ...product,
-          quantity: 1
-        });
-      }
-      
-      // Save updated cart
-      localStorage.setItem('cart', JSON.stringify(existingCart));
-      toast.success('Item added to cart');
-    } catch (error) {
-      console.error('Error adding item to cart:', error);
-      toast.error('Failed to add item to cart');
-    }
-  };
-
-  const handleAddSelectedToCart = async () => {
-    try {
-      const selectedProducts = wishlistItems.filter(item => selectedItems.includes(item.id));
-      const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
-      
-      selectedProducts.forEach(product => {
-        const existingItemIndex = existingCart.findIndex(item => item.id === product.id);
-        
-        if (existingItemIndex >= 0) {
-          existingCart[existingItemIndex].quantity += 1;
-        } else {
-          existingCart.push({
-            ...product,
-            quantity: 1
-          });
-        }
-      });
-      
-      localStorage.setItem('cart', JSON.stringify(existingCart));
-      toast.success(`${selectedProducts.length} items added to cart`);
-      
-      // Clear selection after adding to cart
-      setSelectedItems([]);
-    } catch (error) {
-      console.error('Error adding selected items to cart:', error);
-      toast.error('Failed to add selected items to cart');
-    }
+  const handleAddToCart = (product) => {
+    // TODO: Implement add to cart functionality
+    console.log('Add to cart:', product);
   };
 
   const handleSelectItem = (productId) => {
@@ -172,36 +37,9 @@ const WishlistPage = () => {
   };
 
   const handleShareWishlist = () => {
-    try {
-      const wishlistUrl = `${window.location.origin}/wishlist?items=${selectedItems.join(',')}`;
-      navigator.clipboard.writeText(wishlistUrl);
-      toast.success('Wishlist link copied to clipboard');
-    } catch (error) {
-      console.error('Error sharing wishlist:', error);
-      toast.error('Failed to share wishlist');
-    }
+    // TODO: Implement share functionality
+    console.log('Share wishlist');
   };
-
-  if (isLoading) {
-    return (
-      <div className={styles.wishlistPage}>
-        <div className={styles.loading}>Loading wishlist...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={styles.wishlistPage}>
-        <div className={styles.error}>
-          <p>{error}</p>
-          <button onClick={fetchWishlist} className={styles.retryButton}>
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   if (wishlistItems.length === 0) {
     return (
@@ -230,7 +68,6 @@ const WishlistPage = () => {
           <button 
             className={styles.shareBtn}
             onClick={handleShareWishlist}
-            disabled={selectedItems.length === 0}
           >
             <FaShare /> Share Wishlist
           </button>
@@ -251,7 +88,6 @@ const WishlistPage = () => {
             <button 
               className={styles.addSelectedToCartBtn}
               disabled={selectedItems.length === 0}
-              onClick={handleAddSelectedToCart}
             >
               <FaShoppingCart /> Add Selected to Cart
             </button>

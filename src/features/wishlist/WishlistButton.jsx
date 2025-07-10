@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHeart, FaTrash, FaShoppingCart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import api from '../../api/axiosConfig';
+import axios from 'axios';
 import styles from './WishlistButton.module.css';
 
+const API_BASE_URL = 'https://api.mankindmatrix.com';
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 
@@ -19,12 +20,7 @@ const WishlistButton = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const userId = localStorage.getItem('userId') || '1'; // Default to 1 for testing
-      const response = await api.get('/wishlist', {
-        params: {
-          userId: userId
-        }
-      });
+      const response = await axios.get(`${API_BASE_URL}/api/wishlist`);
       setWishlistItems(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -59,14 +55,10 @@ const WishlistButton = () => {
 
   const handleRemoveFromWishlist = async (productId) => {
     try {
-      const userId = localStorage.getItem('userId') || '1'; // Default to 1 for testing
-      await api.delete('/wishlist', {
-        params: {
-          userId: userId
-        },
+      await axios.delete(`${API_BASE_URL}/api/wishlist`, {
         data: { productId }
       });
-      setWishlistItems(prevItems => prevItems.filter(item => item.productId !== productId));
+      setWishlistItems(prevItems => prevItems.filter(item => item.id !== productId));
       toast.success('Item removed from wishlist');
     } catch (error) {
       console.error('Error removing item from wishlist:', error);
