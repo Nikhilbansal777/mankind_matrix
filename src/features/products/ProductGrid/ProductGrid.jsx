@@ -5,7 +5,6 @@ import useProducts from '../../../hooks/useProducts';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './ProductGrid.css';
-import reviewService from '../../../api2/services/reviewService';
 
 
 const ProductGrid = memo(({ 
@@ -25,8 +24,6 @@ const ProductGrid = memo(({
     getProductsByCategory
   } = useProducts();
   
-  const [productRatings, setProductRatings] = React.useState({});
-
   // Fetch products from API
   useEffect(() => {
     const loadProducts = async () => {
@@ -80,20 +77,6 @@ const ProductGrid = memo(({
     theme: "light"
   }), []);
 
-  useEffect(() => {
-    if (filteredProducts.length > 0) {
-      Promise.all(filteredProducts.map(product =>
-        reviewService.getReviews(product.id).then(reviews => {
-          const valid = Array.isArray(reviews) ? reviews.filter(r => r && typeof r.rating === 'number') : [];
-          const average = valid.length > 0 ? (valid.reduce((sum, r) => sum + r.rating, 0) / valid.length) : null;
-          return [product.id, { average, count: valid.length, reviews: valid }];
-        })
-      )).then(results => {
-        setProductRatings(Object.fromEntries(results));
-      });
-    }
-  }, [filteredProducts]);
-
   if (loading.products) {
     return (
       <div className="loading-container">
@@ -129,9 +112,6 @@ const ProductGrid = memo(({
           <ProductCard 
             key={product.id} 
             product={product} 
-            averageRating={productRatings[product.id]?.average}
-            reviewCount={productRatings[product.id]?.count}
-            reviews={productRatings[product.id]?.reviews}
           />
         ))}
       </div>
