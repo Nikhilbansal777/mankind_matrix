@@ -30,13 +30,6 @@ import { api } from '../client';
 
 const userService = {
   /**
-   * Get user by ID
-   * @param {number|string} userId - User ID
-   * @returns {Promise<User>} User details
-   */
-  getUser: (userId) =>
-    api.user.get(`/users/${userId}`),
-  /**
    * Get current user profile
    * @returns {Promise<User>} Current user details
    */
@@ -60,7 +53,6 @@ const userService = {
    */
   changePassword: (data) => 
     api.user.put('/change-password', data)
-
 };
 
 export default userService; 
