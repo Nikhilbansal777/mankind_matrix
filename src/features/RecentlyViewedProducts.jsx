@@ -10,7 +10,8 @@ const RecentlyViewedProducts = () => {
     loading, 
     error, 
     getRecentlyViewed, 
-    removeFromRecentlyViewed 
+    removeFromRecentlyViewed, 
+    clearRecentlyViewed
   } = useRecentlyViewed();
 
   useEffect(() => {
@@ -67,7 +68,16 @@ const RecentlyViewedProducts = () => {
 
   return (
     <div className="recently-viewed-section">
-      <h2 className="section-title">Recently Viewed Products</h2>
+      <div className="section-title-row">
+        <h2 className="section-title centered-title">Recently Viewed Products</h2>
+        <button
+          className="clear-all-btn"
+          onClick={clearRecentlyViewed}
+          disabled={loading.remove}
+        >
+          Clear All
+        </button>
+      </div>
       <div className="recently-viewed-grid">
         {extractedProducts.map((product) => {
           console.log("productproduct", product)
