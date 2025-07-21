@@ -19,7 +19,7 @@ import ProductView from '../features/products/ProductView/ProductView.jsx';
 import AboutUs from '../features/about/AboutUs.jsx';
 import DeliveryPage from '../features/cart/Delivery.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
-
+import Blog from '../features/blog/Blog.jsx'
 const AppRouter = () => {
     
   return (
@@ -44,6 +44,7 @@ const AppRouter = () => {
         <Route path="AI" element={<CartPage></CartPage>}></Route>
         <Route path='product/:id' element={<ProductView></ProductView>}></Route>
         <Route path='contact' element={<ContactPage>/</ContactPage>}></Route>
+        <Route path="/blog" element={<Blog/>}/>
         <Route path='oldLadingPage' element={<LandingPage></LandingPage>}></Route>
       </Routes>
     </Router>
