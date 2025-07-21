@@ -46,6 +46,22 @@ const RecentlyViewedProducts = () => {
     friendlyMessage = 'Please log in to view your recently viewed products.';
   }
 
+  const scrollRef = useRef(null);
+
+  const scrollByAmount = 300; // px
+
+  const handleScrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -scrollByAmount, behavior: 'smooth' });
+    }
+  };
+
+  const handleScrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: scrollByAmount, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="recently-viewed-section">
       <div className="section-title-row">
@@ -80,8 +96,10 @@ const RecentlyViewedProducts = () => {
         </div>
       )}
 
-      {!loading.fetch && !error && extractedProducts.length > 0 && (          
-          <div className="recently-viewed-grid">
+      {!loading.fetch && !error && extractedProducts.length > 0 && (
+        <div className="recently-viewed-scroll-wrapper">
+          <button className="scroll-arrow left" onClick={handleScrollLeft} aria-label="Scroll left">&#8592;</button>
+          <div className="recently-viewed-row" ref={scrollRef}>
             {extractedProducts.map((product) => {
               const imageUrl =
                 (Array.isArray(product.images) && product.images[0]) ||
@@ -122,6 +140,8 @@ const RecentlyViewedProducts = () => {
               );
             })}
           </div>
+          <button className="scroll-arrow right" onClick={handleScrollRight} aria-label="Scroll right">&#8594;</button>
+        </div>
       )}
     </div>
   );
