@@ -27,12 +27,11 @@ export const useRecentlyViewed = () => {
       console.warn('User not authenticated. Recently viewed products require authentication.');
       return;
     }
-
+    
     try {
       await dispatch(fetchRecentlyViewed()).unwrap();
     } catch (err) {
       console.error('Error fetching recently viewed products:', err);
-      throw err;
     }
   }, [dispatch, isAuthenticated]);
 
@@ -47,7 +46,6 @@ export const useRecentlyViewed = () => {
       await dispatch(addToRecentlyViewed(productId)).unwrap();
     } catch (err) {
       console.error('Error adding product to recently viewed:', err);
-      throw err;
     }
   }, [dispatch, isAuthenticated]);
 
@@ -62,7 +60,6 @@ export const useRecentlyViewed = () => {
       await dispatch(removeFromRecentlyViewed(productId)).unwrap();
     } catch (err) {
       console.error('Error removing product from recently viewed:', err);
-      throw err;
     }
   }, [dispatch, isAuthenticated]);
 
@@ -77,7 +74,6 @@ export const useRecentlyViewed = () => {
       await dispatch(clearRecentlyViewed()).unwrap();
     } catch (err) {
       console.error('Error clearing recently viewed products:', err);
-      throw err;
     }
   }, [dispatch, isAuthenticated]);
 

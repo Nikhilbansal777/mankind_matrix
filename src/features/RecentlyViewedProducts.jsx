@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import useRecentlyViewed from '../hooks/useRecentlyViewed';
 import './RecentlyViewedProducts.css';
@@ -30,97 +30,99 @@ const RecentlyViewedProducts = () => {
     }
   }, [removeFromRecentlyViewed]);
 
-  if (loading.fetch) {
-    return (
-      <div className="recently-viewed-section">
-        <h2 className="section-title">Recently Viewed Products</h2>
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading recently viewed products...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="recently-viewed-section">
-        <h2 className="section-title">Recently Viewed Products</h2>
-        <div className="error-container">
-          <p>Error loading recently viewed products</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!recentlyViewed || recentlyViewed.length === 0) {
-    return null;
-  }
-
   // Extract product data from the recently viewed structure
   // API returns: [{id, lastViewedAt, product: {...}, userId, viewedAt}]
-  const extractedProducts = recentlyViewed.map(item => ({
-    ...item.product, // Spread the product data
-    lastViewedAt: item.lastViewedAt,
-    viewedAt: item.viewedAt
-  }));
+  const extractedProducts = recentlyViewed && Array.isArray(recentlyViewed)
+    ? recentlyViewed.map(item => ({
+        ...item.product, // Spread the product data
+        lastViewedAt: item.lastViewedAt,
+        viewedAt: item.viewedAt
+      }))
+    : [];
 
+  // Friendly error message for 401
+  let friendlyMessage = 'Error loading recently viewed products';
+  if (error && (error.status === 401 || (typeof error === 'string' && error.includes('401')))) {
+    friendlyMessage = 'Please log in to view your recently viewed products.';
+  }
 
   return (
     <div className="recently-viewed-section">
       <div className="section-title-row">
         <h2 className="section-title centered-title">Recently Viewed Products</h2>
-        <button
-          className="clear-all-btn"
-          onClick={clearRecentlyViewed}
-          disabled={loading.remove}
-        >
-          Clear All
-        </button>
+        {extractedProducts.length > 0 && (
+          <button
+            className="clear-all-btn"
+            onClick={clearRecentlyViewed}
+            disabled={loading && loading.remove}
+          >
+            Clear All
+          </button>
+        )}
       </div>
-      <div className="recently-viewed-grid">
-        {extractedProducts.map((product) => {
-          console.log("productproduct", product)
-          const imageUrl =
-            (Array.isArray(product.images) && product.images[0]) ||
-            product.image ||
-            'https://placehold.co/200x150?text=No+Image';
-          const price = product.inventoryStatus?.price;
-          const formattedPrice = price != null && !isNaN(price) ? formatCurrency(price) : 'Price not available';
-          return (
-            
-            <div key={product.id} className="product-card-wrapper">
-              <Link 
-                to={`/product/${product.id}`} 
-                className="product-card"
-              >
-                <div className="product-image-container">
-                  <img 
-                    src={imageUrl} 
-                    alt={product.name} 
-                    className="product-image"
-                    width={200}
-                    height={150}
-                    style={{ objectFit: 'contain', background: '#fff', display: 'block', margin: '0 auto' }}
-                  />
+
+      {loading && loading.fetch && (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading recently viewed products...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className='message'>
+          <p>{friendlyMessage}</p>
+        </div>
+      )}
+
+      {!loading.fetch && !error && extractedProducts.length === 0 && (
+        <div className='message'>
+          No recently viewed products
+        </div>
+      )}
+
+      {!loading.fetch && !error && extractedProducts.length > 0 && (          
+          <div className="recently-viewed-grid">
+            {extractedProducts.map((product) => {
+              const imageUrl =
+                (Array.isArray(product.images) && product.images[0]) ||
+                product.image ||
+                'https://placehold.co/200x150?text=No+Image';
+              const price = product.inventoryStatus?.price;
+              const formattedPrice = price != null && !isNaN(price) ? formatCurrency(price) : 'Price not available';
+              return (
+                <div key={product.id} className="product-card-wrapper">
+                  <Link
+                    to={`/product/${product.id}`}
+                    className="product-card"
+                  >
+                    <div className="product-image-container">
+                      <img
+                        src={imageUrl}
+                        alt={product.name}
+                        className="product-image"
+                        width={200}
+                        height={150}
+                        style={{ objectFit: 'contain', background: '#fff', display: 'block', margin: '0 auto' }}
+                      />
+                    </div>
+                    <div className="product-info">
+                      <h3 className="product-name">{product.name}</h3>
+                      <p className="product-price">{formattedPrice}</p>
+                    </div>
+                    <button
+                      className="remove-button"
+                      onClick={(e) => handleRemoveProduct(product.id, e)}
+                      title="Remove from recently viewed"
+                      disabled={loading && loading.remove}
+                    >
+                      ×
+                    </button>
+                  </Link>
                 </div>
-                <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <p className="product-price">{formattedPrice}</p>
-                </div>
-                <button
-                  className="remove-button"
-                  onClick={(e) => handleRemoveProduct(product.id, e)}
-                  title="Remove from recently viewed"
-                  disabled={loading.remove}
-                >
-                  ×
-                </button>
-              </Link>
-            </div>
-          );
-        })}
-      </div>
+              );
+            })}
+          </div>
+      )}
     </div>
   );
 };
