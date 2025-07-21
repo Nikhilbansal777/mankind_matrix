@@ -55,6 +55,27 @@
   display: inline-block;
 }
 
+.remove-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #4d4b4b;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+
+.remove-button:disabled {
+  color: #bbb;
+  cursor: not-allowed;
+}
+
 .product-card {
   text-decoration: none;
   color: inherit;
@@ -107,34 +128,6 @@
   margin: 8px 0;
 }
 
-.remove-button {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease;
-  z-index: 10;
-}
-
-.remove-button:hover {
-  background-color: #c0392b;
-}
-
-.remove-button:disabled {
-  background-color: #bdc3c7;
-  cursor: not-allowed;
-}
 
 @media (max-width: 768px) {
   .recently-viewed-grid {
@@ -153,11 +146,4 @@
     font-size: 16px;
   }
   
-  .remove-button {
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
-    top: -6px;
-    right: -6px;
-  }
 } 

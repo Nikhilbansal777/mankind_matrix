@@ -98,16 +98,16 @@ const RecentlyViewedProducts = () => {
                   <h3 className="product-name">{product.name}</h3>
                   <p className="product-price">{formattedPrice}</p>
                 </div>
+                <button
+                  className="remove-button"
+                  onClick={(e) => handleRemoveProduct(product.id, e)}
+                  title="Remove from recently viewed"
+                  disabled={loading.remove}
+                >
+                  ×
+                </button>
               </Link>
-               <button
-                 className="remove-button"
-                 onClick={(e) => handleRemoveProduct(product.id, e)}
-                 title="Remove from recently viewed"
-                 disabled={loading.remove}
-               >
-                 ×
-               </button>
-             </div>
+            </div>
           );
         })}
       </div>
