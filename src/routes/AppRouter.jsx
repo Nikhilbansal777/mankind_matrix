@@ -44,8 +44,8 @@ const AppRouter = () => {
         <Route path="AI" element={<CartPage></CartPage>}></Route>
         <Route path='product/:id' element={<ProductView></ProductView>}></Route>
         <Route path='contact' element={<ContactPage>/</ContactPage>}></Route>
-        <Route path="/blog" element={<Blog/>}/>
         <Route path='oldLadingPage' element={<LandingPage></LandingPage>}></Route>
+        <Route path="/blog" element={<Blog/>}/>
       </Routes>
     </Router>
   );
