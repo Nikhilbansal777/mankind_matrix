@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
-import { Link } from 'react-router';
-import { FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaShoppingCart, FaBars, FaTimes, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import NotificationsUI from '../../features/profile/NotificationsUI';
 import WishlistButton from '../../features/wishlist/WishlistButton';
 import { useCart } from '../../hooks/useCart';
+import { useUser } from '../../hooks/useUser';
+import LogoutButton from '../../features/auth/LogoutButton';
 
 function Header({ onSearch }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const { itemCount } = useCart();
- 
+  const { isAuthenticated } = useUser();
+  
   // Check if we're on mobile view
   useEffect(() => {
     const checkIfMobile = () => {
@@ -57,8 +60,39 @@ function Header({ onSearch }) {
         </nav>
       </div>
      
+      {/* Actions section with conditional rendering based on authentication */}
       {/* Actions section with Notifications, Wishlist and Cart */}
       <div className={`header-actions ${isMobile ? 'mobile-transparent' : ''}`}>
+        {isAuthenticated ? (
+          <>
+            {/* Notifications Component - only show when logged in */}
+            <NotificationsUI />
+           
+            {/* Cart icon with item count - only show when logged in */}
+            <Link
+              to="/cart"
+              className={`cart-icon-wrapper ${isMobile ? 'mobile-transparent' : ''}`}
+            >
+              <FaShoppingCart className="cart-icon" />
+              {itemCount > 0 && (
+                <span className="cart-count">{itemCount}</span>
+              )}
+            </Link>
+
+            {/* Logout button - only show when logged in */}
+            <LogoutButton 
+              className="header-logout-btn"
+              children={<FaSignOutAlt />}
+              showConfirmation={true}
+            />
+          </>
+        ) : (
+          /* Login button - only show when not logged in */
+          <Link to="/login" className="header-login-btn">
+            <FaSignInAlt />
+            <span className="login-text">Login</span>
+          </Link>
+        )}
         {/* Notifications Component */}
         <NotificationsUI />
         

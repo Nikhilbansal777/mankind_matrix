@@ -1,42 +1,45 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box, Paper, Tabs, Tab } from '@mui/material';
-import ProductManagement from './ProductManagement';
-import UserManagement from './UserManagement';
-import SalesAnalytics from './SalesAnalytics';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../redux/slices/userSlice';
+import ProductManagement from './ProductManagement.jsx';
+import UserManagement from './UserManagement.jsx';
+import SalesAnalytics from './SalesAnalytics.jsx';
 import withLayout from '../../layouts/HOC/withLayout';
+import './AdminPage.css';
 
 const AdminPage = () => {
-  const [selectedTab, setSelectedTab] = useState(0);
+  const user = useSelector(selectUser);
+  const [activeTab, setActiveTab] = useState('products');
 
-  const handleTabChange = (event, newValue) => {
-    setSelectedTab(newValue);
-  };
+  const tabs = [
+    { id: 'products', label: 'Product Management', component: <ProductManagement /> },
+    { id: 'users', label: 'User Management', component: <UserManagement /> },
+    { id: 'analytics', label: 'Sales Analytics', component: <SalesAnalytics /> }
+  ];
 
   return (
-    <Container maxWidth="xl">
-      <Box sx={{ py: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Admin Dashboard
-        </Typography>
+    <div className="admin-page">
+      <div className="admin-header">
+        <h1>Admin Dashboard</h1>
+        <p>Welcome back, {user?.firstName || 'Admin'}!</p>
+      </div>
 
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <Tabs
-            value={selectedTab}
-            onChange={handleTabChange}
-            indicatorColor="primary"
-            textColor="primary"
+      <div className="admin-tabs">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab.id)}
           >
-            <Tab label="Products" />
-            <Tab label="Users" />
-            <Tab label="Sales Analytics" />
-          </Tabs>
-        </Paper>
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-        {selectedTab === 0 && <ProductManagement />}
-        {selectedTab === 1 && <UserManagement />}
-        {selectedTab === 2 && <SalesAnalytics />}
-      </Box>
-    </Container>
+      <div className="admin-content">
+        {tabs.find(tab => tab.id === activeTab)?.component}
+      </div>
+    </div>
   );
 };
 
