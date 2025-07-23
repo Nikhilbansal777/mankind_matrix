@@ -119,7 +119,7 @@ const reviewSlice = createSlice({
             }
           } catch (err) {
             // Intentionally ignored: fallback to no username if localStorage is unavailable or invalid
-            console.error('Failed to parse user from localStorage:', err);
+            console.error('Failed to parse user from localStorage. Parsing error occurred.');
           }
         }
         state.items.unshift({ ...action.payload, username });
