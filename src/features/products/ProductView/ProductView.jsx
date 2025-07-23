@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { formatCurrency } from '../../../utils/formatCurrency';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './ProductView.module.css';
+import StarRating from '../Review/StarRating';
 
 const ProductView = memo(() => {
   const [quantity, setQuantity] = useState(1);
@@ -149,6 +150,7 @@ const ProductView = memo(() => {
           
           <div className={styles.productInfo}>
             <h1 className={styles.productTitle}>{product.name}</h1>
+            <StarRating rating={product.averageRating ?? 0} />
             <div className={styles.productCategory}>
               Category: <span>{categoryName}</span>
             </div>
