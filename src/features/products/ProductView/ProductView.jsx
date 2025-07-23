@@ -8,6 +8,7 @@ import { formatCurrency } from '../../../utils/formatCurrency';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './ProductView.module.css';
 import StarRating from '../Review/StarRating';
+import ReviewsList from '../Review/ReviewsList';
 
 const ProductView = memo(() => {
   const [quantity, setQuantity] = useState(1);
@@ -150,7 +151,12 @@ const ProductView = memo(() => {
           
           <div className={styles.productInfo}>
             <h1 className={styles.productTitle}>{product.name}</h1>
-            <StarRating rating={product.averageRating ?? 0} />
+            <div style={{ cursor: 'pointer' }} onClick={() => {
+              const el = document.getElementById('reviews');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}>
+              <StarRating rating={product.averageRating ?? 0} />
+            </div>
             <div className={styles.productCategory}>
               Category: <span>{categoryName}</span>
             </div>
@@ -217,7 +223,14 @@ const ProductView = memo(() => {
               </div>
             )}
           </div>
+          
         </div>
+        <ReviewsList
+          productId={product.id}
+          averageRating={product.averageRating}
+          totalReviews={product.totalReviews}
+          ratingSummary={product.ratingSummary}
+        />
       </div>
     );
   }, [product, quantity, getCategoryName, getProductPrice, handleQuantityChange, handleAddToCart]);
