@@ -62,6 +62,10 @@ const RecentlyViewedProducts = () => {
     }
   };
 
+  if(recentlyViewed.length === 0){
+    return null;
+  }
+
   return (
     <div className="recently-viewed-section">
       <div className="section-title-row">
@@ -90,11 +94,6 @@ const RecentlyViewedProducts = () => {
         </div>
       )}
 
-      {!loading.fetch && !error && extractedProducts.length === 0 && (
-        <div className='message'>
-          No recently viewed products
-        </div>
-      )}
 
       {!loading.fetch && !error && extractedProducts.length > 0 && (
         <div className="recently-viewed-scroll-wrapper">
