@@ -27,9 +27,6 @@ const ReviewsList = ({ productId, averageRating, totalReviews, ratingSummary }) 
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const currentUserId = user?.id;
 
-  // Check if user has already reviewed
-  const userReview = reviews?.find(r => r.userId === currentUserId);
-
   // Fetch reviews when productId, page, or sort changes
   useEffect(() => {
     if (productId) {

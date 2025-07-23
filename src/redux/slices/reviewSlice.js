@@ -117,7 +117,10 @@ const reviewSlice = createSlice({
               const user = JSON.parse(userStr);
               username = user?.username || user?.name || undefined;
             }
-          } catch {}
+          } catch (err) {
+            // Intentionally ignored: fallback to no username if localStorage is unavailable or invalid
+            console.error('Failed to parse user from localStorage:', err);
+          }
         }
         state.items.unshift({ ...action.payload, username });
         state.pagination.totalItems += 1;
