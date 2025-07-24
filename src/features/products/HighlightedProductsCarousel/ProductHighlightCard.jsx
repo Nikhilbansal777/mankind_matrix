@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import './ProductHighlightCard.css';
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '../../../utils/formatCurrency';
-import StarRating from '../Review/StarRating';
 
 const ProductHighlightCard = memo(({ product }) => {
   const { addToCart } = useCart();
@@ -89,7 +88,6 @@ const ProductHighlightCard = memo(({ product }) => {
           >
             {truncateText(name || '', 25)}
           </h3>
-          <StarRating rating={product.averageRating ?? 0} />
           <p className="card-description">
             {truncateText(description || '', 100)}
           </p>
