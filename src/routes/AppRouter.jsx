@@ -22,7 +22,7 @@ import AboutUs from '../features/about/AboutUs.jsx';
 import DeliveryPage from '../features/cart/Delivery.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
-import Blog from '../features/blog/Blog.jsx'
+import Blog from '../features/blog/Blog.jsx';
 
 const AppRouter = () => {
   return (
