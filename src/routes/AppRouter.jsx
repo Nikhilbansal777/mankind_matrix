@@ -57,7 +57,7 @@ const AppRouter = () => {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/product/:id" element={<ProductView />} />
         <Route path="/oldLadingPage" element={<LandingPage />} />
-        <Route path="/blog" element={<Blog/>}/>
+        <Route path="/blog" element={<Blog />} />
         
         {/* Home route - must be last */}
         <Route path="/" element={<LandingPages />} />
