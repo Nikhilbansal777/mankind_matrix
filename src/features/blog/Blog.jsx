@@ -96,7 +96,7 @@ const Blog = () => {
     <div
       key={post.id}
       className="blog-drawer-list-item"
-      onClick={() => { console.log('Clicked', post); setModalPost(post); }}
+      onClick={() => { setModalPost(post); }}
       style={{ cursor: 'pointer', padding: '8px 0', color: '#22223b', fontWeight: 500 }}
     >
       {post.title}
