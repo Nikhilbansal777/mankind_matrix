@@ -13,21 +13,30 @@ const ProductGrid = memo(({
   currentPage,
   productsPerPage,
   onPageChange,
+  sortOption,
 }) => {
   const {
     products,
     loading,
     error,
     pagination,
-    getProducts
+    getProducts,
+    getProductsByCategory
   } = useProducts();
   
   // Fetch products from API
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const pageIndex = currentPage - 1; // API uses 0-based indexing
-        await getProducts(pageIndex, productsPerPage);
+        const pageIndex = currentPage - 1;
+        const sortArr = sortOption ? [sortOption] : [];
+        if (category) {
+          // If category is selected, fetch products by category
+          await getProductsByCategory(category, pageIndex, productsPerPage, sortArr);
+        } else {
+          // If no category selected (null), fetch all products
+          await getProducts(pageIndex, productsPerPage, sortArr);
+        }
       } catch (err) {
         // Error is handled by the error state
         console.error('Error loading products:', err);
@@ -35,31 +44,24 @@ const ProductGrid = memo(({
     };
     
     loadProducts();
-  }, [currentPage, productsPerPage, getProducts]);
+  }, [currentPage, productsPerPage, category, sortOption, getProducts, getProductsByCategory]);
 
-  // Filter products using useMemo for better performance
+  // Filter products using useMemo for better performance (only search filtering now)
   const filteredProducts = useMemo(() => {
     if (!Array.isArray(products)) return [];
     
     let result = products;
-    
-    if (category) {
-      result = result.filter(p => {
-        const productCategory = typeof p.category === 'object' ? p.category?.name : p.category;
-        return productCategory === category;
-      });
-    }
-    
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(p =>
         (p.name?.toLowerCase() || '').includes(query) ||
-        ((p.shortDescription?.toLowerCase() || '').includes(query))
+        (p.description?.toLowerCase() || '').includes(query) ||
+        (p.shortDescription?.toLowerCase() || '').includes(query)
       );
     }
     
     return result;
-  }, [products, searchQuery, category]);
+  }, [products, searchQuery]);
 
   // Memoize toast container settings
   const toastContainerProps = useMemo(() => ({

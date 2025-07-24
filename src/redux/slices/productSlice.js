@@ -4,9 +4,21 @@ import productService from '../../api2/services/productService';
 // Async thunks for API calls
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async ({ page, size }, { rejectWithValue }) => {
+  async ({ page, size, sort }, { rejectWithValue }) => {
     try {
-      const response = await productService.getProducts({ page, size });
+      const response = await productService.getProducts({ page, size, sort: sort && sort.length > 0 ? sort : undefined });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchProductsByCategory = createAsyncThunk(
+  'products/fetchProductsByCategory',
+  async ({ categoryId, page, size, sort }, { rejectWithValue }) => {
+    try {
+      const response = await productService.getProductsByCategory(categoryId, { page, size, sort: sort && sort.length > 0 ? sort : undefined });
       return response;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -124,6 +136,26 @@ const productSlice = createSlice({
         };
       })
       .addCase(fetchProducts.rejected, (state, action) => {
+        state.loading.products = false;
+        state.error = action.payload;
+      })
+      
+      // Handle fetchProductsByCategory
+      .addCase(fetchProductsByCategory.pending, (state) => {
+        state.loading.products = true;
+        state.error = null;
+      })
+      .addCase(fetchProductsByCategory.fulfilled, (state, action) => {
+        state.loading.products = false;
+        state.items = action.payload.content;
+        state.pagination = {
+          currentPage: action.payload.number,
+          totalPages: action.payload.totalPages,
+          totalItems: action.payload.totalElements,
+          itemsPerPage: action.payload.size
+        };
+      })
+      .addCase(fetchProductsByCategory.rejected, (state, action) => {
         state.loading.products = false;
         state.error = action.payload;
       })

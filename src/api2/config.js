@@ -10,7 +10,8 @@ const IS_DEV = ENV === 'development';
 // Get service URL based on environment
 const getServiceUrl = (service) => {
   const prefix = IS_DEV ? 'DEV' : 'PROD';
-  const url = process.env[`REACT_APP_${prefix}_${service.toUpperCase()}_SERVICE_URL`];
+  const envVarName = `REACT_APP_${prefix}_${service.toUpperCase()}_SERVICE_URL`;
+  const url = process.env[envVarName];
   
   if (!url && IS_DEV) {
     console.warn(`Missing ${service} service URL for ${prefix} environment`);
@@ -21,8 +22,9 @@ const getServiceUrl = (service) => {
 
 // Service URLs
 export const services = {
-  product: getServiceUrl('product'),
+  auth: getServiceUrl('auth'),
   user: getServiceUrl('user'),
+  product: getServiceUrl('product'),
   cart: getServiceUrl('cart'),
   wishlist: getServiceUrl('wishlist'),
 };

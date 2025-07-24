@@ -3,7 +3,7 @@ import config from './config';
 
 /**
  * Simple API Client
- * Handles all API requests with retry logic
+ * Handles all API requests with retry logic and authentication
  */
 class ApiClient {
   constructor(serviceName) {
@@ -16,7 +16,57 @@ class ApiClient {
     this.client = this.createClient();
   }
 
-  // Create axios instance with retry logic
+  // Get stored token
+  getAuthToken() {
+    try {
+      return localStorage.getItem('access_token');
+    } catch (error) {
+      console.error('Error reading auth token:', error);
+      return null;
+    }
+  }
+
+  // Get stored refresh token
+  getRefreshToken() {
+    try {
+      return localStorage.getItem('refresh_token');
+    } catch (error) {
+      console.error('Error reading refresh token:', error);
+      return null;
+    }
+  }
+
+  // Save new token
+  saveToken(token) {
+    try {
+      localStorage.setItem('access_token', token);
+    } catch (error) {
+      console.error('Error saving auth token:', error);
+    }
+  }
+
+  // Save tokens from login response
+  saveTokens(accessToken, refreshToken) {
+    try {
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem('refresh_token', refreshToken);
+    } catch (error) {
+      console.error('Error saving tokens:', error);
+    }
+  }
+
+  // Clear all tokens
+  clearTokens() {
+    try {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user');
+    } catch (error) {
+      console.error('Error clearing tokens:', error);
+    }
+  }
+
+  // Create axios instance with retry logic and auth
   createClient() {
     const client = axios.create({
       baseURL: this.baseURL,
@@ -28,50 +78,103 @@ class ApiClient {
 
     // Add request interceptor
     client.interceptors.request.use(
-      (config) => {
-        return config;
+      (requestConfig) => {
+        // Initialize retry count if not present
+        if (requestConfig._retryCount === undefined) {
+          requestConfig._retryCount = 0;
+        }
+
+        // Add auth token if available
+        const token = this.getAuthToken();
+        const hasAuth = !!token;
+        
+        if (hasAuth) {
+          requestConfig.headers.Authorization = `Bearer ${token}`;
+        }
+        
+        if (config.settings?.enableLogging) {
+          console.log(`[${this.serviceName}] Request:`, {
+            method: requestConfig.method?.toUpperCase(),
+            url: requestConfig.url,
+            hasAuth: hasAuth,
+            retryCount: requestConfig._retryCount
+          });
+        }
+        
+        return requestConfig;
       },
       (error) => {
-        if (config.settings.enableLogging) {
+        if (config.settings?.enableLogging) {
           console.error(`[${this.serviceName}] Request Error:`, error);
         }
         return Promise.reject(error);
       }
     );
 
-    // Add response interceptor with retry logic
+    // Add response interceptor with retry logic and token refresh
     client.interceptors.response.use(
       (response) => {
-        if (config.settings.enableLogging) {
-          console.log(`[${this.serviceName}] Response:`, response.status, response.data);
+        if (config.settings?.enableLogging) {
+          console.log(`[${this.serviceName}] Response:`, {
+            status: response.status,
+            url: response.config.url,
+            hasAuth: !!response.config.headers.Authorization
+          });
         }
         return response;
       },
       async (error) => {
         const originalRequest = error.config;
 
-        // Only retry on network errors or timeout
+        // Safety check for originalRequest
+        if (!originalRequest) {
+          return Promise.reject(error);
+        }
+
+        // Initialize retry count if not present
+        if (originalRequest._retryCount === undefined) {
+          originalRequest._retryCount = 0;
+        }
+
+        // Handle 401 errors by redirecting to login
+        if (error.response?.status === 401) {
+          if (config.settings?.enableLogging) {
+            console.log(`[${this.serviceName}] Authentication failed, redirecting to login`);
+          }
+          
+          // Clear tokens
+          this.clearTokens();
+          
+          // Only redirect to login for auth-related requests, not for all services
+          if (this.serviceName === 'auth' || this.serviceName === 'user') {
+            window.location.href = '/login';
+          }
+          
+          return Promise.reject(error);
+        }
+
+        // Only retry on network errors or timeout (not auth errors)
         const shouldRetry = (error.code === 'ECONNABORTED' || error.code === 'ERR_NETWORK') && 
           !originalRequest._retry && 
-          originalRequest._retryCount < config.settings.retryAttempts;
+          (originalRequest._retryCount || 0) < (config.settings?.retryAttempts || 3);
 
         if (shouldRetry) {
           originalRequest._retry = true;
           originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
 
-          if (config.settings.enableLogging) {
-            console.log(`[${this.serviceName}] Retrying request (${originalRequest._retryCount}/${config.settings.retryAttempts}):`, originalRequest.url);
+          if (config.settings?.enableLogging) {
+            console.log(`[${this.serviceName}] Retrying request (${originalRequest._retryCount}/${config.settings?.retryAttempts || 3}):`, originalRequest.url);
           }
 
           // Wait before retrying
-          await new Promise(resolve => setTimeout(resolve, config.settings.retryDelay));
+          await new Promise(resolve => setTimeout(resolve, config.settings?.retryDelay || 1000));
 
           // Reset retry flag for next attempt
           originalRequest._retry = false;
           return client(originalRequest);
         }
 
-        if (config.settings.enableLogging) {
+        if (config.settings?.enableLogging) {
           console.error(`[${this.serviceName}] Response Error:`, {
             status: error.response?.status,
             message: error.message,
@@ -79,20 +182,35 @@ class ApiClient {
             code: error.code,
             url: error.config?.url,
             method: error.config?.method?.toUpperCase(),
-            retryCount: originalRequest._retryCount || 0
+            retryCount: originalRequest._retryCount || 0,
+            hasAuth: !!error.config?.headers?.Authorization
           });
         }
 
         // Handle common errors
         if (error.response) {
+          // Log the full error response for debugging
+          if (config.settings?.enableLogging) {
+            console.log(`[${this.serviceName}] Full error response:`, {
+              status: error.response.status,
+              statusText: error.response.statusText,
+              data: error.response.data,
+              headers: error.response.headers
+            });
+          }
+          
           // Use server error message if available
           if (error.response.data?.message) {
             error.message = error.response.data.message;
+          } else if (error.response.data?.error) {
+            error.message = error.response.data.error;
+          } else if (typeof error.response.data === 'string') {
+            error.message = error.response.data;
           } else {
             // Fallback to generic messages
             switch (error.response.status) {
               case 401:
-                window.location.href = '/login';
+                // Don't redirect here as we handle it in the interceptor
                 error.message = 'Authentication required. Please log in again.';
                 break;
               case 403:
@@ -115,7 +233,7 @@ class ApiClient {
             }
           }
         } else if (error.code === 'ECONNABORTED') {
-          error.message = `Request to ${error.config?.url} timed out after ${config.settings.timeout}ms. Please try again.`;
+          error.message = `Request to ${error.config?.url} timed out after ${config.settings?.timeout || 10000}ms. Please try again.`;
         } else if (error.code === 'ERR_NETWORK') {
           if (error.message.includes('CORS')) {
             error.message = `Cannot connect to ${this.serviceName} service. CORS error: The service is not accessible from this origin.`;
@@ -135,9 +253,26 @@ class ApiClient {
     return client;
   }
 
-  // HTTP Methods with retry count tracking
+  // HTTP Methods with proper retry count handling
   async get(url, params = {}) {
-    const config = { params, _retryCount: 0 };
+    const config = { 
+      params, 
+      _retryCount: 0,
+      paramsSerializer: {
+        serialize: (params) => {
+          const searchParams = new URLSearchParams();
+          Object.entries(params).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+              // Convert arrays to comma-separated strings
+              searchParams.append(key, value.join(','));
+            } else if (value !== undefined && value !== null) {
+              searchParams.append(key, value);
+            }
+          });
+          return searchParams.toString();
+        }
+      }
+    };
     const response = await this.client.get(url, config);
     return response.data;
   }
@@ -169,8 +304,9 @@ class ApiClient {
 
 // Create and export service clients
 export const api = {
-  product: new ApiClient('product'),
+  auth: new ApiClient('auth'),
   user: new ApiClient('user'),
+  product: new ApiClient('product'),
   cart: new ApiClient('cart'),
   wishlist: new ApiClient('wishlist'),
 };
