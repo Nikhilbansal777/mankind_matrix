@@ -22,6 +22,7 @@ import AboutUs from '../features/about/AboutUs.jsx';
 import DeliveryPage from '../features/cart/Delivery.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
+import Blog from '../features/blog/Blog.jsx';
 
 const AppRouter = () => {
   return (
@@ -56,6 +57,7 @@ const AppRouter = () => {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/product/:id" element={<ProductView />} />
         <Route path="/oldLadingPage" element={<LandingPage />} />
+        <Route path="/blog" element={<Blog />} />
         
         {/* Home route - must be last */}
         <Route path="/" element={<LandingPages />} />
