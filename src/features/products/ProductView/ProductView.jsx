@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo, memo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../../../hooks/useCart';
 import useProducts from '../../../hooks/useProducts';
+import { useRecentlyViewed } from '../../../hooks/useRecentlyViewed';
 import withLayout from '../../../layouts/HOC/withLayout';
 import { ToastContainer, toast } from 'react-toastify';
 import { formatCurrency } from '../../../utils/formatCurrency';
@@ -21,6 +22,7 @@ const ProductView = memo(() => {
     getProduct,
     clearProduct 
   } = useProducts();
+  const { addToRecentlyViewed } = useRecentlyViewed();
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -42,22 +44,16 @@ const ProductView = memo(() => {
   // Add to recently viewed products
   useEffect(() => {
     if (product) {
-      const addToRecentlyViewed = (product) => {
-        const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
-        // Remove the product if it already exists
-        const filteredProducts = recentlyViewed.filter(p => p.id !== product.id);
-        // Add the product to the beginning of the array, saving images and inventoryStatus
-        const updatedProducts = [{
-          id: product.id,
-          name: product.name,
-          images: product.images,
-          inventoryStatus: product.inventoryStatus,
-        }, ...filteredProducts].slice(0, 6); // Keep only last 6 products
-        localStorage.setItem('recentlyViewedProducts', JSON.stringify(updatedProducts));
+      const addToRecentlyViewedAPI = async () => {
+        try {
+          await addToRecentlyViewed(product.id);
+        } catch (err) {
+          console.error('Error adding product to recently viewed:', err);
+        }
       };
-      addToRecentlyViewed(product);
+      addToRecentlyViewedAPI();
     }
-  }, [product]);
+  }, [product, addToRecentlyViewed]);
   // Safely get category name
   const getCategoryName = useCallback(() => {
     if (!product?.category) return 'Uncategorized';
