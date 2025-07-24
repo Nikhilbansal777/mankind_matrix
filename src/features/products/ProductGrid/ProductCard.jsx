@@ -6,7 +6,7 @@ import { formatCurrency } from '../../../utils/formatCurrency';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import api from '../../../api/axiosConfig';
 import './ProductCard.css';
-import StarRating from '../../../api/Starrating';
+import StarRating from '../Review/StarRating';
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
@@ -139,7 +139,7 @@ const ProductCard = memo(({ product }) => {
             <span className={`product-price ${!price ? 'price-not-available' : ''}`}>{formattedPrice}</span>
           </div>
           <div className="rating-stock-container">
-            <StarRating rating={product.rating||4} />
+            <StarRating rating={product.averageRating ?? 0} />
             {isAvailable && inventoryStatus.quantity > 0 && (
               <div className="stock-info">
                 {inventoryStatus.quantity} units available

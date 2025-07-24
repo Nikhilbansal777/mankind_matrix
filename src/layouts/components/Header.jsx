@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './Header.css';
 import { Link } from 'react-router-dom';
 import { FaShoppingCart, FaBars, FaTimes, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaShoppingCart, FaBars, FaTimes, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import NotificationsUI from '../../features/profile/NotificationsUI';
 import WishlistButton from '../../features/wishlist/WishlistButton';
 import { useCart } from '../../hooks/useCart';
+import { useUser } from '../../hooks/useUser';
+import LogoutButton from '../../features/auth/LogoutButton';
 import { useUser } from '../../hooks/useUser';
 import LogoutButton from '../../features/auth/LogoutButton';
 
@@ -12,6 +16,8 @@ function Header({ onSearch }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const { itemCount } = useCart();
+  const { isAuthenticated } = useUser();
+  
   const { isAuthenticated } = useUser();
   
   // Check if we're on mobile view
