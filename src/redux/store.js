@@ -14,7 +14,7 @@ export const store = configureStore({
     categories: categoryReducer,
     inventory: inventoryReducer,
     user: userReducer,
-    reviews: reviewReducer
+    reviews: reviewReducer,
     user: userReducer,
     recentlyViewed: recentlyViewedReducer
   },
