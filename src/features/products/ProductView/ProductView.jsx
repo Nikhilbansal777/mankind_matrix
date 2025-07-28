@@ -2,11 +2,14 @@ import React, { useEffect, useState, useCallback, useMemo, memo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../../../hooks/useCart';
 import useProducts from '../../../hooks/useProducts';
+import { useRecentlyViewed } from '../../../hooks/useRecentlyViewed';
 import withLayout from '../../../layouts/HOC/withLayout';
 import { ToastContainer, toast } from 'react-toastify';
 import { formatCurrency } from '../../../utils/formatCurrency';
 import 'react-toastify/dist/ReactToastify.css';
 import styles from './ProductView.module.css';
+import StarRating from '../Review/StarRating';
+import ReviewsList from '../Review/ReviewsList';
 
 const ProductView = memo(() => {
   const [quantity, setQuantity] = useState(1);
@@ -19,6 +22,7 @@ const ProductView = memo(() => {
     getProduct,
     clearProduct 
   } = useProducts();
+  const { addToRecentlyViewed } = useRecentlyViewed();
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -40,22 +44,16 @@ const ProductView = memo(() => {
   // Add to recently viewed products
   useEffect(() => {
     if (product) {
-      const addToRecentlyViewed = (product) => {
-        const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
-        // Remove the product if it already exists
-        const filteredProducts = recentlyViewed.filter(p => p.id !== product.id);
-        // Add the product to the beginning of the array, saving images and inventoryStatus
-        const updatedProducts = [{
-          id: product.id,
-          name: product.name,
-          images: product.images,
-          inventoryStatus: product.inventoryStatus,
-        }, ...filteredProducts].slice(0, 6); // Keep only last 6 products
-        localStorage.setItem('recentlyViewedProducts', JSON.stringify(updatedProducts));
+      const addToRecentlyViewedAPI = async () => {
+        try {
+          await addToRecentlyViewed(product.id);
+        } catch (err) {
+          console.error('Error adding product to recently viewed:', err);
+        }
       };
-      addToRecentlyViewed(product);
+      addToRecentlyViewedAPI();
     }
-  }, [product]);
+  }, [product, addToRecentlyViewed]);
   // Safely get category name
   const getCategoryName = useCallback(() => {
     if (!product?.category) return 'Uncategorized';
@@ -149,6 +147,17 @@ const ProductView = memo(() => {
           
           <div className={styles.productInfo}>
             <h1 className={styles.productTitle}>{product.name}</h1>
+            <button
+              type="button"
+              style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
+              onClick={() => {
+                const el = document.getElementById('reviews');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              aria-label="Scroll to reviews"
+            >
+              <StarRating rating={product.averageRating ?? 0} />
+            </button>
             <div className={styles.productCategory}>
               Category: <span>{categoryName}</span>
             </div>
@@ -215,7 +224,14 @@ const ProductView = memo(() => {
               </div>
             )}
           </div>
+          
         </div>
+        <ReviewsList
+          productId={product.id}
+          averageRating={product.averageRating}
+          totalReviews={product.totalReviews}
+          ratingSummary={product.ratingSummary}
+        />
       </div>
     );
   }, [product, quantity, getCategoryName, getProductPrice, handleQuantityChange, handleAddToCart]);

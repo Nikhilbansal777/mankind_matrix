@@ -4,6 +4,7 @@ import cartReducer from './slices/cartSlice';
 import categoryReducer from './slices/categorySlice';
 import inventoryReducer from './slices/inventorySlice';
 import userReducer from './slices/userSlice';
+import reviewReducer from './slices/reviewSlice';
 import wishlistReducer from './slices/wishlistSlice';
 
 export const store = configureStore({
@@ -14,6 +15,7 @@ export const store = configureStore({
     inventory: inventoryReducer,
     user: userReducer,
     inventory: inventoryReducer,
+    reviews: reviewReducer,
     wishlist: wishlistReducer,
   },
   middleware: (getDefaultMiddleware) =>
