@@ -32,29 +32,45 @@ const HighlightedProductsCarousel = React.memo(() => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { 
     featuredProducts,
-    featuredLoading, 
+    loading, 
     error, 
     getFeaturedProducts 
   } = useProducts();
+  
+  const featuredLoading = loading.featured;
 
   // Use ref to track if data has been fetched
   const hasFetchedRef = useRef(false);
+  const fetchTimeoutRef = useRef(null);
 
   // Fetch featured products only once on mount
   useEffect(() => {
-    if (!hasFetchedRef.current) {
-      const loadFeaturedProducts = async () => {
+    // Handle undefined featuredLoading as false
+    const isLoading = featuredLoading === true;
+    
+    if (!hasFetchedRef.current && !isLoading) {
+      // Use a small timeout to prevent double calls in StrictMode
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+      
+      fetchTimeoutRef.current = setTimeout(async () => {
         try {
-          await getFeaturedProducts();
           hasFetchedRef.current = true;
+          await getFeaturedProducts();
         } catch (err) {
           // Error is handled by the error state
+          hasFetchedRef.current = false; // Reset on error to allow retry
         }
-      };
-      
-      loadFeaturedProducts();
+      }, 100);
     }
-  }, [getFeaturedProducts]);
+    
+    return () => {
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+    };
+  }, [getFeaturedProducts, featuredLoading]); // Restored featuredLoading to dependencies
 
   // Memoize products array and calculations
   const { products, totalPages } = useMemo(() => {
@@ -196,7 +212,8 @@ const HighlightedProductsCarousel = React.memo(() => {
   ), []);
 
   // Return appropriate content based on state
-  if (featuredLoading) return loadingContent;
+  // Handle undefined featuredLoading as false
+  if (featuredLoading === true) return loadingContent;
   if (error) return errorContent;
   if (!products.length) return emptyContent;
   return mainContent;

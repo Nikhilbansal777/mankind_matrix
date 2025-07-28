@@ -241,23 +241,6 @@ const ProductView = memo(() => {
     );
   }, [product, quantity, getCategoryName, getProductPrice, handleQuantityChange, handleAddToCart]);
 
-  useEffect(() => {
-    const loadProduct = async () => {
-      try {
-        await getProduct(id);
-      } catch (error) {
-        console.error('Error loading product:', error);
-      }
-    };
-
-    loadProduct();
-    
-    // Cleanup function to clear the current product when component unmounts
-    return () => {
-      clearProduct();
-    };
-  }, [id, getProduct, clearProduct]);
-
   // Render logic after all hooks
   if (loading) return loadingContent;
   if (error) return errorContent;

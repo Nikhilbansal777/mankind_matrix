@@ -10,6 +10,7 @@ import {
   selectUser,
   selectToken,
   selectIsAuthenticated,
+  selectIsInitialized,
   selectCurrentUser,
   selectUserLoading,
   selectUserError,
@@ -25,6 +26,7 @@ export const useUser = () => {
   const user = useSelector(selectUser);
   const token = useSelector(selectToken);
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isInitialized = useSelector(selectIsInitialized);
   const currentUser = useSelector(selectCurrentUser);
   const loading = useSelector(selectUserLoading);
   const error = useSelector(selectUserError);
@@ -101,6 +103,7 @@ export const useUser = () => {
     user: user || currentUser,
     token,
     isAuthenticated,
+    isInitialized,
     currentUser,
     loading,
     error,

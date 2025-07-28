@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { initializeAuth, getCurrentUser, selectUser, selectToken } from '../redux/slices/userSlice';
+import { initializeAuth, getCurrentUser, selectUser, selectToken, selectIsAuthenticated, selectIsInitialized } from '../redux/slices/userSlice';
+import { fetchCart } from '../redux/slices/cartSlice';
 
 // Create Auth Context
 const AuthContext = createContext();
@@ -13,7 +14,10 @@ const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const token = useSelector(selectToken);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isInitialized = useSelector(selectIsInitialized);
   const hasInitialized = useRef(false);
+  const hasFetchedCart = useRef(false);
 
   // Initialize auth state from localStorage on mount (only once)
   useEffect(() => {
@@ -31,6 +35,23 @@ const AuthProvider = ({ children }) => {
       });
     }
   }, [token, user, dispatch]);
+
+  // Fetch cart when user is authenticated and initialized
+  useEffect(() => {
+    if (isInitialized && isAuthenticated && !hasFetchedCart.current) {
+      hasFetchedCart.current = true;
+      dispatch(fetchCart()).catch((error) => {
+        console.error('Failed to fetch cart:', error);
+      });
+    }
+  }, [isInitialized, isAuthenticated, dispatch]);
+
+  // Reset cart fetch flag when user logs out
+  useEffect(() => {
+    if (isInitialized && !isAuthenticated) {
+      hasFetchedCart.current = false;
+    }
+  }, [isInitialized, isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{}}>

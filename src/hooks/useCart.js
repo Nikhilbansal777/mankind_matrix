@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   fetchCart,
   addItemToCart,
@@ -19,7 +19,7 @@ import { useUser } from './useUser';
 
 export const useCart = () => {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useUser();
+  const { isAuthenticated, isInitialized } = useUser();
   
   // Selectors
   const items = useSelector(selectCartItems);
@@ -30,16 +30,9 @@ export const useCart = () => {
   const loading = useSelector(selectCartLoading);
   const error = useSelector(selectCartError);
   
-  // Fetch cart on mount if authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(fetchCart());
-    }
-  }, [dispatch, isAuthenticated]);
-  
   // Actions
   const addToCart = async (product) => {
-    if (!isAuthenticated) {
+    if (!isInitialized || !isAuthenticated) {
       throw new Error('You must be logged in to add items to cart');
     }
     
@@ -55,7 +48,7 @@ export const useCart = () => {
   };
   
   const removeFromCart = async (productId) => {
-    if (!isAuthenticated) {
+    if (!isInitialized || !isAuthenticated) {
       throw new Error('You must be logged in to remove items from cart');
     }
     
@@ -68,7 +61,7 @@ export const useCart = () => {
   };
   
   const updateQuantity = async (productId, quantity) => {
-    if (!isAuthenticated) {
+    if (!isInitialized || !isAuthenticated) {
       throw new Error('You must be logged in to update cart items');
     }
     
@@ -81,7 +74,7 @@ export const useCart = () => {
   };
   
   const clearCartItems = async () => {
-    if (!isAuthenticated) {
+    if (!isInitialized || !isAuthenticated) {
       throw new Error('You must be logged in to clear cart');
     }
     
@@ -94,7 +87,7 @@ export const useCart = () => {
   };
   
   const refreshCart = async () => {
-    if (!isAuthenticated) {
+    if (!isInitialized || !isAuthenticated) {
       throw new Error('You must be logged in to refresh cart');
     }
     
