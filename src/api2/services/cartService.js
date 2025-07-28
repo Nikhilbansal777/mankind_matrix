@@ -69,9 +69,7 @@ const cartService = {
       throw new Error('Quantity cannot be negative');
     }
 
-    return api.cart.patch(`/items/product/${productId}`, {
-      quantity
-    });
+    return api.cart.patch(`/items/product/${productId}?quantity=${quantity}`);
   },
 
   /**
