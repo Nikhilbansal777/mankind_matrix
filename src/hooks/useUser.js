@@ -31,6 +31,20 @@ export const useUser = () => {
   const loading = useSelector(selectUserLoading);
   const error = useSelector(selectUserError);
 
+  // Simple token validation
+  const isTokenValid = (token) => {
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp > Date.now() / 1000;
+    } catch {
+      return false;
+    }
+  };
+
+  // Check if user is actually authenticated with valid token
+  const isActuallyAuthenticated = isAuthenticated && token && isTokenValid(token);
+
   // Authentication actions
   const login = useCallback(async (credentials) => {
     try {
@@ -102,7 +116,7 @@ export const useUser = () => {
     // State
     user: user || currentUser,
     token,
-    isAuthenticated,
+    isAuthenticated: isActuallyAuthenticated, // Use validated authentication state
     isInitialized,
     currentUser,
     loading,
@@ -123,7 +137,7 @@ export const useUser = () => {
     clearCurrentUser: clearCurrentUserData,
     
     // Convenience getters
-    isLoggedIn: isAuthenticated,
+    isLoggedIn: isActuallyAuthenticated, // Use validated authentication state
     hasToken: !!token,
     userFullName: (user || currentUser) ? `${(user || currentUser).firstName} ${(user || currentUser).lastName}` : '',
     userInitials: (user || currentUser) ? `${(user || currentUser).firstName?.[0]}${(user || currentUser).lastName?.[0]}` : ''
