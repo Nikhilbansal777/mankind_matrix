@@ -4,11 +4,9 @@
   background: none;
   border-radius: 0;
   box-shadow: none;
-  max-width: 500px;
+  max-width: 700px;
   margin-left: auto;
   margin-right: auto;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -35,13 +33,12 @@
 }
 
 .averageRating {
-  font-size: 2.2rem;
+  font-size: 1.4rem;
   color: #f5a623;
   font-weight: bold;
 }
 
 .totalReviews {
-  margin-left: 12px;
   color: #888;
   font-size: 1rem;
 }
@@ -96,7 +93,7 @@
 .reviewsList {
   list-style: none;
   padding: 0;
-  margin: 0 0 24px 0;
+  margin: 0 0 0 0;
   width: 100%;
   max-width: 700px;
   margin-left: auto;
@@ -105,8 +102,13 @@
 }
 
 .reviewItem {
-  border-bottom: 1px solid #eee;
-  padding: 16px 0;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s ease-in-out;
 }
 
 .reviewHeader {
