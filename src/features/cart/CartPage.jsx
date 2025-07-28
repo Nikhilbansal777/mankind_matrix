@@ -1,27 +1,98 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
-import { useNavigate} from 'react-router-dom';
-import { FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { FaTrash, FaPlus, FaMinus, FaSpinner } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import withLayout from '../../layouts/HOC/withLayout';
 import styles from './CartPage.module.css';
 
 const CartPage = () => {
-  const { items, total, addToCart, removeFromCart } = useCart();
+  const { 
+    items, 
+    total, 
+    subtotal,
+    loading, 
+    error,
+    addToCart, 
+    removeFromCart, 
+    updateQuantity,
+    clearError 
+  } = useCart();
   const navigate = useNavigate();
+  const [updatingItems, setUpdatingItems] = useState(new Set());
   
-  const handleRemoveItem = (productId) => {
-    removeFromCart(productId);
+  const handleRemoveItem = async (productId) => {
+    if (updatingItems.has(productId)) return;
+    
+    setUpdatingItems(prev => new Set(prev).add(productId));
+    try {
+      await removeFromCart(productId);
+      toast.success('Item removed from cart');
+    } catch (error) {
+      toast.error(error.message || 'Failed to remove item from cart');
+    } finally {
+      setUpdatingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
+    }
   };
   
-  const handleAddItem = (product) => {
-    // Add just one item at a time
-    addToCart({ ...product, quantity: 1 });
+  const handleUpdateQuantity = async (productId, newQuantity) => {
+    if (updatingItems.has(productId) || newQuantity < 1) return;
+    
+    setUpdatingItems(prev => new Set(prev).add(productId));
+    try {
+      await updateQuantity(productId, newQuantity);
+      toast.success('Cart updated');
+    } catch (error) {
+      toast.error(error.message || 'Failed to update cart');
+    } finally {
+      setUpdatingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
+    }
+  };
+  
+  const handleIncreaseQuantity = async (item) => {
+    await handleUpdateQuantity(item.productId, item.quantity + 1);
+  };
+  
+  const handleDecreaseQuantity = async (item) => {
+    if (item.quantity > 1) {
+      await handleUpdateQuantity(item.productId, item.quantity - 1);
+    } else {
+      await handleRemoveItem(item.productId);
+    }
   };
 
   const handleCheckout = () => {
     navigate('/delivery');
   };
+  
+  // Clear error when component mounts
+  React.useEffect(() => {
+    if (error) {
+      clearError();
+    }
+  }, [error, clearError]);
+  
+  // Show loading state
+  if (loading.fetch) {
+    return (
+      <div className={`${styles.cartPage} ${styles.loadingCart}`}>
+        <h1>Your Cart</h1>
+        <div className={styles.loadingMessage}>
+          <FaSpinner className={styles.spinner} />
+          <p>Loading your cart...</p>
+        </div>
+      </div>
+    );
+  }
   
   if (items.length === 0) {
     return (
@@ -31,7 +102,7 @@ const CartPage = () => {
           <p>Your cart is empty.</p>
           <button 
             className={styles.continueShoppingBtn}
-            onClick={() => window.location.href = '/products'}
+            onClick={() => navigate('/products')}
           >
             Continue Shopping
           </button>
@@ -55,9 +126,8 @@ const CartPage = () => {
         
         <div className={styles.cartItems}>
           {items.map(item => {
-            // Calculate item total
-            const priceValue = typeof item.price === 'number' ? item.price : parseFloat(String(item.price).replace('$', '').replace(',', '')) || 0;
-            const itemTotal = priceValue * item.quantity;
+            const isUpdating = updatingItems.has(item.productId);
+            const itemTotal = item.price * item.quantity;
             
             return (
               <div className={styles.cartItem} key={item.id}>
@@ -69,11 +139,11 @@ const CartPage = () => {
                     ) : item.image ? (
                       <img src={item.image} alt={item.name} />
                     ) : (
-                      <div className={styles.placeholderImage}>{item.name.charAt(0)}</div>
+                      <div className={styles.placeholderImage}>{item.name?.charAt(0) || 'P'}</div>
                     )}
                   </div>
                   <div className={styles.productDetails}>
-                    <Link to={`/product/${item.id}`} className={styles.productName}>
+                    <Link to={`/product/${item.productId}`} className={styles.productName}>
                       <h3>{item.name}</h3>
                     </Link>
                     <p className={styles.productCategory}>{
@@ -84,39 +154,42 @@ const CartPage = () => {
                   </div>
                 </div>
                 
-                <div className={styles.productPrice}>{typeof item.price === 'number' ? `$${item.price.toFixed(2)}` : item.price}</div>
+                <div className={styles.productPrice}>
+                  ${item.price.toFixed(2)}
+                </div>
                 
                 <div className={styles.productQuantity}>
                   <button 
-                    className={styles.quantityBtn}
-                    onClick={() => handleRemoveItem(item.id)}
+                    className={`${styles.quantityBtn} ${isUpdating ? styles.disabled : ''}`}
+                    onClick={() => handleDecreaseQuantity(item)}
+                    disabled={isUpdating}
                     aria-label="Decrease quantity"
                   >
-                    <FaMinus size={12} />
+                    {isUpdating ? <FaSpinner size={12} /> : <FaMinus size={12} />}
                   </button>
                   <span className={styles.quantity}>{item.quantity}</span>
                   <button 
-                    className={styles.quantityBtn}
-                    onClick={() => handleAddItem(item)}
+                    className={`${styles.quantityBtn} ${isUpdating ? styles.disabled : ''}`}
+                    onClick={() => handleIncreaseQuantity(item)}
+                    disabled={isUpdating}
                     aria-label="Increase quantity"
                   >
-                    <FaPlus size={12} />
+                    {isUpdating ? <FaSpinner size={12} /> : <FaPlus size={12} />}
                   </button>
                 </div>
                 
-                <div className={styles.productTotal}>${itemTotal.toFixed(2)}</div>
+                <div className={styles.productTotal}>
+                  ${itemTotal.toFixed(2)}
+                </div>
                 
                 <div className={styles.productRemove}>
                   <button 
-                    className={styles.removeBtn}
-                    onClick={() => {
-                      for (let i = 0; i < item.quantity; i++) {
-                        handleRemoveItem(item.id);
-                      }
-                    }}
+                    className={`${styles.removeBtn} ${isUpdating ? styles.disabled : ''}`}
+                    onClick={() => handleRemoveItem(item.productId)}
+                    disabled={isUpdating}
                     aria-label="Remove item"
                   >
-                    <FaTrash size={14} />
+                    {isUpdating ? <FaSpinner size={14} /> : <FaTrash size={14} />}
                   </button>
                 </div>
               </div>
@@ -137,11 +210,11 @@ const CartPage = () => {
           <div className={styles.cartTotals}>
             <div className={styles.subtotal}>
               <span>Subtotal:</span>
-              <span>${total.toFixed(2)}</span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
             <div className={styles.tax}>
               <span>Tax (10%):</span>
-              <span>${(total * 0.1).toFixed(2)}</span>
+              <span>${(subtotal * 0.1).toFixed(2)}</span>
             </div>
             <div className={styles.shipping}>
               <span>Shipping:</span>
@@ -149,14 +222,22 @@ const CartPage = () => {
             </div>
             <div className={styles.grandTotal}>
               <span>Total:</span>
-              <span>${(total + total * 0.1).toFixed(2)}</span>
+              <span>${total.toFixed(2)}</span>
             </div>
             
             <button 
-              className={styles.checkoutBtn}
+              className={`${styles.checkoutBtn} ${loading.add || loading.update || loading.remove ? styles.disabled : ''}`}
               onClick={handleCheckout}
+              disabled={loading.add || loading.update || loading.remove}
             >
-              Proceed to Checkout
+              {loading.add || loading.update || loading.remove ? (
+                <>
+                  <FaSpinner size={16} />
+                  Processing...
+                </>
+              ) : (
+                'Proceed to Checkout'
+              )}
             </button>
           </div>
         </div>
