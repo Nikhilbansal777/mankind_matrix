@@ -41,6 +41,80 @@
     width: 100%;
   }
 
+  .sale-banner.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 9999;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 3.2rem;
+}
+.sale-banner {
+  background: linear-gradient(90deg, #ff9800 0%, #ff5722 100%);
+  color: #fff;
+  text-align: center;
+  font-size: 1.18rem;
+  font-weight: 700;
+  padding: 0.85rem 0.5rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  position: relative;
+}
+.sale-banner-icon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+  filter: drop-shadow(0 1px 2px #ff9800cc);
+}
+.sale-banner-text {
+  flex: 1;
+  display: inline-block;
+}
+.sale-banner-limited {
+  background: #fff3e0;
+  color: #ff5722;
+  border-radius: 6px;
+  padding: 0.1rem 0.5rem;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.sale-banner-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 1rem;
+  padding: 0 0.5rem;
+  transition: color 0.2s;
+  line-height: 1;
+}
+.sale-banner-close:hover {
+  color: #ffd180;
+}
+@media (max-width: 600px) {
+  .sale-banner, .sale-banner.fixed {
+    font-size: 1rem;
+    padding: 0.7rem 0.2rem;
+    min-height: 2.5rem;
+  }
+  .sale-banner-limited {
+    font-size: 0.92rem;
+    padding: 0.08rem 0.35rem;
+  }
+  .sale-banner-close {
+    font-size: 1.2rem;
+    margin-left: 0.5rem;
+  }
+}
+
   @media (max-width: 768px) {
     .products-header {
       flex-direction: column;

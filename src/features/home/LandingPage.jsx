@@ -14,6 +14,7 @@ const LandingPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(12);
+  const [showBanner, setShowBanner] = useState(true);
 
   const handlePageChange = useCallback((pageNumber) => {
     setCurrentPage(pageNumber);
@@ -46,14 +47,23 @@ const LandingPage = () => {
 
   return (
     <>
+      {/* Sale Banner */}
+      {showBanner && (
+        <div className="sale-banner fixed">
+          <span className="sale-banner-icon">🔥</span>
+          <span className="sale-banner-text">
+            <b>Summer Sale!</b> Use code <b>SAVE10</b> for <b>10% OFF</b> on all products! <span className="sale-banner-limited">Limited time only.</span>
+          </span>
+          <button className="sale-banner-close" onClick={() => setShowBanner(false)} title="Close banner">&times;</button>
+        </div>
+      )}
+      <div style={{ marginTop: showBanner ? '3.2rem' : 0 }} />
       <MemoizedHighlightedCarousel />
-
       <div>
         <button onClick={() => showToaster('success')}>Success</button>
         <button onClick={() => showToaster('error')}>Error</button>
         <ToastContainer />
       </div>
-
       <div className="main-content">
         <section className="products-section">
           {/* Products header */}
@@ -61,7 +71,6 @@ const LandingPage = () => {
             <h2 className="products-title">Our Products</h2>
             <SidebarFilters onFilterChange={handleCategoryChange} />
           </div>
-          
           {/* Product grid */}
           <div className="product-grid-container">
             <ProductGrid 
