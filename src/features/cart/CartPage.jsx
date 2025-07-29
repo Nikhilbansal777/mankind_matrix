@@ -127,24 +127,22 @@ const CartPage = () => {
         <div className={styles.cartItems}>
           {items.map(item => {
             const isUpdating = updatingItems.has(item.productId);
-            const itemTotal = item.price * item.quantity;
+            const itemTotal = item.subtotal || (item.price * item.quantity);
             
             return (
               <div className={styles.cartItem} key={item.id}>
                 <div className={styles.productInfo}>
                   <div className={styles.productImage}>
                     {/* Display product image if available */}
-                    {item.images && item.images[0] ? (
-                      <img src={item.images[0]} alt={item.name} />
-                    ) : item.image ? (
-                      <img src={item.image} alt={item.name} />
+                    {item.productImage ? (
+                      <img src={item.productImage} alt={item.productName} />
                     ) : (
-                      <div className={styles.placeholderImage}>{item.name?.charAt(0) || 'P'}</div>
+                      <div className={styles.placeholderImage}>{item.productName?.charAt(0) || 'P'}</div>
                     )}
                   </div>
                   <div className={styles.productDetails}>
                     <Link to={`/product/${item.productId}`} className={styles.productName}>
-                      <h3>{item.name}</h3>
+                      <h3>{item.productName}</h3>
                     </Link>
                     <p className={styles.productCategory}>{
                       typeof item.category === 'object' && item.category !== null
