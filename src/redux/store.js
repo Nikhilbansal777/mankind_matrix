@@ -15,7 +15,6 @@ export const store = configureStore({
     inventory: inventoryReducer,
     user: userReducer,
     reviews: reviewReducer,
-    user: userReducer,
     recentlyViewed: recentlyViewedReducer
   },
   middleware: (getDefaultMiddleware) =>

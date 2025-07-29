@@ -1,23 +1,19 @@
-import React, { useEffect, useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import useRecentlyViewed from '../hooks/useRecentlyViewed';
 import './RecentlyViewedProducts.css';
 import { formatCurrency } from '../utils/formatCurrency';
 
-const RecentlyViewedProducts = () => {
+const RecentlyViewedProducts = React.memo(() => {
   const { 
     recentlyViewed, 
     loading, 
     error, 
-    getRecentlyViewed, 
     removeFromRecentlyViewed, 
-    clearRecentlyViewed
+    clearRecentlyViewed,
+    isAuthenticated,
+    isInitialized
   } = useRecentlyViewed();
-
-  useEffect(() => {
-    // Fetch recently viewed products from API
-    getRecentlyViewed();
-  }, [getRecentlyViewed]);
 
   // Handle remove product from recently viewed
   const handleRemoveProduct = useCallback(async (productId, e) => {
@@ -32,37 +28,42 @@ const RecentlyViewedProducts = () => {
 
   // Extract product data from the recently viewed structure
   // API returns: [{id, lastViewedAt, product: {...}, userId, viewedAt}]
-  const extractedProducts = recentlyViewed && Array.isArray(recentlyViewed)
-    ? recentlyViewed.map(item => ({
-        ...item.product, // Spread the product data
-        lastViewedAt: item.lastViewedAt,
-        viewedAt: item.viewedAt
-      }))
-    : [];
+  const extractedProducts = useMemo(() => {
+    return recentlyViewed && Array.isArray(recentlyViewed)
+      ? recentlyViewed.map(item => ({
+          ...item.product, // Spread the product data
+          lastViewedAt: item.lastViewedAt,
+          viewedAt: item.viewedAt
+        }))
+      : [];
+  }, [recentlyViewed]);
 
   // Friendly error message for 401
-  let friendlyMessage = 'Error loading recently viewed products';
-  if (error && (error.status === 401 || (typeof error === 'string' && error.includes('401')))) {
-    friendlyMessage = 'Please log in to view your recently viewed products.';
-  }
+  const friendlyMessage = useMemo(() => {
+    if (error && (error.status === 401 || (typeof error === 'string' && error.includes('401')))) {
+      return 'Please log in to view your recently viewed products.';
+    }
+    return 'Error loading recently viewed products';
+  }, [error]);
 
   const scrollRef = useRef(null);
 
   const scrollByAmount = 300; // px
 
-  const handleScrollLeft = () => {
+  const handleScrollLeft = useCallback(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: -scrollByAmount, behavior: 'smooth' });
     }
-  };
+  }, []);
 
-  const handleScrollRight = () => {
+  const handleScrollRight = useCallback(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: scrollByAmount, behavior: 'smooth' });
     }
-  };
+  }, []);
 
-  if(recentlyViewed.length === 0){
+  // Don't render if auth not initialized, not authenticated, or no products
+  if (!isInitialized || !isAuthenticated || extractedProducts.length === 0) {
     return null;
   }
 
@@ -93,7 +94,6 @@ const RecentlyViewedProducts = () => {
           <p>{friendlyMessage}</p>
         </div>
       )}
-
 
       {!loading.fetch && !error && extractedProducts.length > 0 && (
         <div className="recently-viewed-scroll-wrapper">
@@ -144,6 +144,8 @@ const RecentlyViewedProducts = () => {
       )}
     </div>
   );
-};
+});
+
+RecentlyViewedProducts.displayName = 'RecentlyViewedProducts';
 
 export default RecentlyViewedProducts; 
