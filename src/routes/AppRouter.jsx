@@ -19,6 +19,7 @@ import ContactPage from '../features/contact/ContactPage.jsx';
 import LandingPages from '../features/landingpage/LandingPages.jsx';  
 import ProductView from '../features/products/ProductView/ProductView.jsx';
 import AboutUs from '../features/about/AboutUs.jsx';
+import Blog from '../features/blog/Blog.jsx';
 import DeliveryPage from '../features/cart/Delivery.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
@@ -47,7 +48,7 @@ const AppRouter = () => {
         <Route path="/return-request" element={<ProtectedRoute><ReturnRequest /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
         <Route path="/delivery" element={<ProtectedRoute><DeliveryPage /></ProtectedRoute>} />
-        
+        <Route path="/blog" element={<ProtectedRoute><Blog /></ProtectedRoute>} />
         {/* Public Routes - No authentication required */}
         <Route path="/products" element={<Product />} />
         <Route path="/cart" element={<CartPage />} />
