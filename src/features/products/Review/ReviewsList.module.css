@@ -1,258 +1,258 @@
 .reviewsSection {
-  margin-top: 32px;
-  padding: 0;
-  background: none;
-  border-radius: 0;
-  box-shadow: none;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.summary {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 24px;
-  width: 100%;
-  text-align: center;
-}
-
-.averageRatingSection {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 1.5rem;
-  font-weight: 600;
-  justify-content: center;
-  width: 100%;
-  text-align: center;
-}
-
-.averageRating {
-  font-size: 2.2rem;
-  color: #f5a623;
-  font-weight: bold;
-}
-
-.totalReviews {
-  margin-left: 12px;
-  color: #888;
-  font-size: 1rem;
-}
-
-.ratingBreakdown {
-  margin-top: 12px;
-  width: 100%;
-  max-width: 320px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.ratingRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.ratingBarContainer {
-  flex: 1;
-  background: #eee;
-  border-radius: 4px;
-  height: 8px;
-  margin: 0 8px;
-  overflow: hidden;
-}
-
-.ratingBar {
-  height: 100%;
-  background: #f5a623;
-  border-radius: 4px;
-  transition: width 0.3s;
-}
-
-.ratingCount {
-  min-width: 24px;
-  text-align: right;
-  color: #888;
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  justify-content: center;
-  width: 100%;
-  text-align: center;
-}
-
-.reviewsList {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 24px 0;
-  width: 100%;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
-}
-
-.reviewItem {
-  border-bottom: 1px solid #eee;
-  padding: 16px 0;
-}
-
-.reviewHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 6px;
-}
-
-.username {
-  font-weight: 600;
-  color: #333;
-}
-
-.date {
-  color: #aaa;
-  font-size: 0.95rem;
-}
-
-.comment {
-  color: #444;
-  font-size: 1.05rem;
-  margin-left: 2px;
-}
-
-.loading {
-  color: #888;
-  padding: 16px 0;
-  text-align: center;
-}
-
-.error {
-  color: #d32f2f;
-  padding: 16px 0;
-  text-align: center;
-}
-
-.noReviews {
-  color: #888;
-  padding: 16px 0;
-  text-align: center;
-}
-
-.reviewForm {
-  margin: 24px 0 16px 0;
-  padding: 20px 18px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-  max-width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-
-.textarea {
-  width: 100%;
-  min-width: 220px;
-  max-width: 100%;
-  min-height: 80px;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  resize: vertical;
-}
-
-.formActions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.submitBtn, .cancelBtn {
-  padding: 8px 18px;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.submitBtn {
-  background: #1976d2;
-  color: #fff;
-}
-.submitBtn:disabled {
-  background: #b0b0b0;
-  cursor: not-allowed;
-}
-.cancelBtn {
-  background: #eee;
-  color: #333;
-  border: 1px solid #ccc;
-}
-.cancelBtn:disabled {
-  color: #aaa;
-  border-color: #eee;
-}
-
-.formError {
-  color: #d32f2f;
-  font-size: 0.98rem;
-  margin-top: -8px;
-  margin-bottom: 4px;
-}
-
-.iconBtn {
-  background: none;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  padding: 4px 6px;
-  font-size: 1.1em;
-  transition: color 0.2s;
-  margin-left: 4px;
-}
-.iconBtn:hover {
-  color: #1976d2;
-}
-
-.confirmDialog {
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  padding: 18px 24px;
-  position: absolute;
-  z-index: 10;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 260px;
-  text-align: center;
-}
-.confirmDialogActions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 16px;
-} 
+    margin-top: 32px;
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .averageRatingSection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .averageRating {
+    font-size: 2.2rem;
+    color: #f5a623;
+    font-weight: bold;
+  }
+  
+  .totalReviews {
+    margin-left: 12px;
+    color: #888;
+    font-size: 1rem;
+  }
+  
+  .ratingBreakdown {
+    margin-top: 12px;
+    width: 100%;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .ratingRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  
+  .ratingBarContainer {
+    flex: 1;
+    background: #eee;
+    border-radius: 4px;
+    height: 8px;
+    margin: 0 8px;
+    overflow: hidden;
+  }
+  
+  .ratingBar {
+    height: 100%;
+    background: #f5a623;
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+  
+  .ratingCount {
+    min-width: 24px;
+    text-align: right;
+    color: #888;
+  }
+  
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .reviewsList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+    width: 100%;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+  }
+  
+  .reviewItem {
+    border-bottom: 1px solid #eee;
+    padding: 16px 0;
+  }
+  
+  .reviewHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  
+  .username {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .date {
+    color: #aaa;
+    font-size: 0.95rem;
+  }
+  
+  .comment {
+    color: #444;
+    font-size: 1.05rem;
+    margin-left: 2px;
+  }
+  
+  .loading {
+    color: #888;
+    padding: 16px 0;
+    text-align: center;
+  }
+  
+  .error {
+    color: #d32f2f;
+    padding: 16px 0;
+    text-align: center;
+  }
+  
+  .noReviews {
+    color: #888;
+    padding: 16px 0;
+    text-align: center;
+  }
+  
+  .reviewForm {
+    margin: 24px 0 16px 0;
+    padding: 20px 18px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .textarea {
+    width: 100%;
+    min-width: 220px;
+    max-width: 100%;
+    min-height: 80px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    resize: vertical;
+  }
+  
+  .formActions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .submitBtn, .cancelBtn {
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .submitBtn {
+    background: #1976d2;
+    color: #fff;
+  }
+  .submitBtn:disabled {
+    background: #b0b0b0;
+    cursor: not-allowed;
+  }
+  .cancelBtn {
+    background: #eee;
+    color: #333;
+    border: 1px solid #ccc;
+  }
+  .cancelBtn:disabled {
+    color: #aaa;
+    border-color: #eee;
+  }
+  
+  .formError {
+    color: #d32f2f;
+    font-size: 0.98rem;
+    margin-top: -8px;
+    margin-bottom: 4px;
+  }
+  
+  .iconBtn {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 4px 6px;
+    font-size: 1.1em;
+    transition: color 0.2s;
+    margin-left: 4px;
+  }
+  .iconBtn:hover {
+    color: #1976d2;
+  }
+  
+  .confirmDialog {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 18px 24px;
+    position: absolute;
+    z-index: 10;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 260px;
+    text-align: center;
+  }
+  .confirmDialogActions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+  } 

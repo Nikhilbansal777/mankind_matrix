@@ -3,6 +3,7 @@ import './Header.css';
 import { Link } from 'react-router-dom';
 import { FaShoppingCart, FaBars, FaTimes, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import NotificationsUI from '../../features/profile/NotificationsUI';
+import WishlistButton from '../../features/wishlist/WishlistButton';
 import { useCart } from '../../hooks/useCart';
 import { useUser } from '../../hooks/useUser';
 import LogoutButton from '../../features/auth/LogoutButton';
@@ -51,7 +52,7 @@ function Header({ onSearch }) {
       </div>
       
       <div className={`header-right ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-      <nav className="nav-links">
+        <nav className="nav-links">
           <Link to='/products'>Products</Link>
           <Link to='/blog'>Blog</Link>
           <Link to='/about'>About</Link>
@@ -60,6 +61,7 @@ function Header({ onSearch }) {
       </div>
      
       {/* Actions section with conditional rendering based on authentication */}
+      {/* Actions section with Notifications, Wishlist and Cart */}
       <div className={`header-actions ${isMobile ? 'mobile-transparent' : ''}`}>
         {isAuthenticated ? (
           <>
@@ -91,6 +93,22 @@ function Header({ onSearch }) {
             <span className="login-text">Login</span>
           </Link>
         )}
+        {/* Notifications Component */}
+        <NotificationsUI />
+        
+        {/* Wishlist Button */}
+        <WishlistButton />
+       
+        {/* Cart icon with item count */}
+        <Link
+          to="/cart"
+          className={`cart-icon-wrapper ${isMobile ? 'mobile-transparent' : ''}`}
+        >
+          <FaShoppingCart className="cart-icon" />
+          {itemCount > 0 && (
+            <span className="cart-count">{itemCount}</span>
+          )}
+        </Link>
       </div>
     </div>
   );
