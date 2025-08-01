@@ -25,6 +25,8 @@ import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import WishlistPage from '../features/wishlist/WishlistPage.jsx';
 import InvoiceTest from '../features/invoice/InvoiceTest';
+import Blog from '../features/blog/Blog.jsx';
+
 
 const AppRouter = () => {
   return (
@@ -49,9 +51,10 @@ const AppRouter = () => {
         <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
         <Route path="/delivery" element={<ProtectedRoute><DeliveryPage /></ProtectedRoute>} />
         <Route path="/blog" element={<ProtectedRoute><Blog /></ProtectedRoute>} />
+        <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+                                        
         {/* Public Routes - No authentication required */}
         <Route path="/products" element={<Product />} />
-        <Route path="/cart" element={<CartPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
@@ -59,6 +62,7 @@ const AppRouter = () => {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/product/:id" element={<ProductView />} />
         <Route path="/oldLadingPage" element={<LandingPage />} />
+        <Route path="/blog" element={<Blog />} />
         
         {/* Home route - must be last */}
         <Route path="/" element={<LandingPages />} />

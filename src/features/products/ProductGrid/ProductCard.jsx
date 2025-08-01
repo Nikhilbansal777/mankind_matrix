@@ -1,13 +1,15 @@
-import React, { useCallback, memo } from 'react';
+import React, { useCallback, memo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../../hooks/useCart';
 import { toast } from 'react-toastify';
 import { formatCurrency } from '../../../utils/formatCurrency';
 import './ProductCard.css';
 import StarRating from '../Review/StarRating';
+import { FaSpinner } from 'react-icons/fa';
 
 const ProductCard = memo(({ product }) => {
   const { addToCart } = useCart();
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   // Safely get category name
   const getCategoryName = useCallback(() => {
@@ -30,7 +32,9 @@ const ProductCard = memo(({ product }) => {
     };
   }, [product?.inventoryStatus]);
 
-  const handleAddToCart = useCallback(() => {
+  const handleAddToCart = useCallback(async () => {
+    if (isAddingToCart) return;
+
     const inventoryStatus = getInventoryStatus();
     if (!inventoryStatus?.isAvailable) {
       toast.error('Product is not available for purchase', {
@@ -47,17 +51,24 @@ const ProductCard = memo(({ product }) => {
       return;
     }
 
-    const formattedProduct = {
-      ...product,
-      price: price,
-      quantity: 1
-    };
-
-    addToCart(formattedProduct);
-    toast.success(`${product.name} added to cart!`, {
-      position: 'bottom-center'
-    });
-  }, [product, addToCart, getInventoryStatus]);
+    setIsAddingToCart(true);
+    try {
+      await addToCart({
+        productId: product.id,
+        price: price,
+        quantity: 1
+      });
+      toast.success(`${product.name} added to cart!`, {
+        position: 'bottom-center'
+      });
+    } catch (error) {
+      toast.error(error.message || 'Failed to add item to cart', {
+        position: 'bottom-center'
+      });
+    } finally {
+      setIsAddingToCart(false);
+    }
+  }, [product, addToCart, getInventoryStatus, isAddingToCart]);
 
   if (!product) {
     return null;
@@ -106,11 +117,22 @@ const ProductCard = memo(({ product }) => {
         </div>
       </Link>
       <button 
-        className={`add-to-cart-btn ${!isAvailable || !price ? 'disabled' : ''}`}
+        className={`add-to-cart-btn ${!isAvailable || !price || isAddingToCart ? 'disabled' : ''}`}
         onClick={handleAddToCart}
-        disabled={!isAvailable || !price}
+        disabled={!isAvailable || !price || isAddingToCart}
       >
-        {!price ? 'Price Not Available' : isAvailable ? 'Add to Cart' : 'Out of Stock'}
+        {isAddingToCart ? (
+          <>
+            <FaSpinner size={14} />
+            Adding...
+          </>
+        ) : !price ? (
+          'Price Not Available'
+        ) : isAvailable ? (
+          'Add to Cart'
+        ) : (
+          'Out of Stock'
+        )}
       </button>
     </div>
   );

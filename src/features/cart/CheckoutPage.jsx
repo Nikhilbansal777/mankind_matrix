@@ -17,6 +17,12 @@ const CheckoutPage = () => {
   });
   const [orderComplete, setOrderComplete] = useState(false);
   
+  // Discount coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponError, setCouponError] = useState('');
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
@@ -25,11 +31,62 @@ const CheckoutPage = () => {
     }));
   };
   
+  // Handle coupon code application
+  const handleApplyCoupon = () => {
+    if (!couponCode.trim()) {
+      setCouponError('Please enter a coupon code');
+      return;
+    }
+    
+    // Simulate coupon validation - in real app, this would be an API call
+    const validCoupons = {
+      'SAVE10': 0.10, // 10% discount
+      'SAVE20': 0.20, // 20% discount
+      'SAVE50': 0.50, // 50% discount
+      'FREESHIP': 0, // Free shipping (handled separately)
+      'WELCOME': 0.15 // 15% discount
+    };
+    
+    const discountRate = validCoupons[couponCode.toUpperCase()];
+    
+    if (discountRate !== undefined) {
+      const subtotal = total;
+      const discount = subtotal * discountRate;
+      setDiscountAmount(discount);
+      setCouponApplied(true);
+      setCouponError('');
+    } else {
+      setCouponError('Invalid coupon code');
+      setDiscountAmount(0);
+      setCouponApplied(false);
+    }
+  };
+  
+  // Handle coupon code removal
+  const handleRemoveCoupon = () => {
+    setCouponCode('');
+    setDiscountAmount(0);
+    setCouponApplied(false);
+    setCouponError('');
+  };
+  
+  // Calculate totals
+  const subtotal = total;
+  const tax = subtotal * 0.1;
+  const shipping = 0; // Free shipping
+  const finalTotal = subtotal + tax + shipping - discountAmount;
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     
     // In a real app, you would send this data to your backend
-    console.log('Order submitted:', { ...formData, orderItems: items });
+    console.log('Order submitted:', { 
+      ...formData, 
+      orderItems: items,
+      couponCode: couponApplied ? couponCode : null,
+      discountAmount,
+      finalTotal
+    });
     
     // Simulate order completion (would normally come from API)
     setTimeout(() => {
@@ -246,19 +303,78 @@ const CheckoutPage = () => {
           <div className="order-totals">
             <div className="subtotal">
               <span>Subtotal:</span>
-              <span>${total.toFixed(2)}</span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
             <div className="tax">
               <span>Tax (10%):</span>
-              <span>${(total * 0.1).toFixed(2)}</span>
+              <span>${tax.toFixed(2)}</span>
             </div>
             <div className="shipping">
               <span>Shipping:</span>
               <span>FREE</span>
             </div>
+            
+            {/* Discount Coupon Section */}
+            <div className="discount-section">
+              <div className="coupon-input-group">
+                <input
+                  type="text"
+                  placeholder="Enter coupon code"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  disabled={couponApplied}
+                  className="coupon-input"
+                />
+                {!couponApplied ? (
+                  <button
+                    type="button"
+                    onClick={handleApplyCoupon}
+                    className="apply-coupon-btn"
+                  >
+                    Apply
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    className="remove-coupon-btn"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              {couponError && <div className="coupon-error">{couponError}</div>}
+              {couponApplied && (
+                <div className="coupon-success">
+                  <span>Coupon applied: {couponCode}</span>
+                </div>
+              )}
+              {/* Sample coupon suggestion */}
+              {!couponApplied && (
+                <div className="sample-coupon-row">
+                  <span className="sample-coupon-label">Code: <b>SAVE10</b></span>
+                  <button
+                    type="button"
+                    className="sample-coupon-apply-btn"
+                    onClick={() => {
+                      setCouponCode('SAVE10');
+                      setTimeout(() => handleApplyCoupon(), 0);
+                    }}
+                  >Apply</button>
+                </div>
+              )}
+            </div>
+            
+            {discountAmount > 0 && (
+              <div className="discount">
+                <span>Discount:</span>
+                <span>-${discountAmount.toFixed(2)}</span>
+              </div>
+            )}
+            
             <div className="grand-total">
               <span>Total:</span>
-              <span>${(total + total * 0.1).toFixed(2)}</span>
+              <span>${finalTotal.toFixed(2)}</span>
             </div>
           </div>
         </div>

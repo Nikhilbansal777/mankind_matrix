@@ -54,7 +54,7 @@ function Header({ onSearch }) {
       <div className={`header-right ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         <nav className="nav-links">
           <Link to='/products'>Products</Link>
-          <a href="#blog">Blog</a>
+          <Link to='/blog'>Blog</Link>
           <Link to='/about'>About</Link>
           <Link to='/contact'>Contact</Link>
         </nav>

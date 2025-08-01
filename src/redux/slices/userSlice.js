@@ -312,6 +312,10 @@ const userSlice = createSlice({
           const currentRefreshToken = getStoredRefreshToken();
           saveAuthData(currentToken, currentRefreshToken, action.payload);
         }
+        // Set authenticated if we successfully got user data
+        if (action.payload) {
+          state.isAuthenticated = true;
+        }
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
         state.loading.currentUser = false;
