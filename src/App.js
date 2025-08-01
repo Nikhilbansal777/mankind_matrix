@@ -5,14 +5,18 @@ import { store } from './redux/store';
 import AuthProvider from './providers/AuthProvider';
 import './styles/global.css';
 import AppRouter from './routes/AppRouter';
+import TestNotificationButton from './features/notifications/TestNotificationButton';
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <AuthProvider>
-        <AppRouter />
-      </AuthProvider>
-    </Provider>
+    <>
+      <TestNotificationButton />
+      <Provider store={store}>
+        <AuthProvider>
+          <AppRouter />
+        </AuthProvider>
+      </Provider>
+    </>
   );
 };
 
