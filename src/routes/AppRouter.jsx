@@ -19,14 +19,10 @@ import ContactPage from '../features/contact/ContactPage.jsx';
 import LandingPages from '../features/landingpage/LandingPages.jsx';  
 import ProductView from '../features/products/ProductView/ProductView.jsx';
 import AboutUs from '../features/about/AboutUs.jsx';
-import Blog from '../features/blog/Blog.jsx';
 import DeliveryPage from '../features/cart/Delivery.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
-import WishlistPage from '../features/wishlist/WishlistPage.jsx';
-import InvoiceTest from '../features/invoice/InvoiceTest';
 import Blog from '../features/blog/Blog.jsx';
-
 
 const AppRouter = () => {
   return (
@@ -50,9 +46,8 @@ const AppRouter = () => {
         <Route path="/return-request" element={<ProtectedRoute><ReturnRequest /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
         <Route path="/delivery" element={<ProtectedRoute><DeliveryPage /></ProtectedRoute>} />
-        <Route path="/blog" element={<ProtectedRoute><Blog /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
-                                        
+        
         {/* Public Routes - No authentication required */}
         <Route path="/products" element={<Product />} />
         <Route path="/login" element={<Login />} />
@@ -66,27 +61,6 @@ const AppRouter = () => {
         
         {/* Home route - must be last */}
         <Route path="/" element={<LandingPages />} />
-        <Route path='products' element={<Product></Product>}></Route>
-        <Route path='login' element={<Login></Login>}></Route>
-        <Route path='admin' element={<AdminPage></AdminPage>}></Route>
-        <Route path='return-request' element={<ReturnRequest></ReturnRequest>}></Route>
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/account" element={<AccountPage />} />
-        <Route path="/addresses" element={<ManageAddressesPage />} />
-        <Route path="/orders" element={<OrderManager />} />
-        <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/payments" element={<PaymentMethods/>} />
-        <Route path="/help" element={<Help />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path='delivery' element={<DeliveryPage></DeliveryPage>}></Route>
-        <Route path='cart' element={<CartPage></CartPage>}></Route>
-        <Route path='checkout' element={<CheckoutPage></CheckoutPage>}></Route>
-        <Route path="AI" element={<CartPage></CartPage>}></Route>
-        <Route path='product/:id' element={<ProductView></ProductView>}></Route>
-        <Route path='contact' element={<ContactPage>/</ContactPage>}></Route>
-        <Route path='oldLadingPage' element={<LandingPage></LandingPage>}></Route>
-        <Route path='wishlist' element={<WishlistPage></WishlistPage>}></Route>
-        <Route path='invoice-test' element={<InvoiceTest />} />
       </Routes>
     </Router>
   );

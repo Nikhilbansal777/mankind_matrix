@@ -93,8 +93,8 @@ git clone https://github.com/rebeccayilma/mankind-backend
 **Local API Documentation:**
 - Product Service: http://localhost:8080/swagger-ui/index.html
 - User Service: http://localhost:8081/swagger-ui/index.html
-- Wishlist Service: http://localhost:8083/swagger-ui/index.html
-- Cart Service: http://localhost:8082/swagger-ui/index.html
+- Wishlist Service: http://localhost:8082/swagger-ui/index.html
+- Cart Service: http://localhost:8083/swagger-ui/index.html
 
 ### 6. Install Project Dependencies
 
