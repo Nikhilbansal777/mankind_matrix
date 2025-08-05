@@ -23,6 +23,8 @@ import DeliveryPage from '../features/cart/Delivery.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import Blog from '../features/blog/Blog.jsx';
+import InvoiceTest from '../features/invoice/InvoiceTest';
+import InvoiceGenerator from '../features/invoice/InvoiceGenerator';
 
 const AppRouter = () => {
   return (
@@ -50,6 +52,8 @@ const AppRouter = () => {
         
         {/* Public Routes - No authentication required */}
         <Route path="/products" element={<Product />} />
+        <Route path="/invoice-test" element={<InvoiceTest />} />
+        <Route path="/invoice" element={<InvoiceGenerator />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
