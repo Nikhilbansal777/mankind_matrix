@@ -110,37 +110,44 @@ const ReviewsList = ({ productId, averageRating, totalReviews, ratingSummary }) 
             deleteLoading={deleteLoading}
           />
         ))}
+        <Pagination
+            currentPage={pagination.currentPage + 1}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+          />
       </ul>
     );
   };
 
   return (
-    <section className={styles.reviewsSection} id="reviews">
-      <h2>Customer Reviews</h2>
-      {renderSummary()}
-      <div className={styles.controls}>
-        <label htmlFor="sortReviews">Sort by:</label>
-        <select id="sortReviews" value={sort[0]} onChange={handleSortChange}>
-          {SORT_OPTIONS.map(opt => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
-          ))}
-        </select>
-      </div>
-      {/* Show review form if logged in */}
-      {isAuthenticated && (
-        <ReviewForm
-          mode="create"
-          onSubmit={handleCreateReview}
-          loading={createLoading}
-        />
-      )}
-      {renderReviews()}
-      <Pagination
-        currentPage={pagination.currentPage + 1}
-        totalPages={pagination.totalPages}
-        onPageChange={handlePageChange}
-      />
-    </section>
+    <>
+      <section className={styles.reviewsSection} id="reviews">
+        <div className={styles.revDiv}>
+          <div className={styles.controls}>
+            <label htmlFor="sortReviews">Sort by:</label>
+            <select id="sortReviews" value={sort[0]} onChange={handleSortChange}>
+              {SORT_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+          {renderReviews()}
+        </div>
+
+        <div className={isAuthenticated ? styles.revDiv : styles.middleAlign}>
+          <h2 style={{ textAlign: 'center' }}>Customer Reviews</h2>
+          {renderSummary()}
+          {/* Show review form if logged in */}
+          {isAuthenticated ? (
+            <ReviewForm
+              mode="create"
+              onSubmit={handleCreateReview}
+              loading={createLoading}
+            />
+          ) : <p className={styles.hideReviewForm}>Please log in to leave a review.</p>}
+        </div>
+      </section>
+    </>
   );
 };
 

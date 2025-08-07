@@ -45,7 +45,7 @@ const ReviewForm = ({
           id="review-comment"
           value={comment}
           onChange={e => setComment(e.target.value)}
-          rows={4}
+          rows={10}
           className={styles.textarea}
           maxLength={500}
           required

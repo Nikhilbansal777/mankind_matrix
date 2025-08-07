@@ -152,17 +152,19 @@ const ProductView = memo(() => {
           
           <div className={styles.productInfo}>
             <h1 className={styles.productTitle}>{product.name}</h1>
-            <button
-              type="button"
-              style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
-              onClick={() => {
-                const el = document.getElementById('reviews');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }}
-              aria-label="Scroll to reviews"
-            >
-              <StarRating rating={product.averageRating ?? 0} />
-            </button>
+            <div>
+              <button
+                type="button"
+                style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
+                onClick={() => {
+                  const el = document.getElementById('reviews');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                aria-label="Scroll to reviews"
+              >
+                <StarRating rating={product.averageRating ?? 0} />
+              </button>
+            </div>
             <div className={styles.productCategory}>
               Category: <span>{categoryName}</span>
             </div>

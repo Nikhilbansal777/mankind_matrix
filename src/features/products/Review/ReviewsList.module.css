@@ -1,23 +1,42 @@
 .reviewsSection {
   margin-top: 32px;
-  padding: 0;
+  padding: 0px;
   background: none;
   border-radius: 0;
   box-shadow: none;
-  max-width: 500px;
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
+  display: flex;         
+  flex-direction: row;
+  justify-content: center;
+}
+
+.revDiv{
+  flex: 1;
+  padding: 10px;
+  max-width: 50%;
+}
+
+.middleAlign{
+  flex: 1;
+  padding: 10px;
+  max-width: 50%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+}
+
+.hideReviewForm{
   text-align: center;
+  color: #888;
 }
 
 .summary {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   margin-bottom: 24px;
   width: 100%;
   text-align: center;
@@ -35,13 +54,12 @@
 }
 
 .averageRating {
-  font-size: 2.2rem;
+  font-size: 1.4rem;
   color: #f5a623;
   font-weight: bold;
 }
 
 .totalReviews {
-  margin-left: 12px;
   color: #888;
   font-size: 1rem;
 }
@@ -96,7 +114,7 @@
 .reviewsList {
   list-style: none;
   padding: 0;
-  margin: 0 0 24px 0;
+  margin: 0 0 0 0;
   width: 100%;
   max-width: 700px;
   margin-left: auto;
@@ -105,8 +123,13 @@
 }
 
 .reviewItem {
-  border-bottom: 1px solid #eee;
-  padding: 16px 0;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s ease-in-out;
 }
 
 .reviewHeader {
@@ -173,7 +196,7 @@
   width: 100%;
   min-width: 220px;
   max-width: 100%;
-  min-height: 80px;
+  min-height: 250px;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
