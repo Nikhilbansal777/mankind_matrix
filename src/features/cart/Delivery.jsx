@@ -19,11 +19,17 @@ const DeliveryPage = () => {
   const [cvv, setCvv] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentStep, setCurrentStep] = useState('delivery'); 
+  
+  // Discount coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponError, setCouponError] = useState('');
 
   const taxRate = 0.10;
   const taxAmount = total * taxRate;
   const deliveryFee = deliveryOptions[deliveryType]?.price || 0;
-  const finalTotal = total + taxAmount + deliveryFee;
+  const finalTotal = total + taxAmount + deliveryFee - discountAmount;
 
   // Default delivery options if API fails
   const getDefaultDeliveryOptions = () => {
@@ -185,6 +191,45 @@ const DeliveryPage = () => {
     
     
     return null;
+  };
+
+  // Handle coupon code application
+  const handleApplyCoupon = () => {
+    if (!couponCode.trim()) {
+      setCouponError('Please enter a coupon code');
+      return;
+    }
+    
+    // Simulate coupon validation - in real app, this would be an API call
+    const validCoupons = {
+      'SAVE10': 0.10, // 10% discount
+      'SAVE20': 0.20, // 20% discount
+      'SAVE50': 0.50, // 50% discount
+      'FREESHIP': 0, // Free shipping (handled separately)
+      'WELCOME': 0.15 // 15% discount
+    };
+    
+    const discountRate = validCoupons[couponCode.toUpperCase()];
+    
+    if (discountRate !== undefined) {
+      const subtotal = total;
+      const discount = subtotal * discountRate;
+      setDiscountAmount(discount);
+      setCouponApplied(true);
+      setCouponError('');
+    } else {
+      setCouponError('Invalid coupon code');
+      setDiscountAmount(0);
+      setCouponApplied(false);
+    }
+  };
+  
+  // Handle coupon code removal
+  const handleRemoveCoupon = () => {
+    setCouponCode('');
+    setDiscountAmount(0);
+    setCouponApplied(false);
+    setCouponError('');
   };
 
   if (isLoading) {
@@ -539,6 +584,65 @@ const DeliveryPage = () => {
                 <span>Shipping</span>
                 <span>{deliveryFee === 0 ? "Free" : `$${deliveryFee.toFixed(2)}`}</span>
               </div>
+              
+              {/* Discount Coupon Section */}
+              <div className="discount-section">
+                <div className="coupon-input-group">
+                  <input
+                    type="text"
+                    placeholder="Enter coupon code"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    disabled={couponApplied}
+                    className="coupon-input"
+                  />
+                  {!couponApplied ? (
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      className="apply-coupon-btn"
+                    >
+                      Apply
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleRemoveCoupon}
+                      className="remove-coupon-btn"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+                {couponError && <div className="coupon-error">{couponError}</div>}
+                {couponApplied && (
+                  <div className="coupon-success">
+                    <span>Coupon applied: {couponCode}</span>
+                  </div>
+                )}
+                {/* Sample coupon suggestion */}
+                {!couponApplied && (
+                  <div className="sample-coupon-row">
+                    <span className="sample-coupon-label">Code: <b>SAVE10</b></span>
+                    <button
+                      type="button"
+                      className="sample-coupon-apply-btn"
+                      onClick={() => {
+                        setCouponCode('SAVE10');
+                        setTimeout(() => handleApplyCoupon(), 0);
+                      }}
+                    >Apply</button>
+                  </div>
+                )}
+              </div>
+              
+              {discountAmount > 0 && (
+                <div className="summary-row discount">
+                  <span>Discount</span>
+                  <span>-${discountAmount.toFixed(2)}</span>
+                </div>
+              )}
+              
               <div className="summary-row total">
                 <span>Total</span>
                 <span>${finalTotal.toFixed(2)}</span>

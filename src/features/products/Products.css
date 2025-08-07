@@ -96,3 +96,23 @@
       font-size: 1.25rem;
     }
   }
+
+.sale-banner {
+  width: 100%;
+  background: linear-gradient(90deg, #ff9800 0%, #ff5722 100%);
+  color: #fff;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 0.85rem 0.5rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  z-index: 100;
+  position: relative;
+}
+@media (max-width: 600px) {
+  .sale-banner {
+    font-size: 1rem;
+    padding: 0.7rem 0.2rem;
+  }
+}

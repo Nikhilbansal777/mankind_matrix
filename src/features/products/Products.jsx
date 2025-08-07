@@ -51,44 +51,51 @@ const ProductsPage = memo(() => {
   }, [handleSearch]);
 
   return (
-    <div className='products-layout'>
-      <MemoizedCategorySidebar
-        selectedCategory={selectedCategory}
-        onCategorySelect={handleCategoryFilter}
-      />
-      <div className="products-page">
-        <div className="products-header">
-          <h1>Our Products</h1>
-          <SortDropdown 
-            onSortChange={handleSortChange}
-            selectedSort={sortOption}
-          />
-        </div>
-        
-        <div className="products-content">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={handleSearchInput}
-              className="product-search-input"
+    <>
+      {/* Sale Banner */}
+      <div className="sale-banner">
+        <span>🔥 Summer Sale! Use code <b>SAVE10</b> for 10% OFF on all products! Limited time only. 🔥</span>
+      </div>
+      {/* Main Products Layout */}
+      <div className='products-layout'>
+        <MemoizedCategorySidebar
+          selectedCategory={selectedCategory}
+          onCategorySelect={handleCategoryFilter}
+        />
+        <div className="products-page">
+          <div className="products-header">
+            <h1>Our Products</h1>
+            <SortDropdown 
+              onSortChange={handleSortChange}
+              selectedSort={sortOption}
             />
           </div>
           
-          <div className="product-grid-container">
-            <ProductGrid 
-              searchQuery={searchQuery} 
-              category={selectedCategory}
-              sortOption={sortOption}
-              currentPage={currentPage}
-              productsPerPage={productsPerPage}
-              onPageChange={handlePageChange}
-            />
+          <div className="products-content">
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={handleSearchInput}
+                className="product-search-input"
+              />
+            </div>
+            
+            <div className="product-grid-container">
+              <ProductGrid 
+                searchQuery={searchQuery} 
+                category={selectedCategory}
+                sortOption={sortOption}
+                currentPage={currentPage}
+                productsPerPage={productsPerPage}
+                onPageChange={handlePageChange}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 });
 

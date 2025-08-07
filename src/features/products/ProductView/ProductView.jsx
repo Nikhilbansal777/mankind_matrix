@@ -74,7 +74,7 @@ const ProductView = memo(() => {
     return Number(price);
   }, [product?.inventoryStatus]);
 
-  const handleAddToCart = useCallback(() => {
+  const handleAddToCart = useCallback(async () => {
     if (product) {
       const price = getProductPrice();
       
@@ -85,15 +85,20 @@ const ProductView = memo(() => {
         return;
       }
       
-      const formattedProduct = {
-        ...product,
-        price,
-        quantity
-      };
-      addToCart(formattedProduct);
-      toast.success(`${quantity} ${quantity > 1 ? 'units' : 'unit'} of ${product.name} added to cart!`, {
-        position: 'bottom-center'
-      });
+      try {
+        await addToCart({
+          productId: product.id,
+          price,
+          quantity
+        });
+        toast.success(`${quantity} ${quantity > 1 ? 'units' : 'unit'} of ${product.name} added to cart!`, {
+          position: 'bottom-center'
+        });
+      } catch (error) {
+        toast.error(error.message || 'Failed to add item to cart', {
+          position: 'bottom-center'
+        });
+      }
     }
   }, [product, quantity, addToCart, getProductPrice]);
 
@@ -237,23 +242,6 @@ const ProductView = memo(() => {
       </div>
     );
   }, [product, quantity, getCategoryName, getProductPrice, handleQuantityChange, handleAddToCart]);
-
-  useEffect(() => {
-    const loadProduct = async () => {
-      try {
-        await getProduct(id);
-      } catch (error) {
-        console.error('Error loading product:', error);
-      }
-    };
-
-    loadProduct();
-    
-    // Cleanup function to clear the current product when component unmounts
-    return () => {
-      clearProduct();
-    };
-  }, [id, getProduct, clearProduct]);
 
   // Render logic after all hooks
   if (loading) return loadingContent;
