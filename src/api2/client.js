@@ -310,6 +310,7 @@ export const api = {
   cart: new ApiClient('cart'),
   wishlist: new ApiClient('wishlist'),
   order: new ApiClient('order'),
+  coupon: new ApiClient('coupon'),
 };
 
 export default api; 

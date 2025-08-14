@@ -7,7 +7,7 @@ import { api } from '../client';
 const orderService = {
   // Create a new order
   createOrder: (orderData) => 
-    api.order.post('/orders', {
+    api.order.post('/', {
       shippingAddressId: orderData.shippingAddressId,
       shippingValue: orderData.shippingValue,
       couponCode: orderData.couponCode,
@@ -16,7 +16,7 @@ const orderService = {
 
   // Get all orders with pagination and sorting
   getOrders: ({ page = 0, size = 10, sort } = {}) =>
-    api.order.get('/orders', {
+    api.order.get('/', {
       page,
       size,
       ...(sort && sort.length > 0 ? { sort } : {})
@@ -24,7 +24,7 @@ const orderService = {
 
   // Get a single order by ID
   getOrder: (orderId) => 
-    api.order.get(`/orders/${orderId}`)
+    api.order.get(`/${orderId}`)
 };
 
 export default orderService;
