@@ -27,6 +27,7 @@ export const services = {
   product: getServiceUrl('product'),
   cart: getServiceUrl('cart'),
   wishlist: getServiceUrl('wishlist'),
+  order: getServiceUrl('order'),
 };
 
 // API Settings
