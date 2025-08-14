@@ -300,7 +300,6 @@
   
   .subtotal,
   .tax,
-  .shipping,
   .grandTotal {
     display: flex;
     justify-content: space-between;

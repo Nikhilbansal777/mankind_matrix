@@ -1,0 +1,189 @@
+.order-summary {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+/* Summary Header */
+.summary-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.summary-icon {
+  color: #007bff;
+  width: 24px;
+  height: 24px;
+}
+
+.summary-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.order-items {
+  margin-bottom: 24px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-item-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-quantity {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.item-name {
+  color: #333;
+  font-weight: 500;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item-price {
+  color: #333;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.order-totals {
+  border-top: 2px solid #f0f0f0;
+  padding-top: 20px;
+}
+
+.order-totals > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.subtotal {
+  font-weight: 500;
+}
+
+.tax, .shipping {
+  color: #666;
+}
+
+.grand-total {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #333;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.discount {
+  color: #28a745;
+  font-weight: 500;
+}
+
+/* Place Order Button */
+.place-order-btn {
+  width: 100%;
+  padding: 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.place-order-btn:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.place-order-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.order-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Spinner for processing state */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .order-summary {
+    position: static;
+    margin-top: 20px;
+  }
+  
+  .item-name {
+    max-width: 150px;
+  }
+  
+  .coupon-input-group {
+    flex-direction: column;
+  }
+  
+
+}
