@@ -67,6 +67,12 @@ const CheckoutPage = () => {
       return;
     }
 
+    // Additional validation for shipping date
+    if (!selectedDate) {
+      setAddressError('Please select a shipping date to continue');
+      return;
+    }
+
     // Clear any address errors
     setAddressError('');
     
@@ -81,9 +87,19 @@ const CheckoutPage = () => {
       const orderData = {
         shippingAddressId: selectedAddress.id,
         shippingValue: shippingCost,
+        shippingDate: selectedDate,
+        deliveryType: deliveryType,
         couponCode: appliedCoupon?.code || null,
         notes: `Delivery: ${deliveryType === 'express' ? 'Express' : 'Standard'} on ${selectedDate}`
       };
+
+      // Ensure shipping date is properly formatted
+      if (orderData.shippingDate instanceof Date) {
+        orderData.shippingDate = orderData.shippingDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+      }
+
+      // Log the order data being sent (for debugging)
+      console.log('Creating order with data:', orderData);
 
       // Create order via API
       const result = await createOrder(orderData);

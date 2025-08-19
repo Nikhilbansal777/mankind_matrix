@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, CreditCard } from 'lucide-react';
+import { CreditCard } from 'lucide-react';
 import CouponInput from '../CouponInput';
 import './OrderSummary.css';
 
@@ -21,7 +21,6 @@ const OrderSummary = ({
   return (
     <div className="order-summary">
       <div className="summary-header">
-        <ShoppingBag className="summary-icon" />
         <h2>Order Summary</h2>
         {createdOrder && (
           <div className="order-number">

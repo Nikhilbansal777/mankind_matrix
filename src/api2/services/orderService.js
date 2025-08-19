@@ -10,6 +10,8 @@ const orderService = {
     api.order.post('/', {
       shippingAddressId: orderData.shippingAddressId,
       shippingValue: orderData.shippingValue,
+      shippingDate: orderData.shippingDate,
+      deliveryType: orderData.deliveryType,
       couponCode: orderData.couponCode,
       notes: orderData.notes
     }),

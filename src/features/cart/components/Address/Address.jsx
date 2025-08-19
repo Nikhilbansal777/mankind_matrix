@@ -185,7 +185,6 @@ const Address = ({ onAddressSelect, selectedAddressId }) => {
   return (
     <div className="address-section">
       <div className="section-header">
-        <MapPin className="section-icon" />
         <h2>Delivery Address</h2>
         <button 
           className="add-address-button"

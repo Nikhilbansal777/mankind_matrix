@@ -1,35 +1,17 @@
 .shipping-section {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
 }
 
 /* Section Headers */
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.section-icon {
-  color: #007bff;
-  width: 24px;
-  height: 24px;
-}
-
-.section-header h2,
-.section-header h3 {
-  margin: 0;
+.shipping-section h2 {
+  margin: 0 0 20px 0;
   color: #333;
   font-size: 1.5rem;
   font-weight: 600;
-}
-
-.section-header h3 {
-  font-size: 1.2rem;
 }
 
 /* Loading Spinner */
@@ -55,274 +37,199 @@
   to { transform: rotate(360deg); }
 }
 
-/* Delivery Types */
-.delivery-types {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* Delivery Method Section */
+.delivery-method-section {
   margin-bottom: 32px;
 }
 
-.delivery-type {
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
-  padding: 24px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+.delivery-method-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.delivery-type:hover {
+.delivery-method-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fff;
+}
+
+.delivery-method-card:hover {
   border-color: #007bff;
   box-shadow: 0 4px 16px rgba(0, 123, 255, 0.15);
   transform: translateY(-2px);
 }
 
-.delivery-type.selected {
-  border-color: #007bff;
-  background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
-  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.2);
+.delivery-method-card.selected {
+  border-color: #000;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.delivery-type-header {
+.delivery-method-left {
   display: flex;
   align-items: center;
-  gap: 20px;
-  position: relative;
+  gap: 16px;
 }
 
 .delivery-icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: #f8f9fa;
-  flex-shrink: 0;
 }
 
 .delivery-icon {
-  width: 28px;
-  height: 28px;
+  width: 14px;
+  height: 14px;
+  color: #666;
 }
 
 .delivery-icon.standard {
-  color: #28a745;
+  color: #666;
 }
 
 .delivery-icon.express {
-  color: #007bff;
+  color: #666;
 }
 
-.delivery-type-info {
-  flex: 1;
-}
-
-.delivery-type-info h3 {
-  margin: 0 0 8px 0;
+.delivery-method-info h3 {
+  margin: 0 0 4px 0;
   color: #333;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
 }
 
 .delivery-description {
-  margin: 0 0 8px 0;
+  margin: 0;
   color: #666;
   font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.delivery-method-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .delivery-price {
-  margin: 0;
-  color: #007bff;
-  font-weight: 700;
   font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
 }
 
 .selection-check {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  color: #28a745;
-  width: 24px;
-  height: 24px;
+  color: #666;
+  width: 14px;
+  height: 14px;
 }
 
-/* Delivery Details */
-.delivery-details {
-  margin-bottom: 32px;
+/* Delivery Date Section */
+.delivery-date-section {
+  margin-top: 32px;
 }
 
-.delivery-dates {
+.delivery-date-options {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.delivery-date {
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
-  padding: 24px;
-  background: #fafbfc;
-}
-
-.date-header {
+.delivery-date-card {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  justify-content: space-between;
+  padding: 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fff;
+  min-width: 200px;
+  flex: 1;
 }
 
-.date-icon {
-  color: #007bff;
-  width: 20px;
-  height: 20px;
+.delivery-date-card:hover {
+  border-color: #007bff;
+  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.delivery-date-card.selected {
+  border-color: #000;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.delivery-date-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Specific styling for date icons in shipping component */
+.shipping-section .delivery-date-card .date-icon {
+  color: #666;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  flex-shrink: 0;
+  padding: 4px;
+}
+
+.shipping-section .delivery-date-card .date-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .date-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.date-text {
-  font-weight: 700;
-  color: #333;
-  font-size: 1.1rem;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
 }
 
 .day-name {
-  color: #666;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-
-
-/* Payment Section */
-.payment-section {
-  border-top: 2px solid #f0f0f0;
-  padding-top: 24px;
-}
-
-.payment-methods {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.payment-method {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px;
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.payment-method:hover {
-  border-color: #007bff;
-  background: #f8f9ff;
-  transform: translateY(-1px);
-}
-
-.payment-method.selected {
-  border-color: #007bff;
-  background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
-  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.15);
-}
-
-.payment-method input[type="radio"] {
-  margin: 0;
-  cursor: pointer;
-  width: 18px;
-  height: 18px;
-  accent-color: #007bff;
-}
-
-.payment-method label {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  color: #333;
   font-size: 1rem;
-}
-
-.payment-icon {
-  color: #007bff;
-  width: 20px;
-  height: 20px;
-}
-
-.paypal-icon {
-  color: #003087;
-  font-weight: 700;
-}
-
-/* Credit Card Fields */
-.credit-card-fields {
-  margin-top: 24px;
-  padding: 24px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 12px;
-  border: 1px solid #dee2e6;
-}
-
-.credit-card-fields .form-group {
-  margin-bottom: 20px;
-}
-
-.credit-card-fields .form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.credit-card-fields label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-  color: #333;
   font-weight: 600;
-  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.field-icon {
-  color: #007bff;
+.date-text {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shipping-section .delivery-date-card .date-check {
+  color: #666;
   width: 16px;
   height: 16px;
-}
-
-.credit-card-fields input {
-  width: 100%;
-  padding: 14px 18px;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  background: #fff;
-}
-
-.credit-card-fields input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
-  transform: translateY(-1px);
-}
-
-.credit-card-fields input:hover {
-  border-color: #b3d7ff;
+  flex-shrink: 0;
 }
 
 /* Responsive Design */
@@ -331,35 +238,56 @@
     padding: 20px;
   }
   
-  .delivery-type-header {
-    flex-direction: column;
-    text-align: center;
-    gap: 16px;
+  .shipping-section h2 {
+    font-size: 1.3rem;
+  }
+  
+  .delivery-method-card {
+    padding: 16px;
   }
   
   .delivery-icon-wrapper {
-    width: 50px;
-    height: 50px;
+    width: 36px;
+    height: 36px;
   }
   
   .delivery-icon {
-    width: 24px;
-    height: 24px;
+    width: 12px;
+    height: 12px;
   }
   
-
-  
-  .credit-card-fields .form-row {
-    grid-template-columns: 1fr;
+  .shipping-section .delivery-date-card .date-icon {
+    width: 20px;
+    height: 20px;
   }
   
-  .delivery-type {
-    padding: 20px;
+  .shipping-section .delivery-date-card .date-icon svg {
+    width: 14px;
+    height: 14px;
   }
   
   .selection-check {
-    position: static;
-    margin-left: auto;
+    width: 12px;
+    height: 12px;
+  }
+  
+  .delivery-date-options {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .delivery-date-card {
+    min-width: auto;
+    width: 100%;
+    padding: 14px;
+  }
+  
+  .delivery-date-left {
+    gap: 10px;
+  }
+  
+  .date-info {
+    gap: 3px;
   }
 }
 
@@ -368,21 +296,53 @@
     padding: 16px;
   }
   
-  .section-header h2 {
-    font-size: 1.3rem;
+  .shipping-section h2 {
+    font-size: 1.2rem;
   }
   
-  .section-header h3 {
-    font-size: 1.1rem;
+  .delivery-method-card {
+    padding: 14px;
   }
   
-
-  
-  .delivery-type {
-    padding: 16px;
+  .delivery-method-left {
+    gap: 12px;
   }
   
-  .credit-card-fields {
-    padding: 16px;
+  .delivery-method-info h3 {
+    font-size: 1rem;
+  }
+  
+  .delivery-description {
+    font-size: 0.85rem;
+  }
+  
+  .delivery-price {
+    font-size: 1rem;
+  }
+  
+  .delivery-date-card {
+    padding: 12px;
+  }
+  
+  .delivery-date-left {
+    gap: 8px;
+  }
+  
+  .shipping-section .delivery-date-card .date-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .shipping-section .delivery-date-card .date-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .day-name {
+    font-size: 0.9rem;
+  }
+  
+  .date-text {
+    font-size: 0.8rem;
   }
 }

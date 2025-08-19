@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Calendar, 
   Truck, 
-  CheckCircle
+  Clock,
+  Check
 } from 'lucide-react';
 import { SHIPPING_COSTS, DELIVERY_TIMEFRAMES } from '../../utils/constants';
 import './Shipping.css';
@@ -65,16 +66,16 @@ const Shipping = ({
     return {
       standard: {
         title: "Standard Delivery",
-        description: DELIVERY_TIMEFRAMES.STANDARD,
+        description: "Delivery within 5 days",
         price: SHIPPING_COSTS.STANDARD,
         icon: <Truck className="delivery-icon standard" />,
         deliveryDays: standardDeliveryDays
       },
       express: {
         title: "Express Delivery",
-        description: DELIVERY_TIMEFRAMES.EXPRESS,
+        description: "Get it within 3 days",
         price: SHIPPING_COSTS.EXPRESS,
-        icon: <Truck className="delivery-icon express" />,
+        icon: <Clock className="delivery-icon express" />,
         deliveryDays: expressDeliveryDays
       }
     };
@@ -114,64 +115,62 @@ const Shipping = ({
 
   return (
     <div className="shipping-section">
-      <div className="section-header">
-        <Truck className="section-icon" />
-        <h2>Delivery Options</h2>
-      </div>
-      
-      <div className="delivery-types">
-        {Object.entries(deliveryOptions).map(([type, option]) => (
-          <div 
-            key={type}
-            className={`delivery-type ${deliveryType === type ? 'selected' : ''}`}
-            onClick={() => onDeliveryTypeChange(type)}
-          >
-            <div className="delivery-type-header">
-              <div className="delivery-icon-wrapper">
-                {option.icon}
+      {/* Delivery Method Section */}
+      <div className="delivery-method-section">
+        <h2>Delivery Method</h2>
+        <div className="delivery-method-options">
+          {Object.entries(deliveryOptions).map(([type, option]) => (
+            <div 
+              key={type}
+              className={`delivery-method-card ${deliveryType === type ? 'selected' : ''}`}
+              onClick={() => onDeliveryTypeChange(type)}
+            >
+              <div className="delivery-method-left">
+                <div className="delivery-icon-wrapper">
+                  {option.icon}
+                </div>
+                <div className="delivery-method-info">
+                  <h3>{option.title}</h3>
+                  <p className="delivery-description">{option.description}</p>
+                </div>
               </div>
-              <div className="delivery-type-info">
-                <h3>{option.title}</h3>
-                <p className="delivery-description">{option.description}</p>
-                <p className="delivery-price">
-                  {option.price === 0 ? 'FREE' : `$${option.price}`}
-                </p>
+              <div className="delivery-method-right">
+                <span className="delivery-price">
+                  {option.price === 0 ? 'Free' : `$${option.price}`}
+                </span>
+                {deliveryType === type && (
+                  <Check className="selection-check" />
+                )}
               </div>
-              {deliveryType === type && (
-                <CheckCircle className="selection-check" />
-              )}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
+      {/* Delivery Date Section */}
       {deliveryType && deliveryOptions[deliveryType] && (
-        <div className="delivery-details">
-          <div className="section-header">
-            <Calendar className="section-icon" />
-            <h3>Select Delivery Date</h3>
-          </div>
-          
-          <div className="delivery-dates">
-            {deliveryOptions[deliveryType].deliveryDays.map((day, index) => (
-              <button
+        <div className="delivery-date-section">
+          <h2>Delivery Date</h2>
+          <div className="delivery-date-options">
+            {deliveryOptions[deliveryType].deliveryDays.slice(0, 3).map((day, index) => (
+              <div
                 key={index}
-                className={`delivery-date ${
+                className={`delivery-date-card ${
                   selectedDate === day.date ? 'selected' : ''
                 }`}
                 onClick={() => onDateSelect(day.date)}
               >
-                <div className="date-header">
+                <div className="delivery-date-left">
                   <Calendar className="date-icon" />
                   <div className="date-info">
-                    <span className="date-text">{day.date}</span>
                     <span className="day-name">{day.day}</span>
+                    <span className="date-text">{day.date}</span>
                   </div>
                 </div>
                 {selectedDate === day.date && (
-                  <CheckCircle className="date-check" />
+                  <Check className="date-check" />
                 )}
-              </button>
+              </div>
             ))}
           </div>
         </div>
