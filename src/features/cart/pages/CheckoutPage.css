@@ -247,6 +247,22 @@
   padding: 1.5rem;
 }
 
+.order-number-display {
+  text-align: center;
+  padding: 1rem;
+  background-color: #f0f7ff;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid #3b82f6;
+}
+
+.order-number-display h3 {
+  margin: 0;
+  color: #1e40af;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
 .cart-order {
   max-height: 400px;
   overflow-y: auto;
@@ -890,4 +906,24 @@
   color: var(--primary);
   margin: 0;
   line-height: 1.4;
+}
+
+.order-info {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.order-info h4 {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.order-info p {
+  font-size: var(--font-sm);
+  color: var(--primary);
+  margin: 0;
+  font-weight: 600;
 }

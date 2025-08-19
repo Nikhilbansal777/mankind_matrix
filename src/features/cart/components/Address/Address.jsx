@@ -25,7 +25,6 @@ const Address = ({ onAddressSelect, selectedAddressId }) => {
 
   // Auto-fetch addresses on mount
   useEffect(() => {
-    console.log('Address component mounted, fetching addresses...');
     getAddresses();
   }, [getAddresses]);
 
@@ -38,7 +37,6 @@ const Address = ({ onAddressSelect, selectedAddressId }) => {
       if (defaultAddresses.length > 0) {
         // If multiple defaults, select the first one
         const selectedDefault = defaultAddresses[0];
-        console.log('Auto-selecting default address:', selectedDefault);
         
         if (defaultAddresses.length > 1) {
           console.warn(`Multiple default addresses found (${defaultAddresses.length}). Selected the first one.`);
@@ -47,21 +45,12 @@ const Address = ({ onAddressSelect, selectedAddressId }) => {
         onAddressSelect && onAddressSelect(selectedDefault);
       } else {
         // If no default address, select the first one
-        console.log('Auto-selecting first address (no default):', addresses[0]);
         onAddressSelect && onAddressSelect(addresses[0]);
       }
     }
   }, [addresses, selectedAddressId, onAddressSelect]);
 
-  // Update local selection state when selectedAddressId changes
-  useEffect(() => {
-    if (selectedAddressId && addresses.length > 0) {
-      const selectedAddr = addresses.find(addr => addr.id === selectedAddressId);
-      if (selectedAddr) {
-        console.log('Address selection updated:', selectedAddr);
-      }
-    }
-  }, [selectedAddressId, addresses]);
+
 
   const handleCreateAddress = async (addressData) => {
     try {
@@ -229,10 +218,7 @@ const Address = ({ onAddressSelect, selectedAddressId }) => {
             <div 
               key={address.id} 
               className={`address-card ${selectedAddressId === address.id ? 'selected' : ''} ${address.isDefault ? 'default' : ''}`}
-              onClick={() => {
-                console.log('Address card clicked:', address);
-                onAddressSelect && onAddressSelect(address);
-              }}
+              onClick={() => onAddressSelect && onAddressSelect(address)}
             >
               <div className="address-check">
                 <Check size={16} />

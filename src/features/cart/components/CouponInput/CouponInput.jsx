@@ -14,7 +14,14 @@ const CouponInput = ({
   className = '',
   disabled = false 
 }) => {
-  const { validateCoupon, validatedCoupon, loading: couponLoading, error: couponError } = useCoupons();
+  const { 
+    validateCoupon: validateCouponCode, 
+    validatedCoupon, 
+    loading: couponLoading, 
+    error: couponError,
+    clearValidatedCoupon,
+    resetError
+  } = useCoupons();
   const [couponCode, setCouponCode] = useState('');
   const [couponApplied, setCouponApplied] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
@@ -28,7 +35,7 @@ const CouponInput = ({
     }
 
     try {
-      await validateCoupon(couponCode.trim());
+      await validateCouponCode(couponCode.trim());
     } catch (error) {
       console.error('Error validating coupon:', error);
       setLocalError('Invalid coupon code');
@@ -37,16 +44,26 @@ const CouponInput = ({
 
   // Handle coupon code removal
   const handleRemoveCoupon = () => {
+    // Reset all local state
     setCouponCode('');
     setCouponApplied(false);
     setAppliedCoupon(null);
     setLocalError('');
-    onCouponRemoved?.();
+    
+    // Clear the validated coupon state and any errors
+    clearValidatedCoupon();
+    resetError();
+    
+    // Notify parent component that coupon was removed
+    if (onCouponRemoved) {
+      onCouponRemoved();
+    }
   };
 
   // Handle coupon validation result from Redux
   useEffect(() => {
-    if (validatedCoupon) {
+    
+    if (validatedCoupon && validatedCoupon.id) {
       const coupon = validatedCoupon;
       
       // Check if coupon is active
@@ -99,6 +116,17 @@ const CouponInput = ({
     }
   }, [validatedCoupon, subtotal, onCouponApplied, onCouponRemoved]);
 
+  // Handle when validated coupon is cleared externally
+  useEffect(() => {
+    
+    if (!validatedCoupon || !validatedCoupon.id) {
+      // Reset local state when validated coupon is cleared
+      setCouponApplied(false);
+      setAppliedCoupon(null);
+      setLocalError('');
+    }
+  }, [validatedCoupon]);
+
   // Calculate discount amount based on coupon type
   const calculateDiscountAmount = () => {
     if (!appliedCoupon) return 0;
@@ -115,6 +143,7 @@ const CouponInput = ({
 
   return (
     <div className={`coupon-input-container ${className}`}>
+      
       <div className="coupon-header">
         <Tag className="coupon-icon" />
         <span>Apply Coupon</span>

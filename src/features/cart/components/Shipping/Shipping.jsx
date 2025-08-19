@@ -1,32 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Calendar, 
-  Clock, 
   Truck, 
-  CreditCard, 
-  MapPin, 
-  User, 
-  Mail, 
-  Home,
-  Building,
-  Hash,
-  Globe,
-  CheckCircle,
-  AlertCircle
+  CheckCircle
 } from 'lucide-react';
+import { SHIPPING_COSTS, DELIVERY_TIMEFRAMES } from '../../utils/constants';
 import './Shipping.css';
 
 const Shipping = ({ 
   deliveryType, 
   onDeliveryTypeChange,
   selectedDate,
-  onDateSelect,
-  selectedTimeSlot,
-  onTimeSlotSelect,
-  paymentMethod,
-  onPaymentMethodChange,
-  cardDetails,
-  onCardDetailsChange
+  onDateSelect
 }) => {
   const [deliveryOptions, setDeliveryOptions] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -35,11 +20,11 @@ const Shipping = ({
   const getDefaultDeliveryOptions = () => {
     const currentDate = new Date();
     
-    // Standard delivery dates (starting from current date + 5 days / 120 hours)
+    // Standard delivery dates (starting from current date + 5 days)
     const standardDeliveryDays = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 7; i++) {
       const deliveryDate = new Date(currentDate);
-      deliveryDate.setHours(currentDate.getHours() + 120 + (i * 24)); // 5 days + additional days
+      deliveryDate.setDate(currentDate.getDate() + 5 + i);
       
       const formattedDate = deliveryDate.toLocaleDateString('en-US', { 
         month: 'short', 
@@ -52,15 +37,15 @@ const Shipping = ({
       standardDeliveryDays.push({
         date: formattedDate,
         day: dayName,
-        slots: ["8AM - 12PM", "12PM - 4PM", "4PM - 9PM"]
+        fullDate: deliveryDate
       });
     }
     
-    // Express delivery dates (starting from current date + 3 days / 72 hours)
+    // Express delivery dates (starting from current date + 2 days)
     const expressDeliveryDays = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       const deliveryDate = new Date(currentDate);
-      deliveryDate.setHours(currentDate.getHours() + 72 + (i * 24)); 
+      deliveryDate.setDate(currentDate.getDate() + 2 + i);
       
       const formattedDate = deliveryDate.toLocaleDateString('en-US', { 
         month: 'short', 
@@ -73,30 +58,30 @@ const Shipping = ({
       expressDeliveryDays.push({
         date: formattedDate,
         day: dayName,
-        slots: ["10AM - 2PM", "2PM - 6PM", "6PM - 9PM"]
+        fullDate: deliveryDate
       });
     }
     
     return {
       standard: {
         title: "Standard Delivery",
-        description: "5-7 business days",
-        price: 0,
+        description: DELIVERY_TIMEFRAMES.STANDARD,
+        price: SHIPPING_COSTS.STANDARD,
         icon: <Truck className="delivery-icon standard" />,
         deliveryDays: standardDeliveryDays
       },
       express: {
         title: "Express Delivery",
-        description: "2-3 business days",
-        price: 9.99,
-        icon: <Clock className="delivery-icon express" />,
+        description: DELIVERY_TIMEFRAMES.EXPRESS,
+        price: SHIPPING_COSTS.EXPRESS,
+        icon: <Truck className="delivery-icon express" />,
         deliveryDays: expressDeliveryDays
       }
     };
   };
 
   // Try to fetch delivery options from API, fallback to default options
-  const fetchDeliveryOptions = async () => {
+  const fetchDeliveryOptions = useCallback(async () => {
     try {
       const response = await fetch('/api/delivery-options');
       if (response.ok) {
@@ -106,26 +91,21 @@ const Shipping = ({
         setDeliveryOptions(getDefaultDeliveryOptions());
       }
     } catch (error) {
-      console.log('Using default delivery options');
       setDeliveryOptions(getDefaultDeliveryOptions());
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchDeliveryOptions();
-  }, []);
-
-  const handleCardChange = (field, value) => {
-    onCardDetailsChange({ ...cardDetails, [field]: value });
-  };
+  }, [fetchDeliveryOptions]);
 
   if (isLoading) {
     return (
       <div className="shipping-section">
         <div className="loading-spinner">
-          <Clock className="loading-icon" />
+          <Truck className="loading-icon" />
           <span>Loading delivery options...</span>
         </div>
       </div>
@@ -169,12 +149,18 @@ const Shipping = ({
         <div className="delivery-details">
           <div className="section-header">
             <Calendar className="section-icon" />
-            <h3>Select Delivery Date & Time</h3>
+            <h3>Select Delivery Date</h3>
           </div>
           
           <div className="delivery-dates">
             {deliveryOptions[deliveryType].deliveryDays.map((day, index) => (
-              <div key={index} className="delivery-date">
+              <button
+                key={index}
+                className={`delivery-date ${
+                  selectedDate === day.date ? 'selected' : ''
+                }`}
+                onClick={() => onDateSelect(day.date)}
+              >
                 <div className="date-header">
                   <Calendar className="date-icon" />
                   <div className="date-info">
@@ -182,148 +168,14 @@ const Shipping = ({
                     <span className="day-name">{day.day}</span>
                   </div>
                 </div>
-                
-                <div className="time-slots">
-                  {day.slots.map((slot, slotIndex) => (
-                    <button
-                      key={slotIndex}
-                      className={`time-slot ${
-                        selectedDate === day.date && selectedTimeSlot === slot ? 'selected' : ''
-                      }`}
-                      onClick={() => {
-                        onDateSelect(day.date);
-                        onTimeSlotSelect(slot);
-                      }}
-                    >
-                      <Clock className="time-icon" />
-                      <span>{slot}</span>
-                      {selectedDate === day.date && selectedTimeSlot === slot && (
-                        <CheckCircle className="time-check" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
+                {selectedDate === day.date && (
+                  <CheckCircle className="date-check" />
+                )}
+              </button>
             ))}
           </div>
         </div>
       )}
-
-      <div className="payment-section">
-        <div className="section-header">
-          <CreditCard className="section-icon" />
-          <h2>Payment Method</h2>
-        </div>
-        
-        <div className="payment-methods">
-          <div 
-            className={`payment-method ${paymentMethod === 'credit-card' ? 'selected' : ''}`}
-            onClick={() => onPaymentMethodChange('credit-card')}
-          >
-            <input 
-              type="radio" 
-              id="credit-card" 
-              name="paymentMethod" 
-              value="credit-card" 
-              checked={paymentMethod === 'credit-card'} 
-              onChange={(e) => onPaymentMethodChange(e.target.value)} 
-            />
-            <label htmlFor="credit-card">
-              <CreditCard className="payment-icon" />
-              <span>Credit Card</span>
-            </label>
-            {paymentMethod === 'credit-card' && (
-              <CheckCircle className="selection-check" />
-            )}
-          </div>
-          
-          <div 
-            className={`payment-method ${paymentMethod === 'paypal' ? 'selected' : ''}`}
-            onClick={() => onPaymentMethodChange('paypal')}
-          >
-            <input 
-              type="radio" 
-              id="paypal" 
-              name="paymentMethod" 
-              value="paypal" 
-              checked={paymentMethod === 'paypal'} 
-              onChange={(e) => onPaymentMethodChange(e.target.value)} 
-            />
-            <label htmlFor="paypal">
-              <span className="paypal-icon">PayPal</span>
-            </label>
-            {paymentMethod === 'paypal' && (
-              <CheckCircle className="selection-check" />
-            )}
-          </div>
-        </div>
-        
-        {paymentMethod === 'credit-card' && (
-          <div className="credit-card-fields">
-            <div className="form-group">
-              <label htmlFor="cardNumber">
-                <Hash className="field-icon" />
-                Card Number
-              </label>
-              <input 
-                type="text" 
-                id="cardNumber" 
-                placeholder="1234 5678 9012 3456" 
-                value={cardDetails.cardNumber}
-                onChange={(e) => handleCardChange('cardNumber', e.target.value)}
-                required 
-              />
-            </div>
-            
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="cardName">
-                  <User className="field-icon" />
-                  Cardholder Name
-                </label>
-                <input 
-                  type="text" 
-                  id="cardName" 
-                  placeholder="John Doe"
-                  value={cardDetails.cardName}
-                  onChange={(e) => handleCardChange('cardName', e.target.value)}
-                  required 
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="expiryDate">
-                  <Calendar className="field-icon" />
-                  Expiry Date
-                </label>
-                <input 
-                  type="text" 
-                  id="expiryDate" 
-                  placeholder="MM/YY"
-                  value={cardDetails.expiryDate}
-                  onChange={(e) => handleCardChange('expiryDate', e.target.value)}
-                  required 
-                />
-              </div>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="cvv">
-                <Hash className="field-icon" />
-                CVV
-              </label>
-              <input 
-                type="text" 
-                id="cvv" 
-                placeholder="123"
-                value={cardDetails.cvv}
-                onChange={(e) => handleCardChange('cvv', e.target.value)}
-                required 
-              />
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 };

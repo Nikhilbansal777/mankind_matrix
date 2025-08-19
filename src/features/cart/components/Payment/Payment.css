@@ -176,6 +176,27 @@
   box-shadow: none;
 }
 
+/* Order Summary Styles */
+.order-summary-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.order-summary-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.order-summary-row:last-child {
+  border-bottom: none;
+}
+
+
+
 /* Delivery Summary Styles */
 .delivery-summary-content {
   display: flex;

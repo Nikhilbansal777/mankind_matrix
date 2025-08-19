@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ShoppingBag, CreditCard } from 'lucide-react';
 import CouponInput from '../CouponInput';
 import './OrderSummary.css';
@@ -10,33 +10,24 @@ const OrderSummary = ({
   shipping, 
   discountAmount, 
   finalTotal,
+  createdOrder,
+  showCouponInput = true,
+  showPlaceOrderButton = true,
   onPlaceOrder,
-  isProcessing 
+  isProcessing,
+  onCouponApplied,
+  onCouponRemoved
 }) => {
-  // Handle coupon application
-  const handleCouponApplied = (coupon) => {
-    // Calculate discount based on coupon type
-    let discount = 0;
-    if (coupon.type === 'PERCENTAGE') {
-      discount = (subtotal * coupon.value) / 100;
-    } else if (coupon.type === 'FIXED') {
-      discount = Math.min(coupon.value, subtotal);
-    }
-    // Note: In a real implementation, you would update the parent component's discount
-    console.log('Coupon applied:', coupon, 'Discount:', discount);
-  };
-
-  // Handle coupon removal
-  const handleCouponRemoved = () => {
-    // Note: In a real implementation, you would clear the parent component's discount
-    console.log('Coupon removed');
-  };
-
   return (
     <div className="order-summary">
       <div className="summary-header">
         <ShoppingBag className="summary-icon" />
         <h2>Order Summary</h2>
+        {createdOrder && (
+          <div className="order-number">
+            <span>Order #{createdOrder.orderNumber || createdOrder.id}</span>
+          </div>
+        )}
       </div>
       
       <div className="order-items">
@@ -67,12 +58,14 @@ const OrderSummary = ({
           <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
         </div>
         
-        {/* Discount Coupon Section */}
-        <CouponInput
-          subtotal={subtotal}
-          onCouponApplied={handleCouponApplied}
-          onCouponRemoved={handleCouponRemoved}
-        />
+        {/* Discount Coupon Section - Only show if enabled */}
+        {showCouponInput && onCouponApplied && onCouponRemoved && (
+          <CouponInput
+            subtotal={subtotal}
+            onCouponApplied={onCouponApplied}
+            onCouponRemoved={onCouponRemoved}
+          />
+        )}
         
         {discountAmount > 0 && (
           <div className="discount">
@@ -87,23 +80,26 @@ const OrderSummary = ({
         </div>
       </div>
 
-      <button 
-        className="place-order-btn"
-        onClick={onPlaceOrder}
-        disabled={isProcessing}
-      >
-        {isProcessing ? (
-          <>
-            <div className="spinner"></div>
-            Processing...
-          </>
-        ) : (
-          <>
-            <CreditCard className="order-icon" />
-            Place Order
-          </>
-        )}
-      </button>
+      {/* Place Order Button - Only show if enabled */}
+      {showPlaceOrderButton && onPlaceOrder && (
+        <button 
+          className="place-order-btn"
+          onClick={onPlaceOrder}
+          disabled={isProcessing}
+        >
+          {isProcessing ? (
+            <>
+              <div className="spinner"></div>
+              Processing...
+            </>
+            ) : (
+              <>
+                <CreditCard className="order-icon" />
+                Place Order
+              </>
+            )}
+        </button>
+      )}
     </div>
   );
 };

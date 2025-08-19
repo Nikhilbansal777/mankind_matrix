@@ -201,54 +201,7 @@
   letter-spacing: 0.5px;
 }
 
-.time-slots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
 
-.time-slot {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 18px;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  background: #fff;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.95rem;
-  font-weight: 500;
-  position: relative;
-  min-width: 140px;
-}
-
-.time-slot:hover {
-  border-color: #007bff;
-  background: #f8f9ff;
-  transform: translateY(-1px);
-}
-
-.time-slot.selected {
-  border-color: #007bff;
-  background: #007bff;
-  color: white;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-}
-
-.time-icon {
-  width: 16px;
-  height: 16px;
-}
-
-.time-check {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 16px;
-  height: 16px;
-  color: #28a745;
-}
 
 /* Payment Section */
 .payment-section {
@@ -394,14 +347,7 @@
     height: 24px;
   }
   
-  .time-slots {
-    justify-content: center;
-  }
-  
-  .time-slot {
-    min-width: 120px;
-    padding: 10px 14px;
-  }
+
   
   .credit-card-fields .form-row {
     grid-template-columns: 1fr;
@@ -430,11 +376,7 @@
     font-size: 1.1rem;
   }
   
-  .time-slot {
-    min-width: 100px;
-    padding: 8px 12px;
-    font-size: 0.85rem;
-  }
+
   
   .delivery-type {
     padding: 16px;

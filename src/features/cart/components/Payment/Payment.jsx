@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { ArrowLeft, CreditCard, Check, MapPin, Calendar, Clock, Truck } from 'lucide-react';
+import React from 'react';
+import { ArrowLeft, Check, CreditCard } from 'lucide-react';
+import OrderSummary from '../OrderSummary';
+import DeliverySummary from '../DeliverySummary';
 import './Payment.css';
 
 const Payment = ({ 
   deliveryType, 
   selectedDate, 
-  selectedTimeSlot, 
-  deliveryOptions,
+  selectedAddress,
+  createdOrder,
   onBackToDelivery,
   onPlaceOrder,
   isProcessing 
 }) => {
-  const [paymentMethod, setPaymentMethod] = useState('paypal');
 
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
@@ -20,105 +21,112 @@ const Payment = ({
 
   return (
     <div className="payment-section">
-      {/* Updated Delivery Summary */}
-      <div className="content-card">
-        <h2>Delivery Summary</h2>
-        <div className="delivery-summary-content">
-          <div className="delivery-summary-row">
-            <div className="summary-icon">
-              {deliveryType === "express" ? <Clock size={18} /> : <Truck size={18} />}
-            </div>
-            <div className="summary-detail">
-              <span className="detail-label">Method</span>
-              <span className="detail-value">{deliveryOptions[deliveryType]?.title}</span>
-            </div>
-          </div>
-          
-          <div className="delivery-summary-row">
-            <div className="summary-icon">
-              <Calendar size={18} />
-            </div>
-            <div className="summary-detail">
-              <span className="detail-label">Date</span>
-              <span className="detail-value">{selectedDate}</span>
-            </div>
-          </div>
-          
-          <div className="delivery-summary-row">
-            <div className="summary-icon">
-              <Clock size={18} />
-            </div>
-            <div className="summary-detail">
-              <span className="detail-label">Time</span>
-              <span className="detail-value">{selectedTimeSlot}</span>
-            </div>
-          </div>
-          
-          <div className="delivery-summary-row">
-            <div className="summary-icon">
-              <MapPin size={18} />
-            </div>
-            <div className="summary-detail address-detail">
-              <span className="detail-label">Address</span>
-              <span className="detail-value">
-                123 Main Street, Apt 4B<br/>
-                New York, NY 10001
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Delivery Summary - First */}
+      <DeliverySummary
+        deliveryType={deliveryType}
+        selectedDate={selectedDate}
+        selectedAddress={selectedAddress}
+        title="Delivery Summary"
+      />
+
+      {/* Order Summary Component - Second */}
+      {createdOrder && (
+        <OrderSummary
+          items={createdOrder.items}
+          subtotal={createdOrder.subtotal}
+          tax={createdOrder.tax}
+          shipping={createdOrder.shippingValue}
+          discountAmount={createdOrder.discounts}
+          finalTotal={createdOrder.total}
+          createdOrder={createdOrder}
+          showCouponInput={false}
+          showPlaceOrderButton={false}
+        />
+      )}
       
+      {/* Payment Methods - Third */}
       <div className="payment-methods">
         <h2>Select Payment Method</h2>
-        <div 
-          className={`payment-method selected`}
-        >
-          <div className="method-icon">
-            <CreditCard size={24} />
+        <div className={`payment-method selected`}>
+          <div className="payment-method-info">
+            <CreditCard className="payment-icon" />
+            <div className="payment-details">
+              <h3>Credit Card</h3>
+              <p>Pay securely with your credit or debit card</p>
+            </div>
           </div>
-          <div className="method-details">
-            <h3>PayPal</h3>
-            <p>Pay securely with your PayPal account</p>
-          </div>
-          <div className="method-check">
-            <Check size={16} />
-          </div>
+          <Check className="payment-check" />
         </div>
       </div>
-      
-      <form className="content-card payment-form" onSubmit={handlePaymentSubmit}>
-        <h2>Payment Information</h2>
-        
-        <div className="paypal-info">
-          <div className="paypal-logo">
-            <span className="paypal-text">PayPal</span>
+
+      {/* Payment Form */}
+      <div className="payment-form">
+        <form onSubmit={handlePaymentSubmit}>
+          <div className="form-group">
+            <label htmlFor="cardNumber">Card Number</label>
+            <input
+              type="text"
+              id="cardNumber"
+              placeholder="1234 5678 9012 3456"
+              required
+            />
           </div>
-          <p className="paypal-description">
-            You will be redirected to PayPal to complete your payment securely. 
-            After successful payment, you will be redirected back to complete your order.
-          </p>
-        </div>
-        
-        <div className="button-group">
-          <button 
-            type="button" 
-            className="back-button"
-            onClick={onBackToDelivery}
-          >
-            <ArrowLeft size={16} />
-            <span>Back</span>
-          </button>
           
-          <button 
-            type="submit" 
-            className="place-order-button"
-            disabled={isProcessing}
-          >
-            {isProcessing ? 'Processing...' : 'Proceed to PayPal'}
-          </button>
-        </div>
-      </form>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="expiryDate">Expiry Date</label>
+              <input
+                type="text"
+                id="expiryDate"
+                placeholder="MM/YY"
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="cvv">CVV</label>
+              <input
+                type="text"
+                id="cvv"
+                placeholder="123"
+                required
+              />
+            </div>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="cardholderName">Cardholder Name</label>
+            <input
+              type="text"
+              id="cardholderName"
+              placeholder="John Doe"
+              required
+            />
+          </div>
+        </form>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="payment-actions">
+        <button
+          type="button"
+          className="back-button"
+          onClick={onBackToDelivery}
+          disabled={isProcessing}
+        >
+          <ArrowLeft size={16} />
+          Back to Delivery
+        </button>
+        
+        <button
+          type="submit"
+          className="place-order-button"
+          onClick={handlePaymentSubmit}
+          disabled={isProcessing}
+        >
+          {isProcessing ? 'Processing Payment...' : 'Place Order'}
+        </button>
+      </div>
     </div>
   );
 };

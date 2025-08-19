@@ -1,12 +1,13 @@
 import React from 'react';
+import { CHECKOUT_STEPS } from '../../utils/constants';
 import './CheckoutSteps.css';
 
 const CheckoutSteps = ({ currentStep }) => {
   const steps = [
-    { id: 'cart', label: 'Cart', number: 1 },
-    { id: 'delivery', label: 'Delivery', number: 2 },
-    { id: 'payment', label: 'Payment', number: 3 },
-    { id: 'confirmation', label: 'Confirmation', number: 4 }
+    { id: CHECKOUT_STEPS.CART, label: 'Cart', number: 1 },
+    { id: CHECKOUT_STEPS.DELIVERY, label: 'Delivery', number: 2 },
+    { id: CHECKOUT_STEPS.PAYMENT, label: 'Payment', number: 3 },
+    { id: CHECKOUT_STEPS.CONFIRMATION, label: 'Confirmation', number: 4 }
   ];
 
   const getStepStatus = (stepId) => {

@@ -8,6 +8,7 @@ export { default as OrderSummary } from './OrderSummary';
 export { default as Address } from './Address';
 export { default as Payment } from './Payment';
 export { default as CheckoutSteps } from './CheckoutSteps';
+export { default as DeliverySummary } from './DeliverySummary';
 
 // Address Components
 export { default as AddressForm } from './Address/AddressForm';

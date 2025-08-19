@@ -29,6 +29,20 @@
   font-weight: 600;
 }
 
+.order-number {
+  margin-left: auto;
+  background: #f8f9fa;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.order-number span {
+  color: #6c757d;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 .order-items {
   margin-bottom: 24px;
 }

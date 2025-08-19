@@ -26,6 +26,7 @@
   display: flex;
   gap: 8px;
   margin-bottom: 12px;
+  align-items: stretch; /* Ensure buttons and input have same height */
 }
 
 .coupon-input {
@@ -58,6 +59,9 @@
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
+  width: fit-content;
+  min-width: 80px;
+  text-align: center;
 }
 
 .apply-coupon-btn {
@@ -164,6 +168,12 @@
 @media (max-width: 768px) {
   .coupon-input-group {
     flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .apply-coupon-btn, .remove-coupon-btn {
+    min-width: auto; /* Remove minimum width constraint on mobile */
+    width: 100%; /* Full width on mobile for better touch targets */
   }
   
   .coupon-details {
