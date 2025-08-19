@@ -7,14 +7,7 @@ import { api } from '../client';
 const orderService = {
   // Create a new order
   createOrder: (orderData) => 
-    api.order.post('/', {
-      shippingAddressId: orderData.shippingAddressId,
-      shippingValue: orderData.shippingValue,
-      shippingDate: orderData.shippingDate,
-      deliveryType: orderData.deliveryType,
-      couponCode: orderData.couponCode,
-      notes: orderData.notes
-    }),
+    api.order.post('/', orderData),
 
   // Get all orders with pagination and sorting
   getOrders: ({ page = 0, size = 10, sort } = {}) =>

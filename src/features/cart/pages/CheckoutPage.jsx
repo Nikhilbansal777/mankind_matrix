@@ -85,24 +85,68 @@ const CheckoutPage = () => {
       
       // Prepare order data
       const orderData = {
-        shippingAddressId: selectedAddress.id,
-        shippingValue: shippingCost,
+        shippingAddressId: Number(selectedAddress.id),
+        shippingValue: Number(shippingCost),
         shippingDate: selectedDate,
-        deliveryType: deliveryType,
+        deliveryType: deliveryType === 'standard' ? 'STANDARD' : 'EXPRESS',
         couponCode: appliedCoupon?.code || null,
         notes: `Delivery: ${deliveryType === 'express' ? 'Express' : 'Standard'} on ${selectedDate}`
       };
 
-      // Ensure shipping date is properly formatted
-      if (orderData.shippingDate instanceof Date) {
-        orderData.shippingDate = orderData.shippingDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+      // Ensure shipping date is properly formatted as YYYY-MM-DD
+      if (orderData.shippingDate) {
+        // The date should already be in YYYY-MM-DD format from Shipping component
+        // Just verify it's a valid date string
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(orderData.shippingDate)) {
+          setAddressError('Invalid shipping date format');
+          setIsProcessing(false);
+          return;
+        }
       }
 
+      // Ensure couponCode is properly formatted
+      if (orderData.couponCode === null || orderData.couponCode === undefined) {
+        orderData.couponCode = null; // Explicitly set to null
+      } else if (typeof orderData.couponCode === 'string') {
+        const trimmedCode = orderData.couponCode.trim();
+        orderData.couponCode = trimmedCode.length > 0 ? trimmedCode : null;
+      } else {
+        orderData.couponCode = null; // Fallback to null for any other type
+      }
+
+      // Validate required fields
+      if (!orderData.shippingAddressId || !orderData.shippingDate || !orderData.deliveryType) {
+        setAddressError('Missing required shipping information');
+        setIsProcessing(false);
+        return;
+      }
+
+      // Final data validation and formatting
+      const finalOrderData = {
+        shippingAddressId: orderData.shippingAddressId,
+        shippingValue: orderData.shippingValue,
+        shippingDate: orderData.shippingDate,
+        deliveryType: orderData.deliveryType,
+        couponCode: orderData.couponCode,
+        notes: orderData.notes
+      };
+
       // Log the order data being sent (for debugging)
-      console.log('Creating order with data:', orderData);
+      console.log('Creating order with data:', finalOrderData);
+      console.log('Data types:', {
+        shippingAddressId: typeof finalOrderData.shippingAddressId,
+        shippingValue: typeof finalOrderData.shippingValue,
+        shippingDate: typeof finalOrderData.shippingDate,
+        deliveryType: typeof finalOrderData.deliveryType,
+        couponCode: typeof finalOrderData.couponCode,
+        notes: typeof finalOrderData.notes
+      });
+      console.log('JSON.stringify result:', JSON.stringify(finalOrderData));
+      console.log('API endpoint:', 'POST /api/v1/orders/');
+      console.log('Request headers:', { 'Content-Type': 'application/json' });
 
       // Create order via API
-      const result = await createOrder(orderData);
+      const result = await createOrder(finalOrderData);
       
       // Store the created order
       setCreatedOrder(result);

@@ -38,7 +38,8 @@ const Shipping = ({
       standardDeliveryDays.push({
         date: formattedDate,
         day: dayName,
-        fullDate: deliveryDate
+        fullDate: deliveryDate,
+        isoDate: deliveryDate.toISOString().split('T')[0] // Add ISO date for API
       });
     }
     
@@ -59,7 +60,8 @@ const Shipping = ({
       expressDeliveryDays.push({
         date: formattedDate,
         day: dayName,
-        fullDate: deliveryDate
+        fullDate: deliveryDate,
+        isoDate: deliveryDate.toISOString().split('T')[0] // Add ISO date for API
       });
     }
     
@@ -156,9 +158,9 @@ const Shipping = ({
               <div
                 key={index}
                 className={`delivery-date-card ${
-                  selectedDate === day.date ? 'selected' : ''
+                  selectedDate === day.isoDate ? 'selected' : ''
                 }`}
-                onClick={() => onDateSelect(day.date)}
+                onClick={() => onDateSelect(day.isoDate)}
               >
                 <div className="delivery-date-left">
                   <Calendar className="date-icon" />
