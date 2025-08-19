@@ -20,6 +20,7 @@ import LandingPages from '../features/landingpage/LandingPages.jsx';
 import ProductView from '../features/products/ProductView/ProductView.jsx';
 import AboutUs from '../features/about/AboutUs.jsx';
 import CheckoutPage from '../features/cart/pages/CheckoutPage.jsx';
+import ConfirmationPage from '../features/cart/pages/ConfirmationPage.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import Blog from '../features/blog/Blog.jsx';
@@ -48,6 +49,7 @@ const AppRouter = () => {
         <Route path="/return-request" element={<ProtectedRoute><ReturnRequest /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+        <Route path="/confirmation" element={<ConfirmationPage />} />
         
         {/* Public Routes - No authentication required */}
         <Route path="/products" element={<Product />} />

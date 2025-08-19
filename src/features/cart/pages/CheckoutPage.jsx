@@ -11,6 +11,7 @@ import { useCart } from '../../../hooks/useCart';
 import { useOrders } from '../../../hooks/useOrders';
 import { calculateTax, calculateShipping, calculateFinalTotal } from '../utils/calculations';
 import { validateCheckoutForm } from '../utils/validators';
+import { CHECKOUT_STEPS } from '../utils/constants';
 
 const CheckoutPage = () => {
   const { items, subtotal } = useCart();
@@ -18,7 +19,7 @@ const CheckoutPage = () => {
   const [deliveryType, setDeliveryType] = useState("standard");
   const [selectedDate, setSelectedDate] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [currentStep, setCurrentStep] = useState('delivery'); 
+  const [currentStep, setCurrentStep] = useState(CHECKOUT_STEPS.DELIVERY); 
   
   // Address selection state
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -152,7 +153,7 @@ const CheckoutPage = () => {
       setCreatedOrder(result);
       
       // Proceed to payment
-      setCurrentStep('payment');
+      setCurrentStep(CHECKOUT_STEPS.PAYMENT);
       
     } catch (error) {
       console.error('Failed to create order:', error);
@@ -167,9 +168,20 @@ const CheckoutPage = () => {
     
     try {
       // Simulate payment processing
+      // In a real implementation, this would redirect to the selected payment method
+      console.log('Processing payment...');
+      
       setTimeout(() => {
         setIsProcessing(false);
-        window.location.href = '/confirmation';
+        // Simulate successful payment and redirect to confirmation with order data
+        const orderData = {
+          orderNumber: createdOrder?.orderNumber || createdOrder?.id || `ORD-${Date.now()}`,
+          orderDate: new Date().toLocaleDateString(),
+          total: createdOrder?.total || finalTotal
+        };
+        
+        // Navigate to confirmation page with order data
+        window.location.href = `/confirmation?orderData=${encodeURIComponent(JSON.stringify(orderData))}`;
       }, 2000);
       
     } catch (error) {
@@ -180,7 +192,7 @@ const CheckoutPage = () => {
   };
 
   const handleBackToDelivery = () => {
-    setCurrentStep('delivery');
+    setCurrentStep(CHECKOUT_STEPS.DELIVERY);
     setCreatedOrder(null);
   };
 
@@ -206,7 +218,7 @@ const CheckoutPage = () => {
     <div className="delivery-container page" id="delivery-page">
       <CheckoutSteps currentStep={currentStep} />
 
-      <h1>{currentStep === 'delivery' ? 'Select Delivery Options' : ''}</h1>
+      <h1>{currentStep === CHECKOUT_STEPS.DELIVERY ? 'Select Delivery Options' : ''}</h1>
 
       {/* Display order creation errors */}
       {orderError && (
@@ -241,7 +253,7 @@ const CheckoutPage = () => {
 
       <div className="delivery-content">
         <div className="delivery-main">
-          {currentStep === 'delivery' ? (
+          {currentStep === CHECKOUT_STEPS.DELIVERY ? (
             <>
               {/* Delivery Address Selection */}
               <div className="delivery-section delivery-address">
@@ -281,7 +293,7 @@ const CheckoutPage = () => {
         </div>
 
         {/* Only show sidebar summary during delivery step */}
-        {currentStep === 'delivery' && (
+        {currentStep === CHECKOUT_STEPS.DELIVERY && (
           <div className="delivery-sidebar">
             {/* Order Summary */}
             <OrderSummary
@@ -298,7 +310,7 @@ const CheckoutPage = () => {
               onCouponRemoved={handleCouponRemoved}
             />
 
-            {currentStep === 'delivery' && (
+            {currentStep === CHECKOUT_STEPS.DELIVERY && (
               <>
                 <div className="delivery-info">
                   {selectedAddress && deliveryType && selectedDate ? (

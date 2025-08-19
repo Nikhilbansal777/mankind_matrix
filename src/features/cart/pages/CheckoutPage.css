@@ -697,46 +697,7 @@
   margin-bottom: 1.5rem;
 }
 
-/* Payment Form Specific Styles */
-.payment-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 0.1rem;
-}
-
-.form-group label {
-  font-size: var(--font-sm);
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.form-group input {
-  padding: 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  font-size: var(--font-base);
-  transition: border-color 0.2s ease;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-
-.form-row {
-  display: flex;
-  gap: 1rem;
-}
-
-.form-row .form-group {
-  flex: 1;
-}
+/* Payment Form Specific Styles - Removed as using CSS modules */
 
 .sample-coupon {
   margin-top: 0.5rem;

@@ -21,7 +21,6 @@ const OrderSummary = ({
   return (
     <div className="order-summary">
       <div className="summary-header">
-        <h2>Order Summary</h2>
         {createdOrder && (
           <div className="order-number">
             <span>Order #{createdOrder.orderNumber || createdOrder.id}</span>
