@@ -14,7 +14,6 @@ export { default as DeliverySummary } from './DeliverySummary';
 export { default as AddressForm } from './Address/AddressForm';
 
 // Checkout Steps Components
-export { default as CheckoutSteps } from './CheckoutSteps/CheckoutSteps';
 
 // Payment Components
 export { default as Payment } from './Payment/Payment';
