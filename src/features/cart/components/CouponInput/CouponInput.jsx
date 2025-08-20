@@ -117,7 +117,6 @@ const CouponInput = ({
 
   // Handle when validated coupon is cleared externally
   useEffect(() => {
-    
     if (!validatedCoupon || !validatedCoupon.id) {
       // Reset local state when validated coupon is cleared
       setCouponApplied(false);
