@@ -13,6 +13,46 @@
   overflow: visible;
 }
 
+/* Loading Section */
+.loadingSection {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+}
+
+.loadingSpinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error Section */
+.errorSection {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+}
+
+.errorIcon {
+  color: #ef4444;
+  margin-bottom: 1.5rem;
+}
+
+.errorMessage {
+  color: #6b7280;
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+}
+
 /* Success Section */
 .successSection {
   text-align: center;
@@ -64,31 +104,36 @@
 }
 
 .orderInfoGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
 }
 
 .orderInfoItem {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 1rem;
   background: #f8fafc;
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
+  min-height: auto;
 }
 
 .orderInfoItem .label {
   font-weight: 500;
   color: #64748b;
+  flex-shrink: 0;
 }
 
 .orderInfoItem .value {
   font-weight: 600;
   color: #1f2937;
+  text-align: right;
+  word-break: break-all;
+  max-width: 300px;
 }
 
 .statusConfirmed {
@@ -97,6 +142,185 @@
   padding: 0.25rem 0.75rem;
   border-radius: 0.5rem;
   font-size: 0.875rem;
+}
+
+.statusPaid {
+  color: #059669 !important;
+  background: #d1fae5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Order Summary */
+.orderSummary {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.orderSummary h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.summaryGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.summaryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.summaryItem:last-child {
+  border-bottom: none;
+}
+
+.summaryItem .label {
+  font-weight: 500;
+  color: #64748b;
+}
+
+.summaryItem .value {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.totalItem {
+  border-top: 2px solid #1f2937;
+  border-bottom: none;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+.totalItem .label {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 1.125rem;
+}
+
+.totalItem .value {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 1.125rem;
+}
+
+/* Coupon Info */
+.couponInfo {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  background: #fef3c7;
+  border-radius: 0.75rem;
+  border: 1px solid #f59e0b;
+}
+
+.couponInfo h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.couponDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.couponCode {
+  font-weight: 700;
+  color: #92400e;
+  background: #fbbf24;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.couponName {
+  flex: 1;
+  color: #92400e;
+  font-weight: 500;
+}
+
+.couponDiscount {
+  font-weight: 700;
+  color: #059669;
+  background: #d1fae5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Order Items */
+.orderItems {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+.orderItems h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.itemsList {
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.itemRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  align-items: center;
+}
+
+.itemRow:last-child {
+  border-bottom: none;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.itemName {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.itemQuantity {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.itemPrice,
+.itemSubtotal {
+  font-weight: 600;
+  color: #1f2937;
+  text-align: right;
 }
 
 /* Next Steps Section */
@@ -291,6 +515,27 @@
     gap: 1rem;
   }
   
+  .summaryGrid {
+    gap: 0.5rem;
+  }
+  
+  .couponDetails {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .itemRow {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .itemPrice,
+  .itemSubtotal {
+    text-align: center;
+  }
+  
   .stepsGrid {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -337,5 +582,10 @@
     width: 32px;
     height: 32px;
     font-size: 1rem;
+  }
+  
+  .orderSummary,
+  .couponInfo {
+    padding: 1rem;
   }
 }

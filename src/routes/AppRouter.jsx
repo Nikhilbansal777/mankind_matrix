@@ -49,7 +49,7 @@ const AppRouter = () => {
         <Route path="/return-request" element={<ProtectedRoute><ReturnRequest /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
-        <Route path="/confirmation" element={<ConfirmationPage />} />
+        <Route path="/confirmation" element={<ProtectedRoute><ConfirmationPage /></ProtectedRoute>} />
         
         {/* Public Routes - No authentication required */}
         <Route path="/products" element={<Product />} />

@@ -38,6 +38,17 @@ export const getOrder = createAsyncThunk(
   }
 );
 
+export const payOrder = createAsyncThunk(
+  'orders/payOrder',
+  async ({ orderId, paymentData }, { rejectWithValue }) => {
+    try {
+      const response = await orderService.payOrder(orderId, paymentData);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to pay for order');
+    }
+  }
+);
 
 
 // Initial state
@@ -46,6 +57,8 @@ const initialState = {
   currentOrder: null,
   loading: false,
   error: null,
+  paymentLoading: false,
+  paymentError: null,
   pagination: {
     page: 0,
     size: 10,
@@ -66,6 +79,7 @@ const orderSlice = createSlice({
   reducers: {
     clearError: (state) => {
       state.error = null;
+      state.paymentError = null;
     },
     clearCurrentOrder: (state) => {
       state.currentOrder = null;
@@ -138,6 +152,25 @@ const orderSlice = createSlice({
         state.error = action.payload || 'Failed to fetch order';
       });
 
+    // Pay order
+    builder
+      .addCase(payOrder.pending, (state) => {
+        state.paymentLoading = true;
+        state.paymentError = null;
+      })
+      .addCase(payOrder.fulfilled, (state, action) => {
+        state.paymentLoading = false;
+        state.currentOrder = action.payload;
+        // Also update the order in the list if present
+        const index = state.orders.findIndex(o => o.id === action.payload.id);
+        if (index !== -1) {
+          state.orders[index] = action.payload;
+        }
+      })
+      .addCase(payOrder.rejected, (state, action) => {
+        state.paymentLoading = false;
+        state.paymentError = action.payload || 'Failed to process payment';
+      });
 
   }
 });
@@ -158,6 +191,8 @@ export const selectOrdersLoading = (state) => state.orders.loading;
 export const selectOrdersError = (state) => state.orders.error;
 export const selectOrdersPagination = (state) => state.orders.pagination;
 export const selectOrdersFilters = (state) => state.orders.filters;
+export const selectPaymentLoading = (state) => state.orders.paymentLoading;
+export const selectPaymentError = (state) => state.orders.paymentError;
 
 // Export reducer
 export default orderSlice.reducer;

@@ -19,9 +19,7 @@ const Payment = ({
 
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
-    // TODO: In production, this would redirect to the selected payment method
-    // window.location.href = 'https://www.paypal.com/checkoutnow/...';
-    onPlaceOrder();
+    onPlaceOrder({ method: selectedPaymentMethod });
   };
 
   const toggleOrderSummary = () => {

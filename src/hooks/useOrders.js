@@ -4,11 +4,14 @@ import {
   fetchOrders,
   createOrder,
   getOrder,
+  payOrder as payOrderThunk,
   selectOrders,
   selectCurrentOrder,
   selectOrdersLoading,
   selectOrdersError,
   selectOrdersPagination,
+  selectPaymentLoading,
+  selectPaymentError,
   clearCurrentOrder,
   clearError
 } from '../redux/slices/orderSlice';
@@ -24,6 +27,8 @@ export const useOrders = () => {
   const loading = useSelector(selectOrdersLoading);
   const error = useSelector(selectOrdersError);
   const pagination = useSelector(selectOrdersPagination);
+  const paymentLoading = useSelector(selectPaymentLoading);
+  const paymentError = useSelector(selectPaymentError);
 
   // Fetch orders with pagination
   const getOrders = useCallback(async (page = 0, size = 10, sort = ['createdAt,desc']) => {
@@ -78,6 +83,20 @@ export const useOrders = () => {
     dispatch(clearError());
   }, [dispatch]);
 
+  // Pay order
+  const payOrder = useCallback(async (orderId, paymentData) => {
+    if (!isInitialized || !isAuthenticated) {
+      throw new Error('You must be logged in to pay for orders');
+    }
+    try {
+      const result = await dispatch(payOrderThunk({ orderId, paymentData })).unwrap();
+      return result;
+    } catch (err) {
+      console.error('Error paying for order:', err);
+      throw err;
+    }
+  }, [dispatch, isInitialized, isAuthenticated]);
+
   // Memoize the return value to prevent unnecessary re-renders
   return useMemo(() => ({
     // State
@@ -85,12 +104,15 @@ export const useOrders = () => {
     currentOrder,
     loading,
     error,
+    paymentLoading,
+    paymentError,
     pagination,
     
     // Actions
     getOrders,
     createOrder: createNewOrder,
     getOrder: getOrderById,
+    payOrder,
     clearOrder,
     resetError
   }), [
@@ -98,10 +120,13 @@ export const useOrders = () => {
     currentOrder,
     loading,
     error,
+    paymentLoading,
+    paymentError,
     pagination,
     getOrders,
     createNewOrder,
     getOrderById,
+    payOrder,
     clearOrder,
     resetError
   ]);

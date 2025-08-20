@@ -15,7 +15,7 @@ import { CHECKOUT_STEPS } from '../utils/constants';
 
 const CheckoutPage = () => {
   const { items, subtotal } = useCart();
-  const { createOrder, loading: orderLoading, error: orderError, resetError } = useOrders();
+  const { createOrder, payOrder, loading: orderLoading, error: orderError, resetError } = useOrders();
   const [deliveryType, setDeliveryType] = useState("standard");
   const [selectedDate, setSelectedDate] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -163,26 +163,25 @@ const CheckoutPage = () => {
     }
   };
 
-  const handlePlaceOrder = async () => {
+  const handlePlaceOrder = async ({ method } = {}) => {
     setIsProcessing(true);
     
     try {
-      // Simulate payment processing
-      // In a real implementation, this would redirect to the selected payment method
-      console.log('Processing payment...');
-      
-      setTimeout(() => {
-        setIsProcessing(false);
-        // Simulate successful payment and redirect to confirmation with order data
-        const orderData = {
-          orderNumber: createdOrder?.orderNumber || createdOrder?.id || `ORD-${Date.now()}`,
-          orderDate: new Date().toLocaleDateString(),
-          total: createdOrder?.total || finalTotal
-        };
-        
-        // Navigate to confirmation page with order data
-        window.location.href = `/confirmation?orderData=${encodeURIComponent(JSON.stringify(orderData))}`;
-      }, 2000);
+      if (!createdOrder?.id) {
+        throw new Error('Order not found. Please go back and create the order again.');
+      }
+
+      const paymentData = { paymentMethod: (method || 'paypal').toUpperCase() };
+      const paidOrder = await payOrder(createdOrder.id, paymentData);
+
+      // Redirect to confirmation with returned order data
+      const orderData = {
+        orderId: paidOrder?.id,
+        orderNumber: paidOrder?.orderNumber || paidOrder?.id || `ORD-${Date.now()}`,
+        orderDate: new Date(paidOrder?.updatedAt || Date.now()).toLocaleDateString(),
+        total: paidOrder?.total || finalTotal
+      };
+      window.location.href = `/confirmation?orderData=${encodeURIComponent(JSON.stringify(orderData))}`;
       
     } catch (error) {
       console.error('Payment failed:', error);

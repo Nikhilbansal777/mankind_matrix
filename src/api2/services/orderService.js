@@ -19,7 +19,11 @@ const orderService = {
 
   // Get a single order by ID
   getOrder: (orderId) => 
-    api.order.get(`/${orderId}`)
+    api.order.get(`/${orderId}`),
+
+  // Pay for an order
+  payOrder: (orderId, paymentData = {}) =>
+    api.order.post(`/${orderId}/pay`, paymentData)
 };
 
 export default orderService;
