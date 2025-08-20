@@ -62,7 +62,6 @@ const CouponInput = ({
 
   // Handle coupon validation result from Redux
   useEffect(() => {
-    
     if (validatedCoupon && validatedCoupon.id) {
       const coupon = validatedCoupon;
       
