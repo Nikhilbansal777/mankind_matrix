@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../../hooks/useCart';
+import { useCart } from '../../../hooks/useCart';
 import { useNavigate } from 'react-router-dom';
 import { FaTrash, FaPlus, FaMinus, FaSpinner } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import withLayout from '../../layouts/HOC/withLayout';
+import withLayout from '../../../layouts/HOC/withLayout';
 import styles from './CartPage.module.css';
 
 const CartPage = () => {
@@ -14,7 +14,6 @@ const CartPage = () => {
     subtotal,
     loading, 
     error,
-    addToCart, 
     removeFromCart, 
     updateQuantity,
     clearError 
@@ -71,7 +70,7 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    navigate('/delivery');
+    navigate('/checkout');
   };
   
   // Clear error when component mounts
@@ -213,10 +212,6 @@ const CartPage = () => {
             <div className={styles.tax}>
               <span>Tax (10%):</span>
               <span>${(subtotal * 0.1).toFixed(2)}</span>
-            </div>
-            <div className={styles.shipping}>
-              <span>Shipping:</span>
-              <span>FREE</span>
             </div>
             <div className={styles.grandTotal}>
               <span>Total:</span>

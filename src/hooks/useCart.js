@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useRef } from 'react';
 import {
   fetchCart,
   addItemToCart,
