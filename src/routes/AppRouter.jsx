@@ -11,15 +11,16 @@ import ManageAddressesPage from '../features/profile/ManageAddress.jsx';
 import OrderManager from '../features/profile/Orders.jsx';
 import PaymentMethods from '../features/profile/Payments.jsx';
 import Help from '../features/profile/Help.jsx';
-import CartPage from '../features/cart/CartPage.jsx';
-import CheckoutPage from '../features/cart/CheckoutPage.jsx';
+import CartPage from '../features/cart/pages/CartPage.jsx';
+
 import ReturnRequest from '../features/profile/ReturnRequest.jsx';
 import AdminPage from '../features/admin/AdminPage.jsx';
 import ContactPage from '../features/contact/ContactPage.jsx';
 import LandingPages from '../features/landingpage/LandingPages.jsx';  
 import ProductView from '../features/products/ProductView/ProductView.jsx';
 import AboutUs from '../features/about/AboutUs.jsx';
-import DeliveryPage from '../features/cart/Delivery.jsx';
+import CheckoutPage from '../features/cart/pages/CheckoutPage.jsx';
+import ConfirmationPage from '../features/cart/pages/ConfirmationPage.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import Blog from '../features/blog/Blog.jsx';
@@ -47,8 +48,8 @@ const AppRouter = () => {
         <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
         <Route path="/return-request" element={<ProtectedRoute><ReturnRequest /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
-        <Route path="/delivery" element={<ProtectedRoute><DeliveryPage /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+        <Route path="/confirmation" element={<ProtectedRoute><ConfirmationPage /></ProtectedRoute>} />
         
         {/* Public Routes - No authentication required */}
         <Route path="/products" element={<Product />} />
