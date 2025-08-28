@@ -30,3 +30,23 @@ export const CHECKOUT_STEPS = {
   PAYMENT: 'payment',
   CONFIRMATION: 'confirmation'
 };
+
+// Payment providers
+export const PAYMENT_PROVIDERS = {
+  STRIPE: 'STRIPE',
+  PAYPAL: 'PAYPAL',
+};
+
+// Payment provider display names
+export const PAYMENT_PROVIDER_NAMES = {
+  [PAYMENT_PROVIDERS.STRIPE]: 'Stripe',
+  [PAYMENT_PROVIDERS.PAYPAL]: 'PayPal',
+};
+
+// Payment statuses
+export const PAYMENT_STATUSES = {
+  PENDING: 'PENDING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED',
+};

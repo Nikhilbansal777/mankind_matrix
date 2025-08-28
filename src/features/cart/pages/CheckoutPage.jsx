@@ -164,6 +164,13 @@ const CheckoutPage = () => {
   };
 
   const handlePlaceOrder = async ({ method } = {}) => {
+    // This function now only handles PayPal payments
+    // Stripe payments are handled directly in the StripePayment component
+    if (method !== 'paypal') {
+      console.log('Payment method not supported:', method);
+      return;
+    }
+
     setIsProcessing(true);
     
     try {
@@ -171,7 +178,7 @@ const CheckoutPage = () => {
         throw new Error('Order not found. Please go back and create the order again.');
       }
 
-      const paymentData = { paymentMethod: (method || 'paypal').toUpperCase() };
+      const paymentData = { paymentMethod: method.toUpperCase() };
       const paidOrder = await payOrder(createdOrder.id, paymentData);
 
       // Redirect to confirmation with returned order data
