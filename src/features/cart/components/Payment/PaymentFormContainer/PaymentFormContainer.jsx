@@ -23,7 +23,7 @@ const PaymentFormContainer = ({
   showPaymentForm,
   paymentIntentLoading
 }) => {
-  const { createPaymentIntent, paymentIntent, paymentIntentError } = useOrders();
+  const { paymentIntent, paymentIntentError } = useOrders();
 
   const renderPaymentForm = () => {
     if (!showPaymentForm) {
