@@ -5,6 +5,7 @@ import {
   createOrder,
   getOrder,
   payOrder as payOrderThunk,
+  createPaymentIntent as createPaymentIntentThunk,
   selectOrders,
   selectCurrentOrder,
   selectOrdersLoading,
@@ -12,6 +13,9 @@ import {
   selectOrdersPagination,
   selectPaymentLoading,
   selectPaymentError,
+  selectPaymentIntent,
+  selectPaymentIntentLoading,
+  selectPaymentIntentError,
   clearCurrentOrder,
   clearError
 } from '../redux/slices/orderSlice';
@@ -29,6 +33,9 @@ export const useOrders = () => {
   const pagination = useSelector(selectOrdersPagination);
   const paymentLoading = useSelector(selectPaymentLoading);
   const paymentError = useSelector(selectPaymentError);
+  const paymentIntent = useSelector(selectPaymentIntent); // Assuming selectPaymentIntent is a new selector
+  const paymentIntentLoading = useSelector(selectPaymentIntentLoading); // Assuming selectPaymentIntentLoading is a new selector
+  const paymentIntentError = useSelector(selectPaymentIntentError); // Assuming selectPaymentIntentError is a new selector
 
   // Fetch orders with pagination
   const getOrders = useCallback(async (page = 0, size = 10, sort = ['createdAt,desc']) => {
@@ -83,16 +90,30 @@ export const useOrders = () => {
     dispatch(clearError());
   }, [dispatch]);
 
-  // Pay order
-  const payOrder = useCallback(async (orderId, paymentData) => {
+  // Pay order with payment intent ID
+  const payOrder = useCallback(async (orderId, paymentIntentId) => {
     if (!isInitialized || !isAuthenticated) {
       throw new Error('You must be logged in to pay for orders');
     }
     try {
-      const result = await dispatch(payOrderThunk({ orderId, paymentData })).unwrap();
+      const result = await dispatch(payOrderThunk({ orderId, paymentIntentId })).unwrap();
       return result;
     } catch (err) {
       console.error('Error paying for order:', err);
+      throw err;
+    }
+  }, [dispatch, isInitialized, isAuthenticated]);
+
+  // Create payment intent for Stripe
+  const createPaymentIntent = useCallback(async (orderId, provider = 'STRIPE') => {
+    if (!isInitialized || !isAuthenticated) {
+      throw new Error('You must be logged in to create payment intent');
+    }
+    try {
+      const result = await dispatch(createPaymentIntentThunk({ orderId, provider })).unwrap();
+      return result;
+    } catch (err) {
+      console.error('Error creating payment intent:', err);
       throw err;
     }
   }, [dispatch, isInitialized, isAuthenticated]);
@@ -106,6 +127,9 @@ export const useOrders = () => {
     error,
     paymentLoading,
     paymentError,
+    paymentIntent,
+    paymentIntentLoading,
+    paymentIntentError,
     pagination,
     
     // Actions
@@ -113,6 +137,7 @@ export const useOrders = () => {
     createOrder: createNewOrder,
     getOrder: getOrderById,
     payOrder,
+    createPaymentIntent,
     clearOrder,
     resetError
   }), [
@@ -122,11 +147,15 @@ export const useOrders = () => {
     error,
     paymentLoading,
     paymentError,
+    paymentIntent,
+    paymentIntentLoading,
+    paymentIntentError,
     pagination,
     getOrders,
     createNewOrder,
     getOrderById,
     payOrder,
+    createPaymentIntent,
     clearOrder,
     resetError
   ]);
