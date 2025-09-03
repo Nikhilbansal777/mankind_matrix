@@ -22,8 +22,12 @@ const orderService = {
     api.order.get(`/${orderId}`),
 
   // Pay for an order
-  payOrder: (orderId, paymentData = {}) =>
-    api.order.post(`/${orderId}/pay`, paymentData)
+  payOrder: (orderId, paymentIntentId) =>
+    api.order.post(`/${orderId}/pay`, { paymentIntentId }),
+
+  // Create payment intent for Stripe
+  createPaymentIntent: (orderId, provider = 'STRIPE') =>
+    api.order.post(`/${orderId}/payment-intent`, { provider })
 };
 
 export default orderService;

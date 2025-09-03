@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Check, CreditCard, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import { toast } from 'react-toastify';
 import OrderSummary from '../OrderSummary';
 import DeliverySummary from '../DeliverySummary';
+import PaymentFormContainer from './PaymentFormContainer';
+import { useOrders } from '../../../../hooks/useOrders';
+import { handlePaymentSuccess, handlePaymentError } from '../../../../utils/payment';
 import styles from './Payment.module.css';
 
 const Payment = ({ 
@@ -15,12 +19,11 @@ const Payment = ({
 }) => {
   const [orderSummaryOpen, setOrderSummaryOpen] = useState(true);
   const [deliverySummaryOpen, setDeliverySummaryOpen] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('paypal');
-
-  const handlePaymentSubmit = (e) => {
-    e.preventDefault();
-    onPlaceOrder({ method: selectedPaymentMethod });
-  };
+  const [selectedProvider, setSelectedProvider] = useState('STRIPE');
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [paymentIntentLoading, setPaymentIntentLoading] = useState(false);
+  
+  const { createPaymentIntent, payOrder } = useOrders();
 
   const toggleOrderSummary = () => {
     setOrderSummaryOpen(!orderSummaryOpen);
@@ -30,22 +33,57 @@ const Payment = ({
     setDeliverySummaryOpen(!deliverySummaryOpen);
   };
 
-  const handlePaymentMethodSelect = (method) => {
-    setSelectedPaymentMethod(method);
+  const handleProviderSelect = (provider) => {
+    setSelectedProvider(provider);
+    setShowPaymentForm(false);
   };
 
-
-
-  const getPaymentMethodName = (method) => {
-    switch (method) {
-      case 'paypal':
-        return 'PayPal';
-      case 'stripe':
-        return 'Stripe';
-      default:
-        return 'PayPal';
+  const handlePayClick = async () => {
+    if (selectedProvider === 'STRIPE') {
+      setPaymentIntentLoading(true);
+      try {
+        // Call the payment intent API
+        await createPaymentIntent(createdOrder.id, selectedProvider);
+        setShowPaymentForm(true);
+      } catch (error) {
+        console.error('Failed to create payment intent:', error);
+        // Show error message to user using toast
+        toast.error('Failed to create payment intent. Please try again.', {
+          position: 'bottom-center'
+        });
+      } finally {
+        setPaymentIntentLoading(false);
+      }
+    } else if (selectedProvider === 'PAYPAL') {
+      setShowPaymentForm(true);
     }
   };
+
+  const handleStripePaymentSuccess = async (paymentIntent) => {
+    console.log('Stripe payment successful:', paymentIntent);
+    
+    try {
+      // Call the pay endpoint with the payment intent ID
+      const paidOrder = await payOrder(createdOrder.id, paymentIntent.id);
+      
+      // Use utility function to handle success
+      handlePaymentSuccess(paidOrder);
+    } catch (error) {
+      // Use utility function to handle error and show toast
+      const errorMessage = handlePaymentError(error, 'Payment successful but confirmation failed. Please contact support.');
+      toast.error(errorMessage, {
+        position: 'bottom-center'
+      });
+    }
+  };
+
+  const handleStripePaymentError = (error) => {
+    console.error('Stripe payment failed:', error);
+    // Error is handled within the Stripe component
+  };
+
+  // Use the total directly from the order (API returns amount in dollars)
+  const stripeAmount = createdOrder ? createdOrder.total : 0;
 
   return (
     <div className={styles.paymentSection}>
@@ -54,41 +92,18 @@ const Payment = ({
       <div className={styles.paymentLayout}>
         {/* Left Side - Payment */}
         <div className={styles.paymentLeft}>
-          <div className={styles.paymentMethods}>
-            <h2>Select Payment Method</h2>
-            
-            {/* PayPal */}
-            <div 
-              className={`${styles.paymentMethod} ${selectedPaymentMethod === 'paypal' ? styles.selected : ''}`}
-              onClick={() => handlePaymentMethodSelect('paypal')}
-              data-method="paypal"
-            >
-              <div className={styles.paymentMethodInfo}>
-                <CreditCard className={styles.paymentIcon} />
-                <div className={styles.paymentDetails}>
-                  <h3>PayPal</h3>
-                  <p>Pay securely with PayPal - Fast, secure, and trusted worldwide</p>
-                </div>
-              </div>
-              {selectedPaymentMethod === 'paypal' && <Check className={styles.paymentCheck} />}
-            </div>
-
-            {/* Stripe */}
-            <div 
-              className={`${styles.paymentMethod} ${selectedPaymentMethod === 'stripe' ? styles.selected : ''}`}
-              onClick={() => handlePaymentMethodSelect('stripe')}
-              data-method="stripe"
-            >
-              <div className={styles.paymentMethodInfo}>
-                <CreditCard className={styles.paymentIcon} />
-                <div className={styles.paymentDetails}>
-                  <h3>Stripe</h3>
-                  <p>Secure payment processing with Stripe - Accepts all major cards</p>
-                </div>
-              </div>
-              {selectedPaymentMethod === 'stripe' && <Check className={styles.paymentCheck} />}
-            </div>
-          </div>
+          <PaymentFormContainer
+            orderId={createdOrder?.id}
+            amount={stripeAmount}
+            currency="USD"
+            onPaymentSuccess={handleStripePaymentSuccess}
+            onPaymentError={handleStripePaymentError}
+            isProcessing={isProcessing}
+            selectedProvider={selectedProvider}
+            onProviderSelect={handleProviderSelect}
+            showPaymentForm={showPaymentForm}
+            paymentIntentLoading={paymentIntentLoading}
+          />
         </div>
 
         {/* Right Side - Summaries and Buttons */}
@@ -149,17 +164,28 @@ const Payment = ({
               </div>
             )}
           </div>
-
-          {/* Action Buttons - Positioned like delivery mode */}
-          <div className={styles.paymentActions}>
-            <button
-              type="submit"
-              className={styles.placeOrderButton}
-              onClick={handlePaymentSubmit}
-              disabled={isProcessing}
-            >
-              {isProcessing ? 'Processing Payment...' : `Pay with ${getPaymentMethodName(selectedPaymentMethod)}`}
-            </button>
+          
+          {/* Action Buttons */}
+          <div className={styles.actionButtons}>
+            {!showPaymentForm && (
+              <button
+                type="button"
+                className={styles.payButton}
+                onClick={handlePayClick}
+                disabled={isProcessing || paymentIntentLoading}
+              >
+                {paymentIntentLoading ? (
+                  <>
+                    <div className={styles.buttonLoadingSpinner}></div>
+                    Generating Payment...
+                  </>
+                ) : isProcessing ? (
+                  'Processing...'
+                ) : (
+                  `Pay with ${selectedProvider}`
+                )}
+              </button>
+            )}
             
             <button
               type="button"

@@ -40,12 +40,24 @@ export const getOrder = createAsyncThunk(
 
 export const payOrder = createAsyncThunk(
   'orders/payOrder',
-  async ({ orderId, paymentData }, { rejectWithValue }) => {
+  async ({ orderId, paymentIntentId }, { rejectWithValue }) => {
     try {
-      const response = await orderService.payOrder(orderId, paymentData);
+      const response = await orderService.payOrder(orderId, paymentIntentId);
       return response;
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to pay for order');
+    }
+  }
+);
+
+export const createPaymentIntent = createAsyncThunk(
+  'orders/createPaymentIntent',
+  async ({ orderId, provider = 'STRIPE' }, { rejectWithValue }) => {
+    try {
+      const response = await orderService.createPaymentIntent(orderId, provider);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to create payment intent');
     }
   }
 );
@@ -59,6 +71,9 @@ const initialState = {
   error: null,
   paymentLoading: false,
   paymentError: null,
+  paymentIntentLoading: false,
+  paymentIntentError: null,
+  paymentIntent: null,
   pagination: {
     page: 0,
     size: 10,
@@ -80,6 +95,7 @@ const orderSlice = createSlice({
     clearError: (state) => {
       state.error = null;
       state.paymentError = null;
+      state.paymentIntentError = null;
     },
     clearCurrentOrder: (state) => {
       state.currentOrder = null;
@@ -172,6 +188,21 @@ const orderSlice = createSlice({
         state.paymentError = action.payload || 'Failed to process payment';
       });
 
+    // Create payment intent
+    builder
+      .addCase(createPaymentIntent.pending, (state) => {
+        state.paymentIntentLoading = true;
+        state.paymentIntentError = null;
+      })
+      .addCase(createPaymentIntent.fulfilled, (state, action) => {
+        state.paymentIntentLoading = false;
+        state.paymentIntent = action.payload;
+      })
+      .addCase(createPaymentIntent.rejected, (state, action) => {
+        state.paymentIntentLoading = false;
+        state.paymentIntentError = action.payload || 'Failed to create payment intent';
+      });
+
   }
 });
 
@@ -193,6 +224,9 @@ export const selectOrdersPagination = (state) => state.orders.pagination;
 export const selectOrdersFilters = (state) => state.orders.filters;
 export const selectPaymentLoading = (state) => state.orders.paymentLoading;
 export const selectPaymentError = (state) => state.orders.paymentError;
+export const selectPaymentIntentLoading = (state) => state.orders.paymentIntentLoading;
+export const selectPaymentIntentError = (state) => state.orders.paymentIntentError;
+export const selectPaymentIntent = (state) => state.orders.paymentIntent;
 
 // Export reducer
 export default orderSlice.reducer;

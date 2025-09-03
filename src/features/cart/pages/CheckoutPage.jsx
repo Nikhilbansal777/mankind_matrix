@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import withLayout from '../../../layouts/HOC/withLayout';
 import CheckoutSteps from '../components/CheckoutSteps';
 import Payment from '../components/Payment';
@@ -12,6 +13,7 @@ import { useOrders } from '../../../hooks/useOrders';
 import { calculateTax, calculateShipping, calculateFinalTotal } from '../utils/calculations';
 import { validateCheckoutForm } from '../utils/validators';
 import { CHECKOUT_STEPS } from '../utils/constants';
+import { handlePaymentSuccess, handlePaymentError } from '../../../utils/payment';
 
 const CheckoutPage = () => {
   const { items, subtotal } = useCart();
@@ -157,13 +159,22 @@ const CheckoutPage = () => {
       
     } catch (error) {
       console.error('Failed to create order:', error);
-      alert('Failed to create order. Please try again.');
+      // Use toast instead of alert for better UX
+      toast.error('Failed to create order. Please try again.', {
+        position: 'bottom-center'
+      });
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handlePlaceOrder = async ({ method } = {}) => {
+  const handlePlaceOrder = async ({ method, paymentIntentId } = {}) => {
+    // This function now handles PayPal payments with paymentIntentId
+    if (method !== 'paypal') {
+      console.log('Payment method not supported:', method);
+      return;
+    }
+
     setIsProcessing(true);
     
     try {
@@ -171,21 +182,23 @@ const CheckoutPage = () => {
         throw new Error('Order not found. Please go back and create the order again.');
       }
 
-      const paymentData = { paymentMethod: (method || 'paypal').toUpperCase() };
-      const paidOrder = await payOrder(createdOrder.id, paymentData);
+      if (!paymentIntentId) {
+        throw new Error('Payment intent ID is required.');
+      }
 
-      // Redirect to confirmation with returned order data
-      const orderData = {
-        orderId: paidOrder?.id,
-        orderNumber: paidOrder?.orderNumber || paidOrder?.id || `ORD-${Date.now()}`,
-        orderDate: new Date(paidOrder?.updatedAt || Date.now()).toLocaleDateString(),
-        total: paidOrder?.total || finalTotal
-      };
-      window.location.href = `/confirmation?orderData=${encodeURIComponent(JSON.stringify(orderData))}`;
+      // Call the pay endpoint with paymentIntentId
+      const paidOrder = await payOrder(createdOrder.id, paymentIntentId);
+
+      // Use utility function to handle success
+      handlePaymentSuccess(paidOrder);
       
     } catch (error) {
-      console.error('Payment failed:', error);
-      alert('Payment failed. Please try again.');
+      // Use utility function to handle error and show toast
+      const errorMessage = handlePaymentError(error, 'Payment failed. Please try again.');
+      toast.error(errorMessage, {
+        position: 'bottom-center'
+      });
+    } finally {
       setIsProcessing(false);
     }
   };
