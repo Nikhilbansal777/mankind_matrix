@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { formatCurrency } from '../../../../utils/formatCurrency';
+import { formatCurrency } from '../../../utils/formatCurrency';
 import './StripePaymentForm.css';
 
 const StripePaymentForm = ({ 
