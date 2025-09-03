@@ -13,7 +13,7 @@ const stripePromise = loadStripe(paymentConfig.stripe.publishableKey);
 
 const PaymentFormContainer = ({ 
   orderId, 
-  amount, // Amount in cents from parent component
+  amount, // Amount in dollars from parent component
   currency = 'USD',
   onPaymentSuccess, 
   onPaymentError,
@@ -74,14 +74,14 @@ const PaymentFormContainer = ({
 
       if (actualProvider === PAYMENT_PROVIDERS.STRIPE) {
         // Use paymentIntent.amount if available (from backend), otherwise fall back to amount prop
-        // Both are expected to be in cents
+        // Both are expected to be in dollars
         const paymentAmount = paymentIntent.amount || amount;
         
         return (
           <Elements stripe={stripePromise}>
             <StripePaymentForm
               orderId={orderId}
-              amount={paymentAmount} // Amount in cents
+              amount={paymentAmount} // Amount in dollars
               currency={paymentIntent.currency || currency}
               paymentIntent={paymentIntent}
               onPaymentSuccess={onPaymentSuccess}

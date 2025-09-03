@@ -82,8 +82,8 @@ const Payment = ({
     // Error is handled within the Stripe component
   };
 
-  // Convert total to cents for Stripe (amount should be in smallest currency unit)
-  const stripeAmount = createdOrder ? Math.round(parseFloat(createdOrder.total) * 100) : 0;
+  // Use the total directly from the order (API returns amount in dollars)
+  const stripeAmount = createdOrder ? createdOrder.total : 0;
 
   return (
     <div className={styles.paymentSection}>
