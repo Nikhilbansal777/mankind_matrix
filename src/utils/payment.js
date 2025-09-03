@@ -53,9 +53,8 @@ export const handlePaymentSuccess = (order, baseUrl = window.location.origin) =>
   if (!isPaymentSuccessful(order.paymentStatus)) {
     throw new Error('Payment not confirmed by backend');
   }
-
-  // Only pass orderId in the URL to avoid exposing sensitive data
-  const confirmationUrl = `${baseUrl}/confirmation?orderId=${encodeURIComponent(order.id)}`;
+  const orderData = formatOrderDataForConfirmation(order);
+  const confirmationUrl = `${baseUrl}/confirmation?orderData=${encodeURIComponent(JSON.stringify(orderData))}`;
   window.location.href = confirmationUrl;
 };
 
