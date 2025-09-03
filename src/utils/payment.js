@@ -60,7 +60,7 @@ export const handlePaymentSuccess = (order, baseUrl = window.location.origin) =>
 };
 
 /**
- * Handle payment error with user-friendly message
+ * Handle payment error with user-friendly message using toast notifications
  * @param {Error} error - The error object
  * @param {string} fallbackMessage - Fallback message if error is not user-friendly
  */
@@ -82,5 +82,6 @@ export const handlePaymentError = (error, fallbackMessage = 'Payment failed. Ple
     }
   }
   
-  alert(message);
+  // Return the error message for the calling component to handle with toast
+  return message;
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import withLayout from '../../../layouts/HOC/withLayout';
 import CheckoutSteps from '../components/CheckoutSteps';
 import Payment from '../components/Payment';
@@ -158,7 +159,10 @@ const CheckoutPage = () => {
       
     } catch (error) {
       console.error('Failed to create order:', error);
-      alert('Failed to create order. Please try again.');
+      // Use toast instead of alert for better UX
+      toast.error('Failed to create order. Please try again.', {
+        position: 'bottom-center'
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -189,8 +193,11 @@ const CheckoutPage = () => {
       handlePaymentSuccess(paidOrder);
       
     } catch (error) {
-      // Use utility function to handle error
-      handlePaymentError(error, 'Payment failed. Please try again.');
+      // Use utility function to handle error and show toast
+      const errorMessage = handlePaymentError(error, 'Payment failed. Please try again.');
+      toast.error(errorMessage, {
+        position: 'bottom-center'
+      });
     } finally {
       setIsProcessing(false);
     }

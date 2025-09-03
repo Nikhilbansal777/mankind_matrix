@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { formatCurrency } from '../../../../utils/formatCurrency';
 import './StripePaymentForm.css';
 
 const StripePaymentForm = ({ 
@@ -63,7 +64,7 @@ const StripePaymentForm = ({
       <div className="payment-amount">
         <h3>Payment Amount</h3>
         <p className="amount">
-          {currency} {amount}
+          {formatCurrency(amount / 100, currency)}
         </p>
       </div>
 
@@ -99,7 +100,7 @@ const StripePaymentForm = ({
         disabled={!stripe || paymentLoading || isProcessing}
         className="payment-button"
       >
-        {paymentLoading || isProcessing ? 'Processing...' : `Pay ${currency} ${amount}`}
+        {paymentLoading || isProcessing ? 'Processing...' : `Pay ${formatCurrency(amount / 100, currency)}`}
       </button>
     </form>
   );

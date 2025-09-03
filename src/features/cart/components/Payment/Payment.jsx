@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import { toast } from 'react-toastify';
 import OrderSummary from '../OrderSummary';
 import DeliverySummary from '../DeliverySummary';
 import PaymentFormContainer from './PaymentFormContainer';
@@ -46,8 +47,10 @@ const Payment = ({
         setShowPaymentForm(true);
       } catch (error) {
         console.error('Failed to create payment intent:', error);
-        // Show error message to user
-        alert('Failed to create payment intent. Please try again.');
+        // Show error message to user using toast
+        toast.error('Failed to create payment intent. Please try again.', {
+          position: 'bottom-center'
+        });
       } finally {
         setPaymentIntentLoading(false);
       }
@@ -66,8 +69,11 @@ const Payment = ({
       // Use utility function to handle success
       handlePaymentSuccess(paidOrder);
     } catch (error) {
-      // Use utility function to handle error
-      handlePaymentError(error, 'Payment successful but confirmation failed. Please contact support.');
+      // Use utility function to handle error and show toast
+      const errorMessage = handlePaymentError(error, 'Payment successful but confirmation failed. Please contact support.');
+      toast.error(errorMessage, {
+        position: 'bottom-center'
+      });
     }
   };
 
