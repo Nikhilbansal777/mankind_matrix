@@ -83,7 +83,7 @@ const Payment = ({
   };
 
   // Convert total to cents for Stripe (amount should be in smallest currency unit)
-  const stripeAmount = createdOrder ? Math.round(createdOrder.total * 100) : 0;
+  const stripeAmount = createdOrder ? Math.round(parseFloat(createdOrder.total) * 100) : 0;
 
   return (
     <div className={styles.paymentSection}>
