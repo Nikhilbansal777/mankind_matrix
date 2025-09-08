@@ -21,7 +21,7 @@ export const store = configureStore({
     reviews: reviewReducer,
     recentlyViewed: recentlyViewedReducer,
     compare: compareReducer,
-    order: orderReducer,
+    orders: orderReducer,
     coupons: couponReducer,
     addresses: addressReducer
   },
