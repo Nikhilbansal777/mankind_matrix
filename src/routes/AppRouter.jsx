@@ -24,6 +24,7 @@ import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import Blog from '../features/blog/Blog.jsx';
 import ComparePage from '../features/products/Compare/ComparePage.jsx';
+import InvoiceGenerator from '../features/profile/InvoiceGenerator.jsx';
 
 const AppRouter = () => {
   return (
