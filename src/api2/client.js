@@ -309,6 +309,8 @@ export const api = {
   product: new ApiClient('product'),
   cart: new ApiClient('cart'),
   wishlist: new ApiClient('wishlist'),
+  order: new ApiClient('order'),
+  coupon: new ApiClient('coupon'),
 };
 
 export default api; 

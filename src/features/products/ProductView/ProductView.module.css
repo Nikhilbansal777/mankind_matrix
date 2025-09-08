@@ -1,19 +1,17 @@
 .productPageContainer {
   max-width: 1400px;
-  margin: 0 auto;
-  padding: 1rem;
   font-family: 'Arial', sans-serif;
+  gap: 1.5rem;
+  margin: 1.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
 }
 
 .productDetails {
   display: flex;
   flex-direction: row;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
 }
 
 .productImageContainer {

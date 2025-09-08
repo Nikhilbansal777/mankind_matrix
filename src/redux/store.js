@@ -11,7 +11,6 @@ import orderReducer from './slices/orderSlice';
 import couponReducer from './slices/couponSlice';
 import addressReducer from './slices/addressSlice';
 
-
 export const store = configureStore({
   reducer: {
     products: productReducer,
@@ -25,7 +24,6 @@ export const store = configureStore({
     order: orderReducer,
     coupons: couponReducer,
     addresses: addressReducer
-
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
