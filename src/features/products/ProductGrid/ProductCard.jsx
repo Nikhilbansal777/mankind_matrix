@@ -6,10 +6,19 @@ import { formatCurrency } from '../../../utils/formatCurrency';
 import './ProductCard.css';
 import StarRating from '../Review/StarRating';
 import { FaSpinner } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleCompare, selectCompareItems } from '../../../redux/slices/compareSlice';
 
 const ProductCard = memo(({ product }) => {
   const { addToCart } = useCart();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const dispatch = useDispatch();
+  const compareItems = useSelector(selectCompareItems);
+  const isInCompare = !!compareItems.find((p) => p.id === product?.id);
+
+  const handleToggleCompare = useCallback(() => {
+    dispatch(toggleCompare(product));
+  }, [dispatch, product]);
 
   // Safely get category name
   const getCategoryName = useCallback(() => {
@@ -116,6 +125,14 @@ const ProductCard = memo(({ product }) => {
           </div>
         </div>
       </Link>
+      <div className="card-actions-row">
+        <button 
+          className={`compare-btn ${isInCompare ? 'active' : ''}`}
+          onClick={handleToggleCompare}
+        >
+          {isInCompare ? 'Remove' : 'Compare'}
+        </button>
+      </div>
       <button 
         className={`add-to-cart-btn ${!isAvailable || !price || isAddingToCart ? 'disabled' : ''}`}
         onClick={handleAddToCart}

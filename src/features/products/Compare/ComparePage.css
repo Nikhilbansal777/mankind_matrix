@@ -1,0 +1,45 @@
+.compare-page {
+	padding: 24px 16px;
+}
+
+.compare-page-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.compare-page-header h1 {
+	margin: 0;
+	font-size: 1.6rem;
+	color: #1f2a44;
+}
+
+.back-button {
+	background: #e9ecef;
+	border: none;
+	color: #1f2a44;
+	padding: 10px 14px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.back-button.primary {
+	background: #00d68f;
+	color: #0b1324;
+}
+
+.compare-empty {
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+	padding: 24px;
+	text-align: center;
+}
+
+.compare-content .inline-compare {
+	margin-top: 0;
+}
+
