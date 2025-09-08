@@ -5,6 +5,8 @@ import useProducts from '../../../hooks/useProducts';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './ProductGrid.css';
+import { useSelector } from 'react-redux';
+import { selectCompareItems } from '../../../redux/slices/compareSlice';
 
 
 const ProductGrid = memo(({ 
@@ -23,6 +25,7 @@ const ProductGrid = memo(({
     getProducts,
     getProductsByCategory
   } = useProducts();
+  const compareItems = useSelector(selectCompareItems);
   
   // Fetch products from API
   useEffect(() => {
@@ -62,6 +65,22 @@ const ProductGrid = memo(({
     
     return result;
   }, [products, searchQuery]);
+
+  // Reorder to pin selected compare items at the top
+  const orderedProducts = useMemo(() => {
+    if (!Array.isArray(filteredProducts)) return [];
+    const selectedIds = new Set((compareItems || []).map(i => i.id));
+    const arr = filteredProducts.slice();
+    arr.sort((a, b) => {
+      const aSel = selectedIds.has(a.id) ? 1 : 0;
+      const bSel = selectedIds.has(b.id) ? 1 : 0;
+      if (aSel !== bSel) return bSel - aSel; // selected first
+      return 0;
+    });
+    return arr;
+  }, [filteredProducts, compareItems]);
+
+  // Removed inline compare auto-scroll; modal now handles comparison UI
 
   // Memoize toast container settings
   const toastContainerProps = useMemo(() => ({
@@ -108,7 +127,7 @@ const ProductGrid = memo(({
     <div className="product-grid-container">
       <ToastContainer {...toastContainerProps} />
       <div className="product-grid">
-        {filteredProducts.map(product => (
+        {orderedProducts.map(product => (
           <ProductCard 
             key={product.id} 
             product={product} 
@@ -123,6 +142,7 @@ const ProductGrid = memo(({
           onPageChange={onPageChange}
         />
       )}
+
     </div>
   );
 });

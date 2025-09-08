@@ -1,0 +1,16 @@
+.inline-compare {
+	margin-top: 24px;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+	padding: 16px;
+}
+
+.inline-compare .table-wrap { overflow-x: auto; }
+.inline-compare table { width: 100%; border-collapse: collapse; }
+.inline-compare th, .inline-compare td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
+.inline-compare thead th { background: #f7f8fa; }
+.inline-compare .header { display: flex; align-items: center; gap: 8px; }
+.inline-compare .header img, .inline-compare .header .ph { width: 36px; height: 36px; border-radius: 6px; background: #ddd; object-fit: cover; }
+.inline-compare .k { font-weight: 600; }
+

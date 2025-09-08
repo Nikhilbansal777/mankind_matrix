@@ -6,6 +6,7 @@ import inventoryReducer from './slices/inventorySlice';
 import userReducer from './slices/userSlice';
 import reviewReducer from './slices/reviewSlice';
 import recentlyViewedReducer from './slices/recentlyViewedSlice';
+import compareReducer from './slices/compareSlice';
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
     inventory: inventoryReducer,
     user: userReducer,
     reviews: reviewReducer,
-    recentlyViewed: recentlyViewedReducer
+    recentlyViewed: recentlyViewedReducer,
+    compare: compareReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

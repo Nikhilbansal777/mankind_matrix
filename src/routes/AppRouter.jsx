@@ -23,6 +23,7 @@ import DeliveryPage from '../features/cart/Delivery.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import Blog from '../features/blog/Blog.jsx';
+import ComparePage from '../features/products/Compare/ComparePage.jsx';
 
 const AppRouter = () => {
   return (
@@ -56,6 +57,7 @@ const AppRouter = () => {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/product/:id" element={<ProductView />} />
+        <Route path="/compare" element={<ComparePage />} />
         <Route path="/oldLadingPage" element={<LandingPage />} />
         <Route path="/blog" element={<Blog />} />
         
