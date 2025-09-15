@@ -72,7 +72,7 @@ const AdminHeader = ({ onToggleSidebar, sidebarOpen }) => {
             component="div"
             className="admin-title"
           >
-            Mankind Matrix - Admin
+            Mankind Matrix
           </Typography>
         </Link>
 

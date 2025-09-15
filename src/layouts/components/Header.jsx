@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 import { Link } from 'react-router-dom';
-import { FaShoppingCart, FaBars, FaTimes, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
+import { FaShoppingCart, FaBars, FaTimes, FaSignOutAlt, FaSignInAlt, FaUserShield } from 'react-icons/fa';
 import NotificationsUI from '../../features/profile/NotificationsUI';
 import { useCart } from '../../hooks/useCart';
 import { useUser } from '../../hooks/useUser';
@@ -11,7 +11,7 @@ function Header({ onSearch }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const { itemCount } = useCart();
-  const { isAuthenticated } = useUser();
+  const { isAuthenticated, user } = useUser();
   
   // Check if we're on mobile view
   useEffect(() => {
@@ -63,6 +63,13 @@ function Header({ onSearch }) {
       <div className={`header-actions ${isMobile ? 'mobile-transparent' : ''}`}>
         {isAuthenticated ? (
           <>
+            {/* Admin icon - only show when user role is admin */}
+            {user?.role === 'ADMIN' && (
+              <Link to="/admin" className="admin-icon-wrapper">
+                <FaUserShield className="admin-icon" />
+              </Link>
+            )}
+
             {/* Notifications Component - only show when logged in */}
             <NotificationsUI />
            
