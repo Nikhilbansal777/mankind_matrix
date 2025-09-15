@@ -15,6 +15,8 @@ import CartPage from '../features/cart/pages/CartPage.jsx';
 
 import ReturnRequest from '../features/profile/ReturnRequest.jsx';
 import AdminPage from '../features/admin/AdminPage.jsx';
+import ProductsPage from '../features/admin/pages/products/ProductsPage.jsx';
+import UsersPage from '../features/admin/pages/users/UsersPage.jsx';
 import ContactPage from '../features/contact/ContactPage.jsx';
 import LandingPages from '../features/landingpage/LandingPages.jsx';  
 import ProductView from '../features/products/ProductView/ProductView.jsx';
@@ -37,6 +39,16 @@ const AppRouter = () => {
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['ADMIN']}>
             <AdminPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/products" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <ProductsPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/users" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <UsersPage />
           </ProtectedRoute>
         } />
         

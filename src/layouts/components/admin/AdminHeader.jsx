@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -11,13 +12,9 @@ import {
   Divider,
   ListItemIcon,
   ListItemText,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  Notifications as NotificationsIcon,
-  AccountCircle as AccountIcon,
   Logout as LogoutIcon,
   Settings as SettingsIcon,
 } from '@mui/icons-material';
@@ -29,8 +26,6 @@ import LogoutButton from '../../../features/auth/LogoutButton';
 import './AdminHeader.css';
 
 const AdminHeader = ({ onToggleSidebar, sidebarOpen }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const user = useSelector(selectUser);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -71,13 +66,15 @@ const AdminHeader = ({ onToggleSidebar, sidebarOpen }) => {
           <MenuIcon />
         </IconButton>
 
-        <Typography
-          variant="h6"
-          component="div"
-          className="admin-title"
-        >
-          Admin Dashboard
-        </Typography>
+        <Link to="/" className="admin-logo-link">
+          <Typography
+            variant="h6"
+            component="div"
+            className="admin-title"
+          >
+            Mankind Matrix - Admin
+          </Typography>
+        </Link>
 
         {/* Right side actions */}
         <Box className="admin-right-actions">

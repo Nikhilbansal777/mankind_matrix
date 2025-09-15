@@ -10,7 +10,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Grid,
   CircularProgress,
   InputAdornment,
   Typography,
@@ -19,7 +18,7 @@ import {
   Divider,
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
-import { useInventory } from '../../hooks/useInventory';
+import { useInventory } from '../../../../hooks/useInventory';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

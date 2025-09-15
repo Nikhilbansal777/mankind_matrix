@@ -9,8 +9,6 @@ import {
   ListItemText,
   Collapse,
   Typography,
-  Divider,
-  IconButton,
   Box,
   useTheme,
   useMediaQuery,
@@ -18,15 +16,12 @@ import {
 import {
   Dashboard as DashboardIcon,
   Inventory as ProductsIcon,
-  Category as CategoryIcon,
   People as UsersIcon,
   ShoppingCart as OrdersIcon,
-  LocalOffer as CouponsIcon,
   Analytics as AnalyticsIcon,
   Settings as SettingsIcon,
   ExpandLess,
   ExpandMore,
-  Menu as MenuIcon,
 } from '@mui/icons-material';
 import './AdminSidebar.css';
 
@@ -88,7 +83,7 @@ const AdminSidebar = ({ open, onToggle }) => {
     orders: true,
   });
 
-  const drawerWidth = 280;
+  // const drawerWidth = 280;
 
   const handleItemClick = (item) => {
     if (item.path) {

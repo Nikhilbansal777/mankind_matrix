@@ -18,13 +18,23 @@
   margin-right: 16px !important;
 }
 
+/* Admin logo link */
+.admin-logo-link {
+  text-decoration: none !important;
+  flex-grow: 1 !important;
+}
+
 /* Admin title */
 .admin-title {
-  flex-grow: 1 !important;
   font-weight: bold !important;
   color: #fff !important;
   font-size: 1.8rem !important;
   font-family: inherit !important;
+  transition: color 0.2s ease !important;
+}
+
+.admin-title:hover {
+  color: #e91e63 !important;
 }
 
 /* Right side actions container */

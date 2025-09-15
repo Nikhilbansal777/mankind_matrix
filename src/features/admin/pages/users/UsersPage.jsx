@@ -18,7 +18,8 @@ import {
   Chip
 } from '@mui/material';
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
-import { getUserList, getPurchaseHistory } from './mockUserService';
+import { getUserList, getPurchaseHistory } from '../../services/mockUserService';
+import withLayout from '../../../../layouts/HOC/withLayout';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -50,9 +51,15 @@ const UserManagement = () => {
 
   return (
     <Box>
-      <Typography variant="h6" gutterBottom>
-        User Management
-      </Typography>
+      {/* Page Header */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 1 }}>
+          User Management
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Manage user accounts, roles, and permissions.
+        </Typography>
+      </Box>
       
       <TableContainer component={Paper}>
         <Table>
@@ -130,4 +137,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement; 
+export default withLayout(UserManagement); 

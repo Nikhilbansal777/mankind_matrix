@@ -6,7 +6,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Grid,
   FormControl,
   InputLabel,
   Select,
@@ -15,7 +14,6 @@ import {
   Switch,
   Typography,
   IconButton,
-  Paper,
   ListItemText,
   Collapse,
   List,
@@ -30,19 +28,19 @@ import {
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
-import useCategories from '../../hooks/useCategories';
+import useCategories from '../../../../hooks/useCategories';
 import styles from './ProductForm.module.css';
 
 // Helper function to flatten categories for value validation
-const flattenCategories = (categories) => {
-  return categories.reduce((acc, category) => {
-    acc.push(category.id);
-    if (category.subcategories && category.subcategories.length > 0) {
-      acc.push(...flattenCategories(category.subcategories));
-    }
-    return acc;
-  }, []);
-};
+// const flattenCategories = (categories) => {
+//   return categories.reduce((acc, category) => {
+//     acc.push(category.id);
+//     if (category.subcategories && category.subcategories.length > 0) {
+//       acc.push(...flattenCategories(category.subcategories));
+//     }
+//     return acc;
+//   }, []);
+// };
 
 // Recursive component for category tree
 const CategoryTreeItem = ({ category, level = 0, onSelect, selectedId }) => {
@@ -189,14 +187,14 @@ const ProductForm = ({ product, onSubmit, onCancel, loading = false }) => {
     }
   };
 
-  const handleCategorySelect = (category) => {
-    const value = category.id.toString();
-    setSelectValue(value);
-    setFormData(prev => ({
-      ...prev,
-      categoryId: category.id
-    }));
-  };
+  // const handleCategorySelect = (category) => {
+  //   const value = category.id.toString();
+  //   setSelectValue(value);
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     categoryId: category.id
+  //   }));
+  // };
 
   const handleImageChange = (index, value) => {
     setFormData(prev => ({

@@ -25,15 +25,14 @@ import {
   Visibility as VisibilityIcon,
   Inventory as InventoryIcon,
 } from '@mui/icons-material';
-import ProductForm from './ProductForm';
-import InventoryForm from './InventoryForm';
-import useProducts from '../../hooks/useProducts';
-import Pagination from '../../components/Pagination/Pagination';
-import { formatCurrency } from '../../utils/formatCurrency';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import ProductForm from '../../components/forms/ProductForm';
+import InventoryForm from '../../components/forms/InventoryForm';
+import useProducts from '../../../../hooks/useProducts';
+import Pagination from '../../../../components/Pagination/Pagination';
+import { formatCurrency } from '../../../../utils/formatCurrency';
+import withLayout from '../../../../layouts/HOC/withLayout';
 
-const ProductManagement = () => {
+const ProductsPage = () => {
   const navigate = useNavigate();
   const [openForm, setOpenForm] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -201,7 +200,6 @@ const ProductManagement = () => {
       specifications,
       images,
       inventoryStatus,
-      active,
       featured,
       createdAt,
       updatedAt
@@ -358,8 +356,18 @@ const ProductManagement = () => {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h5">Product Management</Typography>
+      {/* Page Header */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 1 }}>
+          Product Management
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Manage your product catalog, inventory, and pricing.
+        </Typography>
+      </Box>
+
+      {/* Actions Bar */}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
         <Button
           variant="contained"
           color="primary"
@@ -446,4 +454,4 @@ const ProductManagement = () => {
   );
 };
 
-export default ProductManagement; 
+export default withLayout(ProductsPage);
