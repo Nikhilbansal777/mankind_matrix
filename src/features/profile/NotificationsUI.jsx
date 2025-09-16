@@ -93,7 +93,7 @@ function NotificationsUI() {
       case 'order':
         return 'linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05))';
       case 'promo':
-        return 'linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(233, 30, 99, 0.05))';
+        return 'linear-gradient(135deg, rgba(255, 43, 43, 0.1), rgba(255, 43, 43, 0.05))';
       default:
         return 'linear-gradient(135deg, rgba(158, 158, 158, 0.1), rgba(158, 158, 158, 0.05))';
     }
@@ -176,7 +176,7 @@ function NotificationsUI() {
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: '#e91e63',
+                  color: 'var(--color-primary)',
                   cursor: 'pointer',
                   fontSize: '0.8rem',
                   padding: '4px 8px',
@@ -299,7 +299,7 @@ function NotificationsUI() {
                 <div style={{ 
                   padding: '30px 20px', 
                   textAlign: 'center', 
-                  color: '#888' 
+                  color: 'var(--color-text-secondary)' 
                 }}>
                   <p style={{ margin: 0 }}>No notifications</p>
                 </div>

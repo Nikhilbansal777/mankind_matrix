@@ -1,5 +1,5 @@
 .login-page {
-  background: linear-gradient(to bottom, #dcefff, #ffffff);
+  background: var(--color-background);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -17,18 +17,18 @@
 }
 
 .login-card {
-  background: white;
+  background: var(--color-surface);
   padding: 56px 70px;
   width: 100%;
   max-width: 440px;
   border-radius: 36px;
-  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 35px 80px var(--shadow-color);
   text-align: center;
 }
 
 .icon {
   font-size: 28px;
-  background: #f0f4f8;
+  background: var(--color-background);
   border-radius: 50%;
   width: 56px;
   height: 56px;
@@ -42,8 +42,8 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background: var(--color-surface);
+  box-shadow: 0 4px 12px var(--shadow-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,14 +65,14 @@
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 6px;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .login-form label {
   font-weight: 500;
   font-size: 14px;
   text-align: start;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 6px;
   display: block;
 }
@@ -80,13 +80,13 @@
 .login-form input[type="text"],
 .login-form input[type="email"],
 .login-form input[type="password"] {
-  background-color: #f6f7f9;
+  background-color: var(--color-background);
   border: 2px solid transparent;
   border-radius: 14px;
   padding: 14px 16px;
   font-size: 16px;
   height: 52px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px var(--shadow-color);
   transition: all 0.3s ease;
   width: 100%;
   box-sizing: border-box;
@@ -95,20 +95,20 @@
 .login-form input[type="text"]:focus,
 .login-form input[type="email"]:focus,
 .login-form input[type="password"]:focus {
-  border-color: #2563eb;
-  background-color: #ffffff;
+  border-color: var(--color-primary);
+  background-color: var(--color-surface);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 63, 108, 0.15);
 }
 
 .login-form input:disabled {
-  background-color: #f5f5f5;
-  color: #999;
+  background-color: var(--color-border);
+  color: var(--color-text-secondary);
   cursor: not-allowed;
 }
 
 .field-error {
-  color: #d93025;
+  color: var(--color-danger);
   font-size: 12px;
   margin-top: 2px;
   margin-bottom: 8px;
@@ -117,9 +117,9 @@
 }
 
 .form-error {
-  background-color: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background-color: color-mix(in srgb, var(--color-danger) 10%, var(--color-surface));
+  color: var(--color-danger);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 30%, var(--color-surface));
   padding: 12px 16px;
   margin-bottom: 16px;
   border-radius: 8px;
@@ -129,9 +129,9 @@
 
 .form-success {
   text-align: center;
-  background-color: #e6ffed;
-  color: #137333;
-  border: 1px solid #a6d8a8;
+  background-color: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+  color: var(--color-success);
+  border: 1px solid color-mix(in srgb, var(--color-success) 30%, var(--color-surface));
   padding: 10px;
   margin-bottom: 16px;
   border-radius: 6px;
@@ -154,7 +154,7 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #666;
+  color: var(--color-text-secondary);
   cursor: pointer;
   margin: 0;
 }
@@ -162,20 +162,20 @@
 .form-options input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #2563eb;
+  accent-color: var(--color-primary);
   cursor: pointer;
   margin: 0;
 }
 
 .forgot a {
   text-decoration: none;
-  color: #2563eb;
+  color: var(--color-primary);
 }
 
 .login-form button[type="submit"] {
   padding: 16px;
   font-size: 16px;
-  background: linear-gradient(to bottom, #000000, #222222);
+  background: var(--color-primary);
   font-weight: 600;
   height: 52px;
   color: white;
@@ -188,13 +188,13 @@
 }
 
 .login-form button[type="submit"]:hover:not(:disabled) {
-  background: linear-gradient(to right, #222, #444);
+  background: var(--color-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .login-form button[type="submit"]:disabled {
-  background: #ccc;
+  background: var(--color-border);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -204,18 +204,18 @@
   text-align: center;
   font-size: 14px;
   margin-top: 16px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .signup-link a {
-  color: #2563eb;
+  color: var(--color-primary);
   text-decoration: none;
 }
 
 .link-button {
   background: none;
   border: none;
-  color: #2563eb;
+  color: var(--color-primary);
   cursor: pointer;
   font-size: inherit;
   padding: 0;
@@ -225,7 +225,7 @@
 
 .link-button:hover {
   text-decoration: underline;
-  color: #1d4ed8;
+  color: var(--color-primary-hover);
 }
 
 /* Form row for side-by-side inputs */
@@ -243,7 +243,7 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text-primary);
   font-size: 14px;
 }
 
@@ -254,22 +254,22 @@
   border-radius: 14px;
   font-size: 16px;
   transition: all 0.3s ease;
-  background-color: #f6f7f9;
+  background-color: var(--color-background);
   height: 52px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px var(--shadow-color);
   box-sizing: border-box;
 }
 
 .form-group input:focus {
-  border-color: #2563eb;
-  background-color: #ffffff;
+  border-color: var(--color-primary);
+  background-color: var(--color-surface);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 63, 108, 0.15);
 }
 
 .form-group input:disabled {
-  background-color: #f5f5f5;
-  color: #999;
+  background-color: var(--color-border);
+  color: var(--color-text-secondary);
   cursor: not-allowed;
 }
 
@@ -300,12 +300,12 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .password-toggle:hover {
   background-color: rgba(0, 0, 0, 0.05);
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .password-toggle:disabled {
@@ -353,8 +353,8 @@ button.loading::after {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #2563eb;
+  border: 4px solid var(--color-border);
+  border-top: 4px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

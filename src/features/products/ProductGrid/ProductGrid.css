@@ -17,14 +17,14 @@
 .no-results {
   padding: 2rem;
   text-align: center;
-  background-color: #f9f9f9;
+  background-color: var(--color-background);
   border-radius: 8px;
   margin: 2rem 0;
-  border: 1px dashed #ddd;
+  border: 1px dashed var(--color-border);
 }
 
 .no-results p {
-  color: #666;
+  color: var(--color-text-secondary);
   font-size: 1rem;
   margin: 0.5rem 0;
 }
@@ -36,13 +36,13 @@
   align-items: center;
   min-height: 400px;
   font-size: 1.1rem;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 /* Product Card */
 .product-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   padding: 1rem;
   border-radius: 10px;
   text-align: center;
@@ -100,7 +100,7 @@
 
 .product-card .actions button {
   padding: 0.5rem 1rem;
-  background-color: #101820;
+  background-color: var(--color-text-primary);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -110,7 +110,7 @@
 }
 
 .product-card .actions button:hover {
-  background-color: #333;
+  background-color: var(--color-primary);
 }
 
 /* Pagination */
@@ -126,8 +126,8 @@
 .pagination button {
   padding: 0.5rem 0.9rem;
   font-size: 1rem;
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: var(--color-border);
+  color: var(--color-text-primary);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -135,11 +135,11 @@
 }
 
 .pagination button:hover {
-  background-color: #d4d4d4;
+  background-color: var(--color-primary);
 }
 
 .pagination button.active {
-  background-color: #101820;
+  background-color: var(--color-primary);
   color: #fff;
   font-weight: bold;
 }

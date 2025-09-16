@@ -23,7 +23,7 @@
   
   .products-header h1 {
     font-size: 1.5rem;
-    color: #333;
+    color: var(--color-text-primary);
     margin: 0;
     position: relative;
   }
@@ -33,7 +33,7 @@
     display: block;
     width: 60px;
     height: 3px;
-    background-color: #e91e63;
+    background-color: var(--color-primary);
     margin-top: 0.5rem;
   }
   
@@ -51,7 +51,7 @@
   .product-search-input {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.2s ease;
@@ -59,8 +59,8 @@
   
   .product-search-input:focus {
     outline: none;
-    border-color: #e91e63;
-    box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.1);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(255, 63, 108, 0.1);
   }
   
   .product-grid-container {
@@ -99,14 +99,14 @@
 
 .sale-banner {
   width: 100%;
-  background: linear-gradient(90deg, #ff9800 0%, #ff5722 100%);
+  background: linear-gradient(90deg, var(--color-sale-start) 0%, var(--color-sale-end) 100%);
   color: #fff;
   text-align: center;
   font-size: 1.15rem;
   font-weight: 700;
   padding: 0.85rem 0.5rem;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px var(--shadow-color);
   z-index: 100;
   position: relative;
 }

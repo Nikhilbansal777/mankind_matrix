@@ -33,7 +33,7 @@
     display: block;
     width: 60px;
     height: 3px;
-    background-color: #e91e63;
+    background-color: var(--color-primary);
     margin-top: 0.5rem;
   }
 
@@ -48,7 +48,7 @@
   width: 100vw;
   z-index: 9999;
   border-radius: 0 0 12px 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  box-shadow: 0 4px 16px var(--shadow-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,28 +56,28 @@
   min-height: 3.2rem;
 }
 .sale-banner {
-  background: linear-gradient(90deg, #ff9800 0%, #ff5722 100%);
+  background: linear-gradient(90deg, var(--color-sale-start) 0%, var(--color-sale-end) 100%);
   color: #fff;
   text-align: center;
   font-size: 1.18rem;
   font-weight: 700;
   padding: 0.85rem 0.5rem;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px var(--shadow-color);
   position: relative;
 }
 .sale-banner-icon {
   font-size: 1.5rem;
   margin-right: 0.5rem;
-  filter: drop-shadow(0 1px 2px #ff9800cc);
+  filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--color-sale-start) 80%, transparent));
 }
 .sale-banner-text {
   flex: 1;
   display: inline-block;
 }
 .sale-banner-limited {
-  background: #fff3e0;
-  color: #ff5722;
+  background: var(--color-sale-chip-bg);
+  color: var(--color-sale-chip-text);
   border-radius: 6px;
   padding: 0.1rem 0.5rem;
   margin-left: 0.5rem;
@@ -97,7 +97,7 @@
   line-height: 1;
 }
 .sale-banner-close:hover {
-  color: #ffd180;
+  color: var(--color-secondary);
 }
 @media (max-width: 600px) {
   .sale-banner, .sale-banner.fixed {

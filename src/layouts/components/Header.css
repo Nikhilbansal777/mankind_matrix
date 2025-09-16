@@ -1,12 +1,12 @@
 /* Header component styles - optimized */
 .header {
-  background-color: #1e1e23;
-  color: #ccc;
+  background-color: var(--color-header-bg);
+  color: var(--color-on-header);
   padding: 1.5rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px var(--shadow-color);
   position: sticky;
   top: 0;
   z-index: 40;
@@ -21,12 +21,12 @@
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--color-on-header-strong);
   transition: color 0.2s ease;
 }
 
 .logo:hover {
-  color: #e91e63;
+  color: var(--color-primary);
 }
 
 /* Header sections */
@@ -42,14 +42,14 @@
 }
 
 .nav-links a {
-  color: #ccc;
+  color: var(--color-on-header);
   text-decoration: none;
   font-size: 1rem;
   transition: color 0.2s ease;
 }
 
 .nav-links a:hover {
-  color: #fff;
+  color: var(--color-on-header-strong);
 }
 
 /* Header actions with cart and notifications */
@@ -81,19 +81,19 @@
 }
 
 .header-login-btn {
-  color: #ccc;
+  color: var(--color-on-header);
   background-color: transparent;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-on-header);
 }
 
 .header-login-btn:hover {
-  color: #fff;
-  background-color: #e91e63;
-  border-color: #e91e63;
+  color: var(--color-on-header-strong);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .header-logout-btn {
-  color: #ccc;
+  color: var(--color-on-header);
   background-color: transparent;
   border: none;
   width: 36px;
@@ -110,8 +110,8 @@
 }
 
 .header-logout-btn:hover {
-  color: #fff;
-  background-color: rgba(233, 30, 99, 0.1);
+  color: var(--color-on-header-strong);
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
   border: none;
 }
 
@@ -131,7 +131,7 @@
   cursor: not-allowed;
   background-color: transparent !important;
   border: none !important;
-  color: #ccc !important;
+  color: var(--color-on-header) !important;
   position: relative;
   width: 36px !important;
   height: 36px !important;
@@ -187,21 +187,21 @@
 
 .cart-icon {
   font-size: 1.4rem;
-  color: #ccc;
+  color: var(--color-on-header);
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .cart-icon:hover {
-  color: #fff;
+  color: var(--color-on-header-strong);
 }
 
 .cart-count {
   position: absolute;
   top: -10px;
   right: -10px;
-  background-color: #e91e63;
-  color: #fff;
+  background-color: var(--color-primary);
+  color: var(--color-on-header-strong);
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -231,27 +231,27 @@
 }
 
 .notification-panel.active {
-  background-color: white;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  background-color: var(--color-surface);
+  box-shadow: 0 5px 15px var(--shadow-color);
   border-radius: 8px;
 }
 
 .notification-button {
   cursor: pointer;
-  color: #ccc;
+  color: var(--color-on-header);
   font-size: 1.4rem;
   transition: color 0.2s ease;
 }
 
 .notification-button:hover {
-  color: #fff;
+  color: var(--color-on-header-strong);
 }
 
 /* Mobile menu toggle (hidden on desktop) */
 .mobile-menu-toggle {
   display: none;
   font-size: 1.5rem;
-  color: #fff;
+  color: var(--color-on-header-strong);
   cursor: pointer;
   transition: opacity 0.3s ease;
 }
@@ -326,7 +326,7 @@
     left: -100%;
     width: 100%;
     height: 100vh;
-    background-color: #1e1e23;
+    background-color: var(--color-header-bg);
     flex-direction: column;
     justify-content: center;
     align-items: center;

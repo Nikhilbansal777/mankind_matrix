@@ -7,8 +7,8 @@
 /* Hero Section */
 .about-hero {
   width: 100%;
-  background: linear-gradient(135deg, #2c3e50, #3498db);
-  color: white;
+  background: linear-gradient(135deg, var(--color-text-primary), var(--color-primary));
+  color: var(--color-on-header-strong);
   padding: 120px 0;
   text-align: center;
   margin-bottom: 60px;
@@ -43,11 +43,11 @@
 }
 
 .mission-section {
-  background-color: #f8f9fa;
+  background-color: var(--color-background);
 }
 
 .vision-section {
-  background-color: white;
+  background-color: var(--color-surface);
 }
 
 .section-content {
@@ -59,14 +59,14 @@
 
 .section-content h2 {
   font-size: 2.5rem;
-  color: #2c3e50;
+  color: var(--color-text-primary);
   margin-bottom: 30px;
 }
 
 .section-content p {
   font-size: 1.1rem;
   line-height: 1.8;
-  color: #555;
+  color: var(--color-text-secondary);
   max-width: 800px;
   margin: 0 auto;
 }
@@ -75,13 +75,13 @@
 .values-section {
   padding: 80px 0;
   text-align: center;
-  background-color: #f8f9fa;
+  background-color: var(--color-background);
   width: 100%;
 }
 
 .values-section h2 {
   font-size: 2.5rem;
-  color: #2c3e50;
+  color: var(--color-text-primary);
   margin-bottom: 50px;
 }
 
@@ -95,10 +95,10 @@
 }
 
 .value-card {
-  background: white;
+  background: var(--color-surface);
   padding: 40px 30px;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px var(--shadow-color);
   transition: transform 0.3s ease;
 }
 
@@ -108,32 +108,32 @@
 
 .value-card i {
   font-size: 2.5rem;
-  color: #3498db;
+  color: var(--color-primary);
   margin-bottom: 20px;
 }
 
 .value-card h3 {
   font-size: 1.5rem;
-  color: #2c3e50;
+  color: var(--color-text-primary);
   margin-bottom: 15px;
 }
 
 .value-card p {
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.6;
 }
 
 /* History Section */
 .history-section {
   padding: 80px 0;
-  background-color: white;
+  background-color: var(--color-surface);
   text-align: center;
   width: 100%;
 }
 
 .history-section h2 {
   font-size: 2.5rem;
-  color: #2c3e50;
+  color: var(--color-text-primary);
   margin-bottom: 50px;
 }
 
@@ -160,14 +160,14 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background-color: #3498db;
+  background-color: var(--color-primary);
 }
 
 .year {
   width: 100px;
   font-size: 1.2rem;
   font-weight: bold;
-  color: #3498db;
+  color: var(--color-primary);
   padding-right: 20px;
   text-align: right;
 }
@@ -180,26 +180,26 @@
 
 .timeline-item h3 {
   font-size: 1.3rem;
-  color: #2c3e50;
+  color: var(--color-text-primary);
   margin-bottom: 10px;
 }
 
 .timeline-item p {
-  color: #666;
+  color: var(--color-text-secondary);
   line-height: 1.6;
 }
 
 /* Team Section */
 .team-section {
   padding: 80px 0;
-  background-color: #f8f9fa;
+  background-color: var(--color-background);
   text-align: center;
   width: 100%;
 }
 
 .team-section h2 {
   font-size: 2.5rem;
-  color: #2c3e50;
+  color: var(--color-text-primary);
   margin-bottom: 50px;
 }
 
@@ -213,47 +213,47 @@
 }
 
 .team-member {
-  background: white;
+  background: var(--color-surface);
   padding: 40px 30px;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .member-image {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background-color: #e0e0e0;
+  background-color: var(--color-border);
   margin: 0 auto 20px;
 }
 
 .team-member h3 {
   font-size: 1.5rem;
-  color: #2c3e50;
+  color: var(--color-text-primary);
   margin-bottom: 10px;
 }
 
 .team-member p {
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .member-bio {
   font-size: 0.9rem;
-  color: #888;
+  color: var(--color-text-secondary);
   margin-top: 10px;
 }
 
 /* Achievements Section */
 .achievements-section {
   padding: 80px 0;
-  background-color: white;
+  background-color: var(--color-surface);
   text-align: center;
   width: 100%;
 }
 
 .achievements-section h2 {
   font-size: 2.5rem;
-  color: #2c3e50;
+  color: var(--color-text-primary);
   margin-bottom: 50px;
 }
 
@@ -267,26 +267,26 @@
 }
 
 .achievement-card {
-  background: #f8f9fa;
+  background: var(--color-background);
   padding: 40px 30px;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .achievement-card i {
   font-size: 2.5rem;
-  color: #3498db;
+  color: var(--color-primary);
   margin-bottom: 15px;
 }
 
 .achievement-card h3 {
   font-size: 2rem;
-  color: #2c3e50;
+  color: var(--color-text-primary);
   margin-bottom: 10px;
 }
 
 .achievement-card p {
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 /* CTA Section */
@@ -294,8 +294,8 @@
   width: 100%;
   padding: 100px 0;
   text-align: center;
-  background: linear-gradient(135deg, #3498db, #2c3e50);
-  color: white;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-text-primary));
+  color: var(--color-on-header-strong);
   margin-top: 60px;
   border-radius: 0;
 }
@@ -335,19 +335,19 @@
 }
 
 .cta-button.primary {
-  background-color: white;
-  color: #2c3e50;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
 }
 
 .cta-button.secondary {
   background-color: transparent;
-  color: white;
-  border: 2px solid white;
+  color: var(--color-on-header-strong);
+  border: 2px solid var(--color-on-header-strong);
 }
 
 .cta-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 /* Responsive Design */

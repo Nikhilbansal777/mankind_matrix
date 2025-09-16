@@ -3,9 +3,9 @@
   font-family: 'Arial', sans-serif;
   gap: 1.5rem;
   margin: 1.5rem;
-  background-color: #fff;
+  background-color: var(--color-surface);
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px var(--shadow-color);
   padding: 1.5rem;
 }
 
@@ -47,19 +47,19 @@
 .productTitle {
   font-size: 2rem;
   margin: 0 0 0.5rem 0;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .productCategory, 
 .productPrice {
   font-size: 1.1rem;
-  color: #555;
+  color: var(--color-text-secondary);
   margin-bottom: 0.5rem;
 }
 
 .productPrice span {
   font-weight: bold;
-  color: #000;
+  color: var(--color-text-primary);
 }
 
 .productDescription {
@@ -69,11 +69,11 @@
 .productDescription h3 {
   margin-bottom: 0.5rem;
   font-size: 1.3rem;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .productDescription p {
-  color: #555;
+  color: var(--color-text-secondary);
   line-height: 1.6;
 }
 
@@ -97,7 +97,7 @@
 .quantitySelector input {
   width: 60px;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   font-size: 1rem;
 }
@@ -106,18 +106,18 @@
   font-size: 1.2rem;
   font-weight: 600;
   margin: 1rem 0;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .priceNotAvailable {
-  color: #666;
+  color: var(--color-text-secondary);
   font-style: italic;
 }
 
 .priceMessage {
   display: block;
   font-size: 0.9rem;
-  color: #d32f2f;
+  color: var(--color-danger);
   margin-top: 0.25rem;
 }
 
@@ -126,7 +126,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: white;
-  background-color: #1976d2;
+  background-color: var(--color-primary);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -134,14 +134,14 @@
 }
 
 .addToCartBtn:hover:not(:disabled) {
-  background-color: #1565c0;
+  background-color: var(--color-primary-hover);
 }
 
 .addToCartBtn:disabled {
-  background-color: #ccc;
+  background-color: var(--color-border);
   cursor: not-allowed;
-  color: #666;
-  border: 1px solid #ddd;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
 }
 
 .productSpecifications {
@@ -151,7 +151,7 @@
 .productSpecifications h3 {
   margin-bottom: 1rem;
   font-size: 1.3rem;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .productSpecifications ul {
@@ -161,7 +161,7 @@
 
 .productSpecifications li {
   padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .loadingContainer,
@@ -178,7 +178,7 @@
 
 .loadingSpinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #3498db;
+  border-left-color: var(--color-primary);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -194,12 +194,12 @@
 
 .productNotFound h1 {
   font-size: 4rem;
-  color: #e74c3c;
+  color: var(--color-danger);
   margin-bottom: 0.5rem;
 }
 
 .errorContainer h2 {
-  color: #e74c3c;
+  color: var(--color-danger);
 }
 
 .errorContainer a,
@@ -207,7 +207,7 @@
   display: inline-block;
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background-color: #3498db;
+  background-color: var(--color-primary);
   color: white;
   text-decoration: none;
   border-radius: 4px;
@@ -216,7 +216,7 @@
 
 .errorContainer a:hover,
 .productNotFound a:hover {
-  background-color: #2980b9;
+  background-color: var(--color-primary-hover);
 }
 
 /* Responsive styles */
@@ -259,16 +259,16 @@
 }
 
 .inStock {
-  background-color: #e6f4ea;
-  color: #1e7e34;
+  background-color: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+  color: var(--color-success);
 }
 
 .outOfStock {
-  background-color: #fbe9e7;
-  color: #d32f2f;
+  background-color: color-mix(in srgb, var(--color-danger) 10%, var(--color-surface));
+  color: var(--color-danger);
 }
 
 .availableQuantity {
-  color: #666;
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
 } 

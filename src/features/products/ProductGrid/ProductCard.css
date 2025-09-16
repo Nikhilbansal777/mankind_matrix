@@ -3,8 +3,8 @@
   flex-direction: column;
   border-radius: 8px;
   overflow: hidden;
-  background-color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-surface);
+  box-shadow: 0 2px 8px var(--shadow-color);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   height: 100%;
   max-width: 100%;
@@ -12,7 +12,7 @@
 
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .product-link {
@@ -48,7 +48,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: rgba(255, 0, 0, 0.8);
+  background-color: color-mix(in srgb, var(--color-danger) 80%, transparent);
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
@@ -63,20 +63,20 @@
   flex-direction: column;
   gap: 0.5rem;
   flex: 1;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--color-border);
 }
 
 .product-name {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0;
-  color: #333;
+  color: var(--color-text-primary);
   line-height: 1.4;
 }
 
 .product-description {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
   line-height: 1.5;
   display: -webkit-box;
@@ -95,7 +95,7 @@
 
 .product-category {
   font-size: 0.8rem;
-  color: #666;
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -103,21 +103,21 @@
 .product-price {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-text-primary);
   text-align: center;
   width: 100%;
   margin-bottom:0px;
 }
 
 .price-not-available {
-  color: #666;
+  color: var(--color-text-secondary);
   font-style: italic;
   font-size: 0.9rem;
 }
 
 .stock-info {
   font-size: 0.8rem;
-  color: #4CAF50;
+  color: var(--color-success);
   font-weight: 500;
   margin-top: 0px;
   text-align: left;
@@ -126,7 +126,7 @@
 .add-to-cart-btn {
   width: 100%;
   padding: 0.75rem;
-  background-color: #1a1a1a;
+  background-color: var(--color-text-primary);
   color: white;
   border: none;
   font-size: 0.9rem;
@@ -136,13 +136,13 @@
 }
 
 .add-to-cart-btn:hover:not(.disabled) {
-  background-color: #333;
+  background-color: var(--color-primary);
 }
 
 .add-to-cart-btn.disabled {
-  background-color: #ccc;
+  background-color: var(--color-border);
   cursor: not-allowed;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 768px) {

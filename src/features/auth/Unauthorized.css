@@ -3,23 +3,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f9f9f9;
+  background: var(--color-background);
   padding: 2rem;
 }
 
 .unauthorized-container {
-  background: white;
+  background: var(--color-surface);
   border-radius: 14px;
   padding: 3rem;
   text-align: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px var(--shadow-color);
   max-width: 500px;
   width: 100%;
 }
 
 .unauthorized-icon {
   font-size: 4rem;
-  color: #e91e63;
+  color: var(--color-primary);
   margin-bottom: 1.5rem;
   animation: pulse 2s infinite;
 }
@@ -39,14 +39,14 @@
 .unauthorized-title {
   font-size: 2rem;
   font-weight: bold;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 1rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .unauthorized-message {
   font-size: 1rem;
-  color: #555;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -76,41 +76,41 @@
 }
 
 .unauthorized-btn.primary {
-  background: #e91e63;
+  background: var(--color-primary);
   color: white;
 }
 
 .unauthorized-btn.primary:hover {
-  background: #d81b60;
+  background: var(--color-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(233, 30, 99, 0.2);
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .unauthorized-btn.secondary {
   background: transparent;
-  color: #e91e63;
-  border: 1px solid #e91e63;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
 }
 
 .unauthorized-btn.secondary:hover {
-  background: #e91e63;
+  background: var(--color-primary);
   color: white;
   transform: translateY(-1px);
 }
 
 .unauthorized-help {
-  border-top: 1px solid #f5f5f5;
+  border-top: 1px solid var(--color-border);
   padding-top: 1.5rem;
 }
 
 .unauthorized-help p {
-  color: #555;
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .unauthorized-help a {
-  color: #e91e63;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 500;
 }

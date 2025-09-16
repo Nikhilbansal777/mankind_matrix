@@ -1,3 +1,44 @@
+/*
+  Design Tokens (CSS Variables)
+  - Centralized color palette inspired by Myntra
+  - Use these variables across the app for consistent theming
+*/
+:root {
+  /* Brand */
+  --color-primary: #1c7ec3;         /* Brand Red */
+  --color-primary-hover: #badd1f;   /* Darker Red for hover */
+  --color-secondary: #f5a623;       /* Warm accent */
+  --color-accent: #00bcd4;          /* Teal accent */
+
+  /* Status */
+  --color-success: #27ae60;
+  --color-warning: #f2994a;
+  --color-danger: #e81d06;
+  --color-info: #2f80ed;
+
+  /* Neutrals */
+  --color-text-primary: #222222;
+  --color-text-secondary: #555555;
+  --color-border: #e5e7eb;
+  --color-background: #f9fafb;
+  --color-surface: #ffffff;
+
+  /* Effects */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  /* Header/Footer specific */
+  --color-header-bg: #172E3A;
+  --color-footer-bg: #172E3A;
+  --color-on-header: #ffffff;
+  --color-on-header-strong: #ffffff;
+
+  /* Banners */
+  --color-sale-start: #ff9800;
+  --color-sale-end: #ff5722;
+  --color-sale-chip-bg: #fff3e0;
+  --color-sale-chip-text: #ff5722;
+}
+
 /* Reset & Global Styles */
 *,
 *::before,
@@ -15,8 +56,8 @@ html, body {
 }
 
 body {
-  background-color: #f9f9f9;
-  color: #333;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
   overflow-x: hidden; /* Avoid extra scroll caused by any rogue elements */
   min-height: 100vh;
 }
@@ -75,7 +116,7 @@ body {
 
 .loading-spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #3498db;
+  border-left-color: var(--color-primary);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -92,19 +133,19 @@ body {
 .product-not-found h1,
 .product-not-found h2 {
   font-size: 2rem;
-  color: #e74c3c;
+  color: var(--color-danger);
   margin-bottom: 0.5rem;
 }
 
 .error-container h2 {
-  color: #e74c3c;
+  color: var(--color-danger);
   margin-bottom: 0.5rem;
 }
 
 .loading-container p,
 .error-container p,
 .product-not-found p {
-  color: #555;
+  color: var(--color-text-secondary);
   margin-bottom: 1rem;
 }
 
@@ -113,7 +154,7 @@ body {
   display: inline-block;
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background-color: #3498db;
+  background-color: var(--color-primary);
   color: white;
   text-decoration: none;
   border-radius: 4px;
@@ -122,5 +163,5 @@ body {
 
 .error-container a:hover,
 .product-not-found a:hover {
-  background-color: #2980b9;
+  background-color: var(--color-primary-hover);
 }

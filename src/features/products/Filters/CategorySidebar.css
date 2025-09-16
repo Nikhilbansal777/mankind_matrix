@@ -1,16 +1,16 @@
 .category-sidebar {
-  background-color: #2c3e50;
-  color: white;
+  background-color: var(--color-header-bg);
+  color: var(--color-on-header-strong);
   width: 250px;
   flex-shrink: 0;
   min-height: 100vh;
   overflow-y: auto;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 5px var(--shadow-color);
 }
 
 .sidenav-header {
   padding: 20px 15px 15px 15px;
-  border-bottom: 1px solid #34495e;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .sidenav-header h6 {
@@ -19,7 +19,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #ecf0f1;
+  color: var(--color-on-header);
 }
 
 .sidenav-list {
@@ -29,7 +29,7 @@
 }
 
 .sidenav-list-item {
-  border-bottom: 1px solid #34495e;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .sidenav-list-item:last-child {
@@ -37,7 +37,7 @@
 }
 
 .sidenav-list-item.selected {
-  background-color: #3498db;
+  background-color: var(--color-primary);
 }
 
 .category-item {
@@ -50,7 +50,7 @@
 .expand-button {
   background: none;
   border: none;
-  color: #ecf0f1;
+  color: var(--color-on-header);
   cursor: pointer;
   padding: 8px;
   margin-right: 5px;
@@ -62,7 +62,7 @@
 }
 
 .expand-button:hover {
-  color: #3498db;
+  color: var(--color-primary);
 }
 
 .expand-button.expanded .expand-icon {
@@ -77,7 +77,7 @@
 .category-button {
   background: none;
   border: none;
-  color: #ecf0f1;
+  color: var(--color-on-header);
   cursor: pointer;
   padding: 12px 15px;
   text-align: left;
@@ -91,12 +91,12 @@
 }
 
 .category-button:hover {
-  background-color: #34495e;
+  background-color: color-mix(in srgb, var(--color-on-header) 10%, transparent);
 }
 
 .category-button.selected {
-  background-color: #3498db;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-on-header-strong);
 }
 
 .category-button.all-products {
@@ -111,11 +111,11 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  background-color: #34495e;
+  background-color: color-mix(in srgb, var(--color-header-bg) 85%, #000000);
 }
 
 .subcategories-list .sidenav-list-item {
-  border-bottom: 1px solid #2c3e50;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .subcategories-list .sidenav-list-item:last-child {
@@ -134,8 +134,8 @@
 .loading-spinner {
   width: 30px;
   height: 30px;
-  border: 3px solid #34495e;
-  border-top: 3px solid #3498db;
+  border: 3px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 15px;
@@ -149,7 +149,7 @@
 .loading-container p {
   margin: 0;
   font-size: 12px;
-  color: #bdc3c7;
+  color: var(--color-on-header);
 }
 
 .no-categories {
@@ -160,7 +160,7 @@
 .no-categories p {
   margin: 0;
   font-size: 12px;
-  color: #bdc3c7;
+  color: var(--color-on-header);
   font-style: italic;
 }
 
