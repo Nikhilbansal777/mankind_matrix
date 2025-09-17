@@ -176,6 +176,50 @@
   display: inline-block;
 }
 
+/* Admin icon styles */
+.admin-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+  background-color: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  outline: none;
+  box-shadow: none;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.admin-icon-wrapper:hover {
+  color: #fff;
+  background-color: rgba(233, 30, 99, 0.1);
+  border: none;
+}
+
+.admin-icon-wrapper:focus,
+.admin-icon-wrapper:focus:hover {
+  outline: none;
+  box-shadow: none;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.admin-icon {
+  font-size: 1.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Cart Icon Styles */
 .cart-icon-wrapper {
   position: relative;
@@ -385,8 +429,16 @@
     font-size: 0.9rem;
   }
   
+  .admin-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 0.9rem;
+  }
+  
   .header-login-btn svg,
-  .header-logout-btn svg {
+  .header-logout-btn svg,
+  .admin-icon {
     font-size: 1rem;
   }
   
@@ -395,7 +447,8 @@
   }
   
   .header-logout-btn svg,
-  .logout-spinner {
+  .logout-spinner,
+  .admin-icon {
     font-size: 1rem;
     width: 1rem;
     height: 1rem;

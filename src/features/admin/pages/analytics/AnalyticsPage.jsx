@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Paper,
@@ -28,7 +28,7 @@ import {
   BarChart,
   Bar
 } from 'recharts';
-import { getSalesData } from './mockUserService';
+import { getSalesData } from '../../services/mockUserService';
 
 const SalesAnalytics = () => {
   const theme = useTheme();
@@ -42,11 +42,7 @@ const SalesAnalytics = () => {
     growth: 0
   });
 
-  useEffect(() => {
-    loadSalesData();
-  }, [period]);
-
-  const loadSalesData = async () => {
+  const loadSalesData = useCallback(async () => {
     const data = await getSalesData(period);
     setSalesData(data);
     
@@ -67,7 +63,11 @@ const SalesAnalytics = () => {
       highest,
       growth
     });
-  };
+  }, [period]);
+
+  useEffect(() => {
+    loadSalesData();
+  }, [loadSalesData]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
