@@ -187,15 +187,6 @@ const ProductForm = ({ product, onSubmit, onCancel, loading = false }) => {
     }
   };
 
-  // const handleCategorySelect = (category) => {
-  //   const value = category.id.toString();
-  //   setSelectValue(value);
-  //   setFormData(prev => ({
-  //     ...prev,
-  //     categoryId: category.id
-  //   }));
-  // };
-
   const handleImageChange = (index, value) => {
     setFormData(prev => ({
       ...prev,
