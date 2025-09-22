@@ -30,6 +30,12 @@ import { api } from '../client';
 
 const userService = {
   /**
+   * Get all users
+   * @returns {Promise<User[]>} List of users
+   */
+  getUsers: (params = {}) => 
+    api.user.get('/', params),
+  /**
    * Get current user profile
    * @returns {Promise<User>} Current user details
    */

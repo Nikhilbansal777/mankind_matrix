@@ -7,11 +7,14 @@ import {
   getCurrentUser,
   updateUserProfile,
   changePassword,
+  fetchUsers as fetchUsersThunk,
   selectUser,
   selectToken,
   selectIsAuthenticated,
   selectIsInitialized,
   selectCurrentUser,
+  selectUsers,
+  selectUsersPagination,
   selectUserLoading,
   selectUserError,
   clearError,
@@ -28,6 +31,8 @@ export const useUser = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isInitialized = useSelector(selectIsInitialized);
   const currentUser = useSelector(selectCurrentUser);
+  const users = useSelector(selectUsers);
+  const usersPagination = useSelector(selectUsersPagination);
   const loading = useSelector(selectUserLoading);
   const error = useSelector(selectUserError);
 
@@ -103,6 +108,17 @@ export const useUser = () => {
     }
   }, [dispatch]);
 
+  // Admin: fetch all users
+  const getUsers = useCallback(async (page = 0, size = 10, sort = []) => {
+    try {
+      const result = await dispatch(fetchUsersThunk({ page, size, sort: sort && sort.length > 0 ? sort : undefined })).unwrap();
+      return result;
+    } catch (err) {
+      console.error('Error fetching users:', err);
+      return [];
+    }
+  }, [dispatch]);
+
   // Utility actions
   const clearUserError = useCallback(() => {
     dispatch(clearError());
@@ -119,6 +135,8 @@ export const useUser = () => {
     isAuthenticated: isActuallyAuthenticated, // Use validated authentication state
     isInitialized,
     currentUser,
+    users,
+    usersPagination,
     loading,
     error,
     
@@ -131,6 +149,7 @@ export const useUser = () => {
     getCurrentUser: fetchCurrentUser,
     updateProfile,
     changePassword: changeUserPassword,
+    getUsers,
     
     // Utility actions
     clearError: clearUserError,

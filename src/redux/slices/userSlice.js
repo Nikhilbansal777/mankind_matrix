@@ -171,6 +171,21 @@ export const changePassword = createAsyncThunk(
   }
 );
 
+// Admin: fetch all users
+export const fetchUsers = createAsyncThunk(
+  'user/fetchUsers',
+  async ({ page = 0, size = 10, sort }, { rejectWithValue }) => {
+    try {
+      const params = { page, size };
+      if (sort && sort.length > 0) params.sort = sort;
+      const response = await userService.getUsers(params);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Note: These methods are removed as they're not part of the user service anymore
 // If you need admin functionality to fetch all users, you'll need to implement
 // separate admin service or add these methods to the user service
@@ -184,6 +199,13 @@ const initialState = {
   
   // User management state
   currentUser: null,
+  users: [],
+  usersPagination: {
+    currentPage: 0,
+    totalPages: 0,
+    totalItems: 0,
+    itemsPerPage: 10
+  },
   
   // Loading states
   loading: {
@@ -192,7 +214,8 @@ const initialState = {
     logout: false,
     currentUser: false,
     updateProfile: false,
-    changePassword: false
+    changePassword: false,
+    fetchUsers: false
   },
   
   // Error state
@@ -350,6 +373,33 @@ const userSlice = createSlice({
       .addCase(changePassword.rejected, (state, action) => {
         state.loading.changePassword = false;
         state.error = action.payload;
+      })
+      
+      // Handle fetchUsers
+      .addCase(fetchUsers.pending, (state) => {
+        state.loading.fetchUsers = true;
+        state.error = null;
+      })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.loading.fetchUsers = false;
+        // Support both paginated and non-paginated responses
+        const payload = action.payload || {};
+        if (Array.isArray(payload)) {
+          state.users = payload;
+          state.usersPagination = { ...state.usersPagination, totalItems: payload.length, totalPages: 1, currentPage: 0 };
+        } else {
+          state.users = payload.content || [];
+          state.usersPagination = {
+            currentPage: payload.number ?? 0,
+            totalPages: payload.totalPages ?? 0,
+            totalItems: payload.totalElements ?? (payload.content ? payload.content.length : 0),
+            itemsPerPage: payload.size ?? state.usersPagination.itemsPerPage
+          };
+        }
+      })
+      .addCase(fetchUsers.rejected, (state, action) => {
+        state.loading.fetchUsers = false;
+        state.error = action.payload;
       });
   }
 });
@@ -360,7 +410,8 @@ export const selectToken = (state) => state.user.token;
 export const selectIsAuthenticated = (state) => state.user.isAuthenticated;
 export const selectIsInitialized = (state) => state.user.isInitialized;
 export const selectCurrentUser = (state) => state.user.currentUser;
-// Note: selectUsers removed as fetchUsers functionality is not available
+export const selectUsers = (state) => state.user.users;
+export const selectUsersPagination = (state) => state.user.usersPagination;
 export const selectUserLoading = (state) => state.user.loading;
 export const selectUserError = (state) => state.user.error;
 
@@ -372,7 +423,7 @@ export const selectLogoutLoading = (state) => state.user.loading.logout;
 export const selectCurrentUserLoading = (state) => state.user.loading.currentUser;
 export const selectUpdateProfileLoading = (state) => state.user.loading.updateProfile;
 export const selectChangePasswordLoading = (state) => state.user.loading.changePassword;
-// Note: These selectors removed as fetchUsers/fetchUserById functionality is not available
+export const selectFetchUsersLoading = (state) => state.user.loading.fetchUsers;
 
 export const { clearError, clearCurrentUser, manualLogout, initializeAuth } = userSlice.actions;
 export default userSlice.reducer;
