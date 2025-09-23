@@ -186,6 +186,32 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
+// Admin: fetch user by id
+export const fetchUserById = createAsyncThunk(
+  'user/fetchUserById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const user = await userService.getById(id);
+      return user;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Admin: update user by id
+export const updateUserById = createAsyncThunk(
+  'user/updateUserById',
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const user = await userService.updateById(id, data);
+      return user;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Note: These methods are removed as they're not part of the user service anymore
 // If you need admin functionality to fetch all users, you'll need to implement
 // separate admin service or add these methods to the user service
@@ -200,6 +226,7 @@ const initialState = {
   // User management state
   currentUser: null,
   users: [],
+  selectedUser: null,
   usersPagination: {
     currentPage: 0,
     totalPages: 0,
@@ -216,6 +243,8 @@ const initialState = {
     updateProfile: false,
     changePassword: false,
     fetchUsers: false
+    , fetchUserById: false
+    , updateUserById: false
   },
   
   // Error state
@@ -231,6 +260,9 @@ const userSlice = createSlice({
     },
     clearCurrentUser: (state) => {
       state.currentUser = null;
+    },
+    clearSelectedUser: (state) => {
+      state.selectedUser = null;
     },
     // Manual logout (without API call)
     manualLogout: (state) => {
@@ -400,6 +432,46 @@ const userSlice = createSlice({
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading.fetchUsers = false;
         state.error = action.payload;
+      })
+      
+      // Handle fetchUserById
+      .addCase(fetchUserById.pending, (state) => {
+        state.loading.fetchUserById = true;
+        state.error = null;
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.loading.fetchUserById = false;
+        state.selectedUser = action.payload;
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
+        state.loading.fetchUserById = false;
+        state.error = action.payload;
+      })
+      
+      // Handle updateUserById
+      .addCase(updateUserById.pending, (state) => {
+        state.loading.updateUserById = true;
+        state.error = null;
+      })
+      .addCase(updateUserById.fulfilled, (state, action) => {
+        state.loading.updateUserById = false;
+        state.selectedUser = action.payload;
+        // If the updated user is in the list, update it there too
+        const idx = state.users.findIndex(u => u.id === action.payload.id);
+        if (idx !== -1) {
+          state.users[idx] = action.payload;
+        }
+        // If the updated user is the logged-in/current user, update those as well
+        if (state.user?.id === action.payload.id) {
+          state.user = action.payload;
+        }
+        if (state.currentUser?.id === action.payload.id) {
+          state.currentUser = action.payload;
+        }
+      })
+      .addCase(updateUserById.rejected, (state, action) => {
+        state.loading.updateUserById = false;
+        state.error = action.payload;
       });
   }
 });
@@ -411,6 +483,7 @@ export const selectIsAuthenticated = (state) => state.user.isAuthenticated;
 export const selectIsInitialized = (state) => state.user.isInitialized;
 export const selectCurrentUser = (state) => state.user.currentUser;
 export const selectUsers = (state) => state.user.users;
+export const selectSelectedUser = (state) => state.user.selectedUser;
 export const selectUsersPagination = (state) => state.user.usersPagination;
 export const selectUserLoading = (state) => state.user.loading;
 export const selectUserError = (state) => state.user.error;
@@ -424,6 +497,8 @@ export const selectCurrentUserLoading = (state) => state.user.loading.currentUse
 export const selectUpdateProfileLoading = (state) => state.user.loading.updateProfile;
 export const selectChangePasswordLoading = (state) => state.user.loading.changePassword;
 export const selectFetchUsersLoading = (state) => state.user.loading.fetchUsers;
+export const selectFetchUserByIdLoading = (state) => state.user.loading.fetchUserById;
+export const selectUpdateUserByIdLoading = (state) => state.user.loading.updateUserById;
 
-export const { clearError, clearCurrentUser, manualLogout, initializeAuth } = userSlice.actions;
+export const { clearError, clearCurrentUser, manualLogout, initializeAuth, clearSelectedUser } = userSlice.actions;
 export default userSlice.reducer;

@@ -36,6 +36,13 @@ const userService = {
   getUsers: (params = {}) => 
     api.user.get('/', params),
   /**
+   * Get user by id
+   * @param {number|string} id - User ID
+   * @returns {Promise<User>} User details
+   */
+  getById: (id) =>
+    api.user.get(`/${id}`),
+  /**
    * Get current user profile
    * @returns {Promise<User>} Current user details
    */
@@ -49,6 +56,15 @@ const userService = {
    */
   updateProfile: (data) => 
     api.user.put('/profile', data),
+
+  /**
+   * Update user by id (admin)
+   * @param {number|string} id - User ID
+   * @param {Partial<UserInput> & { customAttributes?: Record<string, any> }} data - Updated user data
+   * @returns {Promise<User>} Updated user details
+   */
+  updateById: (id, data) =>
+    api.user.put(`/${id}`, data),
 
   /**
    * Change password

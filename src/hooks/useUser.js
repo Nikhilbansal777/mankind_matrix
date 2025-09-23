@@ -8,17 +8,21 @@ import {
   updateUserProfile,
   changePassword,
   fetchUsers as fetchUsersThunk,
+  fetchUserById as fetchUserByIdThunk,
+  updateUserById as updateUserByIdThunk,
   selectUser,
   selectToken,
   selectIsAuthenticated,
   selectIsInitialized,
   selectCurrentUser,
   selectUsers,
+  selectSelectedUser,
   selectUsersPagination,
   selectUserLoading,
   selectUserError,
   clearError,
   clearCurrentUser,
+  clearSelectedUser,
   manualLogout
 } from '../redux/slices/userSlice';
 
@@ -32,6 +36,7 @@ export const useUser = () => {
   const isInitialized = useSelector(selectIsInitialized);
   const currentUser = useSelector(selectCurrentUser);
   const users = useSelector(selectUsers);
+  const selectedUser = useSelector(selectSelectedUser);
   const usersPagination = useSelector(selectUsersPagination);
   const loading = useSelector(selectUserLoading);
   const error = useSelector(selectUserError);
@@ -119,6 +124,26 @@ export const useUser = () => {
     }
   }, [dispatch]);
 
+  const getUserById = useCallback(async (id) => {
+    try {
+      const user = await dispatch(fetchUserByIdThunk(id)).unwrap();
+      return user;
+    } catch (err) {
+      console.error('Error fetching user by id:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
+  const updateUserById = useCallback(async (id, data) => {
+    try {
+      const user = await dispatch(updateUserByIdThunk({ id, data })).unwrap();
+      return user;
+    } catch (err) {
+      console.error('Error updating user by id:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
   // Utility actions
   const clearUserError = useCallback(() => {
     dispatch(clearError());
@@ -126,6 +151,10 @@ export const useUser = () => {
 
   const clearCurrentUserData = useCallback(() => {
     dispatch(clearCurrentUser());
+  }, [dispatch]);
+
+  const clearSelectedUserData = useCallback(() => {
+    dispatch(clearSelectedUser());
   }, [dispatch]);
 
   return {
@@ -136,6 +165,7 @@ export const useUser = () => {
     isInitialized,
     currentUser,
     users,
+    selectedUser,
     usersPagination,
     loading,
     error,
@@ -150,10 +180,13 @@ export const useUser = () => {
     updateProfile,
     changePassword: changeUserPassword,
     getUsers,
+    getUserById,
+    updateUserById,
     
     // Utility actions
     clearError: clearUserError,
     clearCurrentUser: clearCurrentUserData,
+    clearSelectedUser: clearSelectedUserData,
     
     // Convenience getters
     isLoggedIn: isActuallyAuthenticated, // Use validated authentication state
