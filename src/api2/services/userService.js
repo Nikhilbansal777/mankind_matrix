@@ -67,6 +67,42 @@ const userService = {
     api.user.put(`/${id}`, data),
 
   /**
+   * Admin: Get addresses for a specific user
+   * @param {number|string} userId
+   * @returns {Promise<Array>} List of addresses
+   */
+  getUserAddresses: (userId) =>
+    api.user.get(`/${userId}/addresses`),
+
+  /**
+   * Admin: Update a user's address
+   * @param {number|string} userId
+   * @param {number|string} addressId
+   * @param {Object} data
+   * @returns {Promise<Object>} Updated address
+   */
+  updateUserAddress: (userId, addressId, data) =>
+    api.user.put(`/${userId}/addresses/${addressId}`, data),
+
+  /**
+   * Admin: Delete a user's address
+   * @param {number|string} userId
+   * @param {number|string} addressId
+   * @returns {Promise<void>}
+   */
+  deleteUserAddress: (userId, addressId) =>
+    api.user.delete(`/${userId}/addresses/${addressId}`),
+
+  /**
+   * Admin: Create a user's address
+   * @param {number|string} userId
+   * @param {Object} data
+   * @returns {Promise<Object>} Created address
+   */
+  createUserAddress: (userId, data) =>
+    api.user.post(`/${userId}/addresses`, data),
+
+  /**
    * Change password
    * @param {Object} data - Password change data
    * @param {string} data.currentPassword - Current password

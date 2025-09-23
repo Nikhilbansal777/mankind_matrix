@@ -15,7 +15,8 @@ import {
   CircularProgress,
   Tooltip
 } from '@mui/material';
-import { Edit as EditIcon } from '@mui/icons-material';
+import { Edit as EditIcon, Home as HomeIcon } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import withLayout from '../../../../layouts/HOC/withLayout';
 import useUser from '../../../../hooks/useUser';
 import Pagination from '../../../../components/Pagination/Pagination';
@@ -23,6 +24,7 @@ import UserForm from '../../components/forms/UserForm';
 
 const UserManagement = () => {
   const { users, usersPagination, getUsers, loading, error } = useUser();
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
   const [openForm, setOpenForm] = useState(false);
@@ -117,6 +119,11 @@ const UserManagement = () => {
                     <Tooltip title="Edit user">
                       <IconButton aria-label="Edit user" color="primary" size="small" onClick={() => handleOpenForm(user.id)}>
                         <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Manage addresses">
+                      <IconButton aria-label="Manage addresses" color="primary" size="small" onClick={() => navigate(`/admin/users/${user.id}/addresses`)}>
+                        <HomeIcon />
                       </IconButton>
                     </Tooltip>
                   </TableCell>

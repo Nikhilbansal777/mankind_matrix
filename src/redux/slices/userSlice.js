@@ -212,6 +212,55 @@ export const updateUserById = createAsyncThunk(
   }
 );
 
+// Admin: user addresses
+export const fetchUserAddresses = createAsyncThunk(
+  'user/fetchUserAddresses',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const addresses = await userService.getUserAddresses(userId);
+      return { userId, addresses };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateUserAddress = createAsyncThunk(
+  'user/updateUserAddress',
+  async ({ userId, addressId, data }, { rejectWithValue }) => {
+    try {
+      const address = await userService.updateUserAddress(userId, addressId, data);
+      return { userId, address };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteUserAddress = createAsyncThunk(
+  'user/deleteUserAddress',
+  async ({ userId, addressId }, { rejectWithValue }) => {
+    try {
+      await userService.deleteUserAddress(userId, addressId);
+      return { userId, addressId };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const createUserAddress = createAsyncThunk(
+  'user/createUserAddress',
+  async ({ userId, data }, { rejectWithValue }) => {
+    try {
+      const address = await userService.createUserAddress(userId, data);
+      return { userId, address };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Note: These methods are removed as they're not part of the user service anymore
 // If you need admin functionality to fetch all users, you'll need to implement
 // separate admin service or add these methods to the user service
@@ -227,6 +276,7 @@ const initialState = {
   currentUser: null,
   users: [],
   selectedUser: null,
+  selectedUserAddresses: [],
   usersPagination: {
     currentPage: 0,
     totalPages: 0,
@@ -245,6 +295,10 @@ const initialState = {
     fetchUsers: false
     , fetchUserById: false
     , updateUserById: false
+    , fetchUserAddresses: false
+    , updateUserAddress: false
+    , deleteUserAddress: false
+    , createUserAddress: false
   },
   
   // Error state
@@ -263,6 +317,9 @@ const userSlice = createSlice({
     },
     clearSelectedUser: (state) => {
       state.selectedUser = null;
+    },
+    clearSelectedUserAddresses: (state) => {
+      state.selectedUserAddresses = [];
     },
     // Manual logout (without API call)
     manualLogout: (state) => {
@@ -472,6 +529,69 @@ const userSlice = createSlice({
       .addCase(updateUserById.rejected, (state, action) => {
         state.loading.updateUserById = false;
         state.error = action.payload;
+      })
+
+      // Handle fetchUserAddresses
+      .addCase(fetchUserAddresses.pending, (state) => {
+        state.loading.fetchUserAddresses = true;
+        state.error = null;
+      })
+      .addCase(fetchUserAddresses.fulfilled, (state, action) => {
+        state.loading.fetchUserAddresses = false;
+        state.selectedUserAddresses = action.payload.addresses || [];
+      })
+      .addCase(fetchUserAddresses.rejected, (state, action) => {
+        state.loading.fetchUserAddresses = false;
+        state.error = action.payload;
+      })
+
+      // Handle updateUserAddress
+      .addCase(updateUserAddress.pending, (state) => {
+        state.loading.updateUserAddress = true;
+        state.error = null;
+      })
+      .addCase(updateUserAddress.fulfilled, (state, action) => {
+        state.loading.updateUserAddress = false;
+        const updated = action.payload.address;
+        const idx = state.selectedUserAddresses.findIndex(a => a.id === updated.id);
+        if (idx !== -1) {
+          state.selectedUserAddresses[idx] = updated;
+        } else {
+          state.selectedUserAddresses.push(updated);
+        }
+      })
+      .addCase(updateUserAddress.rejected, (state, action) => {
+        state.loading.updateUserAddress = false;
+        state.error = action.payload;
+      })
+
+      // Handle deleteUserAddress
+      .addCase(deleteUserAddress.pending, (state) => {
+        state.loading.deleteUserAddress = true;
+        state.error = null;
+      })
+      .addCase(deleteUserAddress.fulfilled, (state, action) => {
+        state.loading.deleteUserAddress = false;
+        const { addressId } = action.payload;
+        state.selectedUserAddresses = state.selectedUserAddresses.filter(a => a.id !== addressId);
+      })
+      .addCase(deleteUserAddress.rejected, (state, action) => {
+        state.loading.deleteUserAddress = false;
+        state.error = action.payload;
+      })
+      
+      // Handle createUserAddress
+      .addCase(createUserAddress.pending, (state) => {
+        state.loading.createUserAddress = true;
+        state.error = null;
+      })
+      .addCase(createUserAddress.fulfilled, (state, action) => {
+        state.loading.createUserAddress = false;
+        state.selectedUserAddresses = [action.payload.address, ...state.selectedUserAddresses];
+      })
+      .addCase(createUserAddress.rejected, (state, action) => {
+        state.loading.createUserAddress = false;
+        state.error = action.payload;
       });
   }
 });
@@ -484,6 +604,7 @@ export const selectIsInitialized = (state) => state.user.isInitialized;
 export const selectCurrentUser = (state) => state.user.currentUser;
 export const selectUsers = (state) => state.user.users;
 export const selectSelectedUser = (state) => state.user.selectedUser;
+export const selectSelectedUserAddresses = (state) => state.user.selectedUserAddresses;
 export const selectUsersPagination = (state) => state.user.usersPagination;
 export const selectUserLoading = (state) => state.user.loading;
 export const selectUserError = (state) => state.user.error;
@@ -499,6 +620,9 @@ export const selectChangePasswordLoading = (state) => state.user.loading.changeP
 export const selectFetchUsersLoading = (state) => state.user.loading.fetchUsers;
 export const selectFetchUserByIdLoading = (state) => state.user.loading.fetchUserById;
 export const selectUpdateUserByIdLoading = (state) => state.user.loading.updateUserById;
+export const selectFetchUserAddressesLoading = (state) => state.user.loading.fetchUserAddresses;
+export const selectUpdateUserAddressLoading = (state) => state.user.loading.updateUserAddress;
+export const selectDeleteUserAddressLoading = (state) => state.user.loading.deleteUserAddress;
 
-export const { clearError, clearCurrentUser, manualLogout, initializeAuth, clearSelectedUser } = userSlice.actions;
+export const { clearError, clearCurrentUser, manualLogout, initializeAuth, clearSelectedUser, clearSelectedUserAddresses } = userSlice.actions;
 export default userSlice.reducer;
