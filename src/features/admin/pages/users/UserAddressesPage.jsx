@@ -216,7 +216,7 @@ const UserAddressesPage = () => {
       )}
 
       <Dialog open={openEdit} onClose={handleCloseEdit} maxWidth="sm" fullWidth>
-        <DialogTitle>Edit Address</DialogTitle>
+        <DialogTitle>{editingAddress?.id ? 'Edit Address' : 'Add Address'}</DialogTitle>
         <Box component="form" onSubmit={handleSave}>
           <DialogContent dividers>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
