@@ -292,13 +292,13 @@ const initialState = {
     currentUser: false,
     updateProfile: false,
     changePassword: false,
-    fetchUsers: false
-    , fetchUserById: false
-    , updateUserById: false
-    , fetchUserAddresses: false
-    , updateUserAddress: false
-    , deleteUserAddress: false
-    , createUserAddress: false
+    fetchUsers: false,
+    fetchUserById: false,
+    updateUserById: false,
+    fetchUserAddresses: false,
+    updateUserAddress: false,
+    deleteUserAddress: false,
+    createUserAddress: false
   },
   
   // Error state
