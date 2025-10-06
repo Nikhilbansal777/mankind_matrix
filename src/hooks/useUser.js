@@ -7,15 +7,28 @@ import {
   getCurrentUser,
   updateUserProfile,
   changePassword,
+  fetchUsers as fetchUsersThunk,
+  fetchUserById as fetchUserByIdThunk,
+  updateUserById as updateUserByIdThunk,
+  fetchUserAddresses as fetchUserAddressesThunk,
+  updateUserAddress as updateUserAddressThunk,
+  deleteUserAddress as deleteUserAddressThunk,
+  createUserAddress as createUserAddressThunk,
   selectUser,
   selectToken,
   selectIsAuthenticated,
   selectIsInitialized,
   selectCurrentUser,
+  selectUsers,
+  selectSelectedUser,
+  selectSelectedUserAddresses,
+  selectUsersPagination,
   selectUserLoading,
   selectUserError,
   clearError,
   clearCurrentUser,
+  clearSelectedUser,
+  clearSelectedUserAddresses,
   manualLogout
 } from '../redux/slices/userSlice';
 
@@ -28,6 +41,10 @@ export const useUser = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isInitialized = useSelector(selectIsInitialized);
   const currentUser = useSelector(selectCurrentUser);
+  const users = useSelector(selectUsers);
+  const selectedUser = useSelector(selectSelectedUser);
+  const selectedUserAddresses = useSelector(selectSelectedUserAddresses);
+  const usersPagination = useSelector(selectUsersPagination);
   const loading = useSelector(selectUserLoading);
   const error = useSelector(selectUserError);
 
@@ -103,6 +120,78 @@ export const useUser = () => {
     }
   }, [dispatch]);
 
+  // Admin: fetch all users
+  const getUsers = useCallback(async (page = 0, size = 10, sort = []) => {
+    try {
+      const result = await dispatch(fetchUsersThunk({ page, size, sort: sort && sort.length > 0 ? sort : undefined })).unwrap();
+      return result;
+    } catch (err) {
+      console.error('Error fetching users:', err);
+      return [];
+    }
+  }, [dispatch]);
+
+  const getUserById = useCallback(async (id) => {
+    try {
+      const user = await dispatch(fetchUserByIdThunk(id)).unwrap();
+      return user;
+    } catch (err) {
+      console.error('Error fetching user by id:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
+  const updateUserById = useCallback(async (id, data) => {
+    try {
+      const user = await dispatch(updateUserByIdThunk({ id, data })).unwrap();
+      return user;
+    } catch (err) {
+      console.error('Error updating user by id:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
+  // Admin: user addresses
+  const getUserAddresses = useCallback(async (userId) => {
+    try {
+      const res = await dispatch(fetchUserAddressesThunk(userId)).unwrap();
+      return res.addresses || [];
+    } catch (err) {
+      console.error('Error fetching user addresses:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
+  const saveUserAddress = useCallback(async (userId, addressId, data) => {
+    try {
+      const res = await dispatch(updateUserAddressThunk({ userId, addressId, data })).unwrap();
+      return res.address;
+    } catch (err) {
+      console.error('Error updating user address:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
+  const createUserAddress = useCallback(async (userId, data) => {
+    try {
+      const res = await dispatch(createUserAddressThunk({ userId, data })).unwrap();
+      return res.address;
+    } catch (err) {
+      console.error('Error creating user address:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
+  const removeUserAddress = useCallback(async (userId, addressId) => {
+    try {
+      await dispatch(deleteUserAddressThunk({ userId, addressId })).unwrap();
+      return true;
+    } catch (err) {
+      console.error('Error deleting user address:', err);
+      throw err;
+    }
+  }, [dispatch]);
+
   // Utility actions
   const clearUserError = useCallback(() => {
     dispatch(clearError());
@@ -112,6 +201,14 @@ export const useUser = () => {
     dispatch(clearCurrentUser());
   }, [dispatch]);
 
+  const clearSelectedUserData = useCallback(() => {
+    dispatch(clearSelectedUser());
+  }, [dispatch]);
+
+  const clearSelectedUserAddressesData = useCallback(() => {
+    dispatch(clearSelectedUserAddresses());
+  }, [dispatch]);
+
   return {
     // State
     user: user || currentUser,
@@ -119,6 +216,10 @@ export const useUser = () => {
     isAuthenticated: isActuallyAuthenticated, // Use validated authentication state
     isInitialized,
     currentUser,
+    users,
+    selectedUser,
+    selectedUserAddresses,
+    usersPagination,
     loading,
     error,
     
@@ -131,10 +232,19 @@ export const useUser = () => {
     getCurrentUser: fetchCurrentUser,
     updateProfile,
     changePassword: changeUserPassword,
+    getUsers,
+    getUserById,
+    updateUserById,
+    getUserAddresses,
+    saveUserAddress,
+    createUserAddress,
+    removeUserAddress,
     
     // Utility actions
     clearError: clearUserError,
     clearCurrentUser: clearCurrentUserData,
+    clearSelectedUser: clearSelectedUserData,
+    clearSelectedUserAddresses: clearSelectedUserAddressesData,
     
     // Convenience getters
     isLoggedIn: isActuallyAuthenticated, // Use validated authentication state

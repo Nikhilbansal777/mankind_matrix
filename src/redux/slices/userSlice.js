@@ -171,6 +171,96 @@ export const changePassword = createAsyncThunk(
   }
 );
 
+// Admin: fetch all users
+export const fetchUsers = createAsyncThunk(
+  'user/fetchUsers',
+  async ({ page = 0, size = 10, sort }, { rejectWithValue }) => {
+    try {
+      const params = { page, size };
+      if (sort && sort.length > 0) params.sort = sort;
+      const response = await userService.getUsers(params);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Admin: fetch user by id
+export const fetchUserById = createAsyncThunk(
+  'user/fetchUserById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const user = await userService.getById(id);
+      return user;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Admin: update user by id
+export const updateUserById = createAsyncThunk(
+  'user/updateUserById',
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const user = await userService.updateById(id, data);
+      return user;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// Admin: user addresses
+export const fetchUserAddresses = createAsyncThunk(
+  'user/fetchUserAddresses',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const addresses = await userService.getUserAddresses(userId);
+      return { userId, addresses };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateUserAddress = createAsyncThunk(
+  'user/updateUserAddress',
+  async ({ userId, addressId, data }, { rejectWithValue }) => {
+    try {
+      const address = await userService.updateUserAddress(userId, addressId, data);
+      return { userId, address };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteUserAddress = createAsyncThunk(
+  'user/deleteUserAddress',
+  async ({ userId, addressId }, { rejectWithValue }) => {
+    try {
+      await userService.deleteUserAddress(userId, addressId);
+      return { userId, addressId };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const createUserAddress = createAsyncThunk(
+  'user/createUserAddress',
+  async ({ userId, data }, { rejectWithValue }) => {
+    try {
+      const address = await userService.createUserAddress(userId, data);
+      return { userId, address };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Note: These methods are removed as they're not part of the user service anymore
 // If you need admin functionality to fetch all users, you'll need to implement
 // separate admin service or add these methods to the user service
@@ -184,6 +274,15 @@ const initialState = {
   
   // User management state
   currentUser: null,
+  users: [],
+  selectedUser: null,
+  selectedUserAddresses: [],
+  usersPagination: {
+    currentPage: 0,
+    totalPages: 0,
+    totalItems: 0,
+    itemsPerPage: 10
+  },
   
   // Loading states
   loading: {
@@ -192,7 +291,14 @@ const initialState = {
     logout: false,
     currentUser: false,
     updateProfile: false,
-    changePassword: false
+    changePassword: false,
+    fetchUsers: false,
+    fetchUserById: false,
+    updateUserById: false,
+    fetchUserAddresses: false,
+    updateUserAddress: false,
+    deleteUserAddress: false,
+    createUserAddress: false
   },
   
   // Error state
@@ -208,6 +314,12 @@ const userSlice = createSlice({
     },
     clearCurrentUser: (state) => {
       state.currentUser = null;
+    },
+    clearSelectedUser: (state) => {
+      state.selectedUser = null;
+    },
+    clearSelectedUserAddresses: (state) => {
+      state.selectedUserAddresses = [];
     },
     // Manual logout (without API call)
     manualLogout: (state) => {
@@ -350,6 +462,136 @@ const userSlice = createSlice({
       .addCase(changePassword.rejected, (state, action) => {
         state.loading.changePassword = false;
         state.error = action.payload;
+      })
+      
+      // Handle fetchUsers
+      .addCase(fetchUsers.pending, (state) => {
+        state.loading.fetchUsers = true;
+        state.error = null;
+      })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.loading.fetchUsers = false;
+        // Support both paginated and non-paginated responses
+        const payload = action.payload || {};
+        if (Array.isArray(payload)) {
+          state.users = payload;
+          state.usersPagination = { ...state.usersPagination, totalItems: payload.length, totalPages: 1, currentPage: 0 };
+        } else {
+          state.users = payload.content || [];
+          state.usersPagination = {
+            currentPage: payload.number ?? 0,
+            totalPages: payload.totalPages ?? 0,
+            totalItems: payload.totalElements ?? (payload.content ? payload.content.length : 0),
+            itemsPerPage: payload.size ?? state.usersPagination.itemsPerPage
+          };
+        }
+      })
+      .addCase(fetchUsers.rejected, (state, action) => {
+        state.loading.fetchUsers = false;
+        state.error = action.payload;
+      })
+      
+      // Handle fetchUserById
+      .addCase(fetchUserById.pending, (state) => {
+        state.loading.fetchUserById = true;
+        state.error = null;
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.loading.fetchUserById = false;
+        state.selectedUser = action.payload;
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
+        state.loading.fetchUserById = false;
+        state.error = action.payload;
+      })
+      
+      // Handle updateUserById
+      .addCase(updateUserById.pending, (state) => {
+        state.loading.updateUserById = true;
+        state.error = null;
+      })
+      .addCase(updateUserById.fulfilled, (state, action) => {
+        state.loading.updateUserById = false;
+        state.selectedUser = action.payload;
+        // If the updated user is in the list, update it there too
+        const idx = state.users.findIndex(u => u.id === action.payload.id);
+        if (idx !== -1) {
+          state.users[idx] = action.payload;
+        }
+        // If the updated user is the logged-in/current user, update those as well
+        if (state.user?.id === action.payload.id) {
+          state.user = action.payload;
+        }
+        if (state.currentUser?.id === action.payload.id) {
+          state.currentUser = action.payload;
+        }
+      })
+      .addCase(updateUserById.rejected, (state, action) => {
+        state.loading.updateUserById = false;
+        state.error = action.payload;
+      })
+
+      // Handle fetchUserAddresses
+      .addCase(fetchUserAddresses.pending, (state) => {
+        state.loading.fetchUserAddresses = true;
+        state.error = null;
+      })
+      .addCase(fetchUserAddresses.fulfilled, (state, action) => {
+        state.loading.fetchUserAddresses = false;
+        state.selectedUserAddresses = action.payload.addresses || [];
+      })
+      .addCase(fetchUserAddresses.rejected, (state, action) => {
+        state.loading.fetchUserAddresses = false;
+        state.error = action.payload;
+      })
+
+      // Handle updateUserAddress
+      .addCase(updateUserAddress.pending, (state) => {
+        state.loading.updateUserAddress = true;
+        state.error = null;
+      })
+      .addCase(updateUserAddress.fulfilled, (state, action) => {
+        state.loading.updateUserAddress = false;
+        const updated = action.payload.address;
+        const idx = state.selectedUserAddresses.findIndex(a => a.id === updated.id);
+        if (idx !== -1) {
+          state.selectedUserAddresses[idx] = updated;
+        } else {
+          state.selectedUserAddresses.push(updated);
+        }
+      })
+      .addCase(updateUserAddress.rejected, (state, action) => {
+        state.loading.updateUserAddress = false;
+        state.error = action.payload;
+      })
+
+      // Handle deleteUserAddress
+      .addCase(deleteUserAddress.pending, (state) => {
+        state.loading.deleteUserAddress = true;
+        state.error = null;
+      })
+      .addCase(deleteUserAddress.fulfilled, (state, action) => {
+        state.loading.deleteUserAddress = false;
+        const { addressId } = action.payload;
+        state.selectedUserAddresses = state.selectedUserAddresses.filter(a => a.id !== addressId);
+      })
+      .addCase(deleteUserAddress.rejected, (state, action) => {
+        state.loading.deleteUserAddress = false;
+        state.error = action.payload;
+      })
+      
+      // Handle createUserAddress
+      .addCase(createUserAddress.pending, (state) => {
+        state.loading.createUserAddress = true;
+        state.error = null;
+      })
+      .addCase(createUserAddress.fulfilled, (state, action) => {
+        state.loading.createUserAddress = false;
+        state.selectedUserAddresses = [action.payload.address, ...state.selectedUserAddresses];
+      })
+      .addCase(createUserAddress.rejected, (state, action) => {
+        state.loading.createUserAddress = false;
+        state.error = action.payload;
       });
   }
 });
@@ -360,7 +602,10 @@ export const selectToken = (state) => state.user.token;
 export const selectIsAuthenticated = (state) => state.user.isAuthenticated;
 export const selectIsInitialized = (state) => state.user.isInitialized;
 export const selectCurrentUser = (state) => state.user.currentUser;
-// Note: selectUsers removed as fetchUsers functionality is not available
+export const selectUsers = (state) => state.user.users;
+export const selectSelectedUser = (state) => state.user.selectedUser;
+export const selectSelectedUserAddresses = (state) => state.user.selectedUserAddresses;
+export const selectUsersPagination = (state) => state.user.usersPagination;
 export const selectUserLoading = (state) => state.user.loading;
 export const selectUserError = (state) => state.user.error;
 
@@ -372,7 +617,12 @@ export const selectLogoutLoading = (state) => state.user.loading.logout;
 export const selectCurrentUserLoading = (state) => state.user.loading.currentUser;
 export const selectUpdateProfileLoading = (state) => state.user.loading.updateProfile;
 export const selectChangePasswordLoading = (state) => state.user.loading.changePassword;
-// Note: These selectors removed as fetchUsers/fetchUserById functionality is not available
+export const selectFetchUsersLoading = (state) => state.user.loading.fetchUsers;
+export const selectFetchUserByIdLoading = (state) => state.user.loading.fetchUserById;
+export const selectUpdateUserByIdLoading = (state) => state.user.loading.updateUserById;
+export const selectFetchUserAddressesLoading = (state) => state.user.loading.fetchUserAddresses;
+export const selectUpdateUserAddressLoading = (state) => state.user.loading.updateUserAddress;
+export const selectDeleteUserAddressLoading = (state) => state.user.loading.deleteUserAddress;
 
-export const { clearError, clearCurrentUser, manualLogout, initializeAuth } = userSlice.actions;
+export const { clearError, clearCurrentUser, manualLogout, initializeAuth, clearSelectedUser, clearSelectedUserAddresses } = userSlice.actions;
 export default userSlice.reducer;
