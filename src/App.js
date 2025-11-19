@@ -6,6 +6,8 @@ import AuthProvider from './providers/AuthProvider';
 import './styles/global.css';
 import AppRouter from './routes/AppRouter';
 import TestNotificationButton from './features/notifications/TestNotificationButton';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
@@ -16,6 +18,7 @@ const App = () => {
           <AppRouter />
         </AuthProvider>
       </Provider>
+      <ToastContainer position="bottom-right" autoClose={4000} />
     </>
   );
 };

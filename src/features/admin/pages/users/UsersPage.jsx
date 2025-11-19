@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   Paper,
@@ -10,44 +10,59 @@ import {
   TableHead,
   TableRow,
   IconButton,
+  Chip,
   Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Chip
+  CircularProgress,
+  Tooltip
 } from '@mui/material';
-import { Visibility as VisibilityIcon } from '@mui/icons-material';
-import { getUserList, getPurchaseHistory } from '../../services/mockUserService';
+import { Edit as EditIcon, Home as HomeIcon } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import withLayout from '../../../../layouts/HOC/withLayout';
+import useUser from '../../../../hooks/useUser';
+import Pagination from '../../../../components/Pagination/Pagination';
+import UserForm from '../../components/forms/UserForm';
 
 const UserManagement = () => {
-  const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [purchaseHistory, setPurchaseHistory] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
+  const { users, usersPagination, getUsers, loading, error } = useUser();
+  const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(10);
+  const [openForm, setOpenForm] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   useEffect(() => {
+    const loadUsers = async () => {
+      const pageIndex = currentPage - 1;
+      await getUsers(pageIndex, usersPerPage);
+    };
     loadUsers();
+  }, [getUsers, currentPage, usersPerPage]);
+
+  const handlePageChange = useCallback((pageNumber) => {
+    setCurrentPage(pageNumber);
   }, []);
 
-  const loadUsers = async () => {
-    const userList = await getUserList();
-    setUsers(userList);
-  };
+  const handleOpenForm = useCallback((id) => {
+    try {
+      if (document && document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
+    } catch (_) {}
+    setSelectedUserId(id);
+    setOpenForm(true);
+  }, []);
 
-  const handleViewUser = async (user) => {
-    setSelectedUser(user);
-    const history = await getPurchaseHistory(user.id);
-    setPurchaseHistory(history);
-    setOpenDialog(true);
-  };
+  const handleCloseForm = useCallback(() => {
+    setOpenForm(false);
+    setSelectedUserId(null);
+  }, []);
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setSelectedUser(null);
-    setPurchaseHistory([]);
-  };
+  const handleFormSuccess = useCallback(async () => {
+    // refresh the list and close
+    const pageIndex = currentPage - 1;
+    await getUsers(pageIndex, usersPerPage);
+    handleCloseForm();
+  }, [currentPage, usersPerPage, getUsers, handleCloseForm]);
 
   return (
     <Box>
@@ -61,77 +76,84 @@ const UserManagement = () => {
         </Typography>
       </Box>
       
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Join Date</TableCell>
-              <TableCell>Last Login</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <Chip 
-                    label={user.role} 
-                    color={user.role === 'admin' ? 'primary' : 'default'}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell>{new Date(user.joinDate).toLocaleDateString()}</TableCell>
-                <TableCell>{new Date(user.lastLogin).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleViewUser(user)} size="small">
-                    <VisibilityIcon />
-                  </IconButton>
-                </TableCell>
+      {loading.fetchUsers ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+          <CircularProgress size={32} />
+        </Box>
+      ) : (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell>Join Date</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {error && (
+                <TableRow>
+                  <TableCell colSpan={5}>Failed to load users.</TableCell>
+                </TableRow>
+              )}
+              {!error && users.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5}>No users found.</TableCell>
+                </TableRow>
+              )}
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user.username || user.email)}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    <Chip 
+                      label={user.role}
+                      color={user.role === 'ADMIN' ? 'primary' : 'default'}
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell>{user.createTime ? new Date(user.createTime).toLocaleDateString() : '-'}</TableCell>
+                  <TableCell>
+                    <Tooltip title="Edit user">
+                      <IconButton aria-label="Edit user" color="primary" size="small" onClick={() => handleOpenForm(user.id)}>
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Manage addresses">
+                      <IconButton aria-label="Manage addresses" color="primary" size="small" onClick={() => navigate(`/admin/users/${user.id}/addresses`)}>
+                        <HomeIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle>
-          User Details - {selectedUser?.name}
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Purchase History
-            </Typography>
-            <TableContainer>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Amount</TableCell>
-                    <TableCell>Items</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {purchaseHistory.map((purchase) => (
-                    <TableRow key={purchase.id}>
-                      <TableCell>{new Date(purchase.date).toLocaleDateString()}</TableCell>
-                      <TableCell>${purchase.amount.toFixed(2)}</TableCell>
-                      <TableCell>{purchase.items}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Close</Button>
-        </DialogActions>
+      {/* Pagination */}
+      {usersPagination.totalPages > 1 && (
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={usersPagination.totalPages}
+            onPageChange={handlePageChange}
+          />
+        </Box>
+      )}
+
+      <Dialog open={openForm} onClose={handleCloseForm} maxWidth="sm" fullWidth>
+        {selectedUserId && (
+          <UserForm
+            userId={selectedUserId}
+            open={openForm}
+            onClose={handleCloseForm}
+            onSuccess={handleFormSuccess}
+          />
+        )}
       </Dialog>
     </Box>
   );
