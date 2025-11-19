@@ -21,6 +21,8 @@ import ContactPage from '../features/contact/ContactPage.jsx';
 import LandingPages from '../features/landingpage/LandingPages.jsx';  
 import ProductView from '../features/products/ProductView/ProductView.jsx';
 import AboutUs from '../features/about/AboutUs.jsx';
+import PrivacyPolicy from '../features/privacy/PrivacyPolicy.jsx';
+import TermsAndConditions from '../features/terms/TermsAndConditions.jsx';
 import CheckoutPage from '../features/cart/pages/CheckoutPage.jsx';
 import ConfirmationPage from '../features/cart/pages/ConfirmationPage.jsx';
 import LandingPage from '../features/home/LandingPage.jsx';
@@ -73,6 +75,8 @@ const AppRouter = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/about" element={<AboutUs />} />
+  <Route path="/privacy" element={<PrivacyPolicy />} />
+  <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/product/:id" element={<ProductView />} />
         <Route path="/compare" element={<ComparePage />} />
