@@ -12,85 +12,71 @@ import {
   Box,
   useTheme,
   useMediaQuery,
+  Avatar,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
   Inventory as ProductsIcon,
-  People as UsersIcon,
   ShoppingCart as OrdersIcon,
   Analytics as AnalyticsIcon,
   Settings as SettingsIcon,
-  LocalShipping as SupplierIcon,
   ExpandLess,
   ExpandMore,
+  Store as StoreIcon,
+  Star as StarIcon,
 } from '@mui/icons-material';
-import './AdminSidebar.css';
+import '../admin/AdminSidebar.css'; // Reusing CSS for consistency
 
 const navigationItems = [
   {
     id: 'dashboard',
     label: 'Dashboard',
     icon: <DashboardIcon />,
-    path: '/admin',
+    path: '/supplier/dashboard',
   },
   {
     id: 'products',
-    label: 'Products',
+    label: 'My Products',
     icon: <ProductsIcon />,
     children: [
-      { id: 'products-list', label: 'Product List', path: '/admin/products' },
-      { id: 'categories', label: 'Categories', path: '/admin/categories' },
-    ],
-  },
-  {
-    id: 'users',
-    label: 'Users',
-    icon: <UsersIcon />,
-    children: [
-      { id: 'users-list', label: 'User List', path: '/admin/users' },
+      { id: 'products-list', label: 'All Products', path: '/supplier/products' },
+      { id: 'add-product', label: 'Add New Product', path: '/supplier/products/add' },
     ],
   },
   {
     id: 'orders',
     label: 'Orders',
     icon: <OrdersIcon />,
-    children: [
-      { id: 'orders-list', label: 'Order List', path: '/admin/orders' },
-      { id: 'coupons', label: 'Coupons', path: '/admin/coupons' },
-    ],
+    path: '/supplier/orders',
   },
   {
-    id: 'suppliers',
-    label: 'Suppliers',
-    icon: <SupplierIcon />,
-    path: '/admin/suppliers',
+    id: 'store',
+    label: 'My Store',
+    icon: <StoreIcon />,
+    path: '/supplier/store-settings',
   },
   {
     id: 'analytics',
     label: 'Analytics',
     icon: <AnalyticsIcon />,
-    path: '/admin/analytics',
+    path: '/supplier/analytics',
   },
   {
     id: 'settings',
     label: 'Settings',
     icon: <SettingsIcon />,
-    path: '/admin/settings',
+    path: '/supplier/settings',
   },
 ];
 
-const AdminSidebar = ({ open, onToggle }) => {
+const SupplierSidebar = ({ open, onToggle }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [expandedItems, setExpandedItems] = useState({
     products: true,
-    users: true,
-    orders: true,
   });
-
-  // const drawerWidth = 280;
 
   const handleItemClick = (item) => {
     if (item.path) {
@@ -171,27 +157,96 @@ const AdminSidebar = ({ open, onToggle }) => {
   const drawerContent = (
     <Box className="admin-drawer-content">
       {/* Header */}
-        <Box className="admin-drawer-header">
-          <Typography
-            variant="h6"
-            className="admin-drawer-title"
+      <Box className="admin-drawer-header" sx={{ mb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 8px 16px rgba(99, 102, 241, 0.2)',
+              flexShrink: 0,
+            }}
           >
-            Admin Panel
-          </Typography>
+            <Typography variant="h6" sx={{ color: 'white', fontWeight: 900, fontSize: '1.2rem' }}>M</Typography>
+          </Box>
+          <Box>
+            <Typography
+                variant="h6"
+                sx={{
+                color: 'white',
+                fontWeight: 900,
+                letterSpacing: '-0.5px',
+                fontSize: '1.25rem',
+                lineHeight: 1,
+                }}
+            >
+                MANKIND
+            </Typography>
+            <Typography
+                variant="caption"
+                sx={{
+                color: '#6366f1',
+                fontWeight: 900,
+                letterSpacing: '2px',
+                fontSize: '0.7rem',
+                textTransform: 'uppercase',
+                }}
+            >
+                MATRIX
+            </Typography>
+          </Box>
+        </Box>
       </Box>
 
       {/* Navigation */}
-      <List className="admin-nav-list">
+      <List className="admin-nav-list" sx={{ px: 1, py: 1 }}>
         {navigationItems.map(renderNavigationItem)}
       </List>
 
-      {/* Footer */}
-      <Box className="admin-drawer-footer">
-        <Typography
-          variant="caption"
-          className="admin-drawer-footer-text"
+      {/* Footer / User Profile Brief */}
+      <Box sx={{ p: 2, mt: 'auto', mb: 1 }}>
+        <Box
+          sx={{
+            p: 2,
+            borderRadius: '20px',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.05)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            backdropFilter: 'blur(10px)',
+          }}
         >
-          Mankind Admin v1.0
+          <Avatar
+            sx={{
+              width: 36,
+              height: 36,
+              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+            }}
+          >
+            S
+          </Avatar>
+          <Box sx={{ overflow: 'hidden' }}>
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 700, noWrap: true }}>
+              Elite Supplier
+            </Typography>
+            <Typography variant="caption" sx={{ color: '#94a3b8', display: 'block' }}>
+              Standard Partner
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+
+      <Box className="admin-drawer-footer">
+        <Typography variant="caption" className="admin-drawer-footer-text">
+          Portal v2.4.0 • 2026
         </Typography>
       </Box>
     </Box>
@@ -205,9 +260,16 @@ const AdminSidebar = ({ open, onToggle }) => {
         open={open && isMobile}
         onClose={onToggle}
         ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
+          keepMounted: true,
         }}
         className="admin-mobile-drawer"
+        sx={{
+          '& .MuiDrawer-paper': { 
+            width: 280,
+            backgroundColor: '#0f172a',
+            border: 'none',
+          }
+        }}
       >
         {drawerContent}
       </Drawer>
@@ -217,6 +279,17 @@ const AdminSidebar = ({ open, onToggle }) => {
         variant="permanent"
         className={`admin-desktop-drawer ${!open ? 'closed' : ''}`}
         open={open && !isMobile}
+        sx={{
+          width: open ? 280 : 0,
+          transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          '& .MuiDrawer-paper': { 
+            width: 280,
+            border: 'none',
+            overflowX: 'hidden',
+            transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            backgroundColor: '#0f172a',
+          }
+        }}
       >
         {drawerContent}
       </Drawer>
@@ -224,4 +297,4 @@ const AdminSidebar = ({ open, onToggle }) => {
   );
 };
 
-export default AdminSidebar;
+export default SupplierSidebar;
