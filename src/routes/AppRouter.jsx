@@ -15,6 +15,14 @@ import CartPage from '../features/cart/pages/CartPage.jsx';
 
 import ReturnRequest from '../features/profile/ReturnRequest.jsx';
 import AdminPage from '../features/admin/AdminPage.jsx';
+import SupplierDashboardPage from '../features/admin/pages/suppliers/SupplierDashboardPage.jsx';
+import SupplierDashboard from '../features/supplier/pages/SupplierDashboardPage.jsx';
+import SupplierProductsPage from '../features/supplier/pages/SupplierProductsPage.jsx';
+import SupplierAddProductPage from '../features/supplier/pages/SupplierAddProductPage.jsx';
+import SupplierOrdersPage from '../features/supplier/pages/SupplierOrdersPage.jsx';
+import SupplierStorePage from '../features/supplier/pages/SupplierStorePage.jsx';
+import SupplierAnalyticsPage from '../features/supplier/pages/SupplierAnalyticsPage.jsx';
+import SupplierSettingsPage from '../features/supplier/pages/SupplierSettingsPage.jsx';
 import ProductsPage from '../features/admin/pages/products/ProductsPage.jsx';
 import UsersPage from '../features/admin/pages/users/UsersPage.jsx';
 import UserAddressesPage from '../features/admin/pages/users/UserAddressesPage.jsx';
@@ -59,6 +67,20 @@ const AppRouter = () => {
             <UserAddressesPage />
           </ProtectedRoute>
         } />
+        <Route path="/admin/suppliers" element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <SupplierDashboardPage />
+          </ProtectedRoute>
+        } />
+        
+        {/* Supplier Routes */}
+        <Route path="/supplier/dashboard" element={<SupplierDashboard />} />
+        <Route path="/supplier/products" element={<SupplierProductsPage />} />
+        <Route path="/supplier/products/add" element={<SupplierAddProductPage />} />
+        <Route path="/supplier/orders" element={<SupplierOrdersPage />} />
+        <Route path="/supplier/store-settings" element={<SupplierStorePage />} />
+        <Route path="/supplier/analytics" element={<SupplierAnalyticsPage />} />
+        <Route path="/supplier/settings" element={<SupplierSettingsPage />} />
         
         {/* Protected Routes - Authentication required */}
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
