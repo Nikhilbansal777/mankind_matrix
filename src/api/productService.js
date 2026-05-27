@@ -6,7 +6,7 @@ import { APIError } from '../utils/errors';
 axios.defaults.timeout = API_TIMEOUT;
 
 // Consolidated mock products data for development
-const mockProducts = [
+export const mockProducts = [
   // Graphics Processing Units (GPUs)
   {
     id: 1,

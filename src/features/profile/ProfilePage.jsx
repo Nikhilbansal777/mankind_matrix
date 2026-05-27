@@ -1,109 +1,333 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './ProfilePage.css';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import AccountNavigation from './AccountNavigation';
 import withLayout from '../../layouts/HOC/withLayout';
+import { useAddress } from '../../hooks/useAddress';
+import { useUser } from '../../hooks/useUser';
 
-const ProfilePageContent = () => {
-  const [profile, setProfile] = useState({
-    fullName: 'Loading...',
-    email: 'Loading...',
-    mobileNumber: null,
-    username: 'Loading...',
+const emptyAddress = {
+  addressType: 'shipping',
+  streetAddress: '',
+  city: '',
+  state: '',
+  postalCode: '',
+  country: '',
+  isDefault: false
+};
+
+const editableUserFields = ['firstName', 'lastName', 'email', 'profilePictureUrl'];
+
+const getInitials = (user) => {
+  const first = user?.firstName?.[0] || user?.username?.[0] || '';
+  const last = user?.lastName?.[0] || '';
+  return `${first}${last}`.toUpperCase() || 'U';
+};
+
+const UserProfileDetails = () => {
+  const { user, getCurrentUser, updateProfile, loading, error, clearError } = useUser();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    profilePictureUrl: ''
   });
-
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [status, setStatus] = useState('');
 
   useEffect(() => {
-    // Set default profile initially
-    const defaultProfile = {
-      fullName: 'Guest User',
-      email: 'guest@example.com',
-      mobileNumber: null,
-      username: 'guest',
-    };
-    setProfile(defaultProfile);
+    getCurrentUser().catch(() => {});
+  }, [getCurrentUser]);
 
-    // Fetch profile data from API
-    axios('/api/profile')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch profile: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        setProfile(data);
-      })
-      .catch(err => {
-        setError('Failed to load profile information.');
-      });
-  }, []);
+  useEffect(() => {
+    if (!user) return;
 
-  const handleEditProfileClick = () => {
-    navigate('/edit-profile');
+    setFormData({
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      email: user.email || '',
+      profilePictureUrl: user.profilePictureUrl || ''
+    });
+  }, [user]);
+
+  const displayName = useMemo(() => {
+    const fullName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim();
+    return fullName || user?.username || 'Your profile';
+  }, [user]);
+
+  const handleFieldChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({ ...current, [name]: value }));
+    setStatus('');
+    clearError();
   };
 
-  const handleAddMobile = () => {
-    alert('Add mobile number functionality will be implemented here.');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setStatus('');
+
+    const payload = editableUserFields.reduce((nextPayload, field) => {
+      nextPayload[field] = formData[field]?.trim() || '';
+      return nextPayload;
+    }, {});
+
+    try {
+      await updateProfile(payload);
+      setStatus('Profile updated successfully.');
+    } catch {
+      setStatus('');
+    }
   };
 
   return (
-    <div className="side-container">
-      <div className="edit-button-container">
-        <button 
-          id="editProfileButton" 
-          className="edit-button" 
-          onClick={handleEditProfileClick}
-        >
-          Edit Profile
-        </button>
-      </div>
-      <h2>Your Profile</h2>
-      <div className="profile-info">
-        <div className="info-item">
-          <span className="label">Name</span>
-          <span className="value">{profile.fullName || 'N/A'}</span>
-        </div>
-        <div className="info-item">
-          <span className="label">Email</span>
-          <span className="value">{profile.email || 'N/A'}</span>
-        </div>
-        <div className="info-item">
-          <span className="label">Mobile number</span>
-          {profile.mobileNumber ? (
-            <div className="mobile-info">
-              <span className="value">{profile.mobileNumber}</span>
-              <p className="security-note">
-                <span className="warning-icon">⚠️</span>
-                For stronger account security, add your mobile number. If there's an
-                unusual sign-in, we'll text you and verify that it's really you.
-              </p>
-            </div>
+    <section className="profile-panel" aria-labelledby="profile-heading">
+      <div className="profile-panel-header">
+        <div className="profile-avatar">
+          {formData.profilePictureUrl ? (
+            <img src={formData.profilePictureUrl} alt={displayName} />
           ) : (
-            <button className="add-button" onClick={handleAddMobile}>Add</button>
+            <span>{getInitials(user)}</span>
           )}
         </div>
-        <div className="info-item">
-          <span className="label">Username</span>
-          <span className="value">{profile.username || 'N/A'}</span>
-        </div>
-        <div className="info-item">
-          <span className="label">Password</span>
-          <span className="value">********</span>
+        <div>
+          <h2 id="profile-heading">Your Profile</h2>
+          <p>{user?.username || user?.email || 'Manage your account details'}</p>
         </div>
       </div>
-      {error && <p className="error-message">{error}</p>}
-    </div>
+
+      <dl className="profile-summary">
+        <div>
+          <dt>Name</dt>
+          <dd>{displayName}</dd>
+        </div>
+        <div>
+          <dt>Email</dt>
+          <dd>{user?.email || 'Not provided'}</dd>
+        </div>
+        <div>
+          <dt>Role</dt>
+          <dd>{user?.role || 'USER'}</dd>
+        </div>
+      </dl>
+
+      <form className="profile-form" onSubmit={handleSubmit}>
+        <label>
+          First name
+          <input name="firstName" type="text" value={formData.firstName} onChange={handleFieldChange} required />
+        </label>
+        <label>
+          Last name
+          <input name="lastName" type="text" value={formData.lastName} onChange={handleFieldChange} required />
+        </label>
+        <label>
+          Email
+          <input name="email" type="email" value={formData.email} onChange={handleFieldChange} required />
+        </label>
+        <label>
+          Profile picture URL
+          <input name="profilePictureUrl" type="url" value={formData.profilePictureUrl} onChange={handleFieldChange} />
+        </label>
+
+        {error && <p className="profile-message error-message">{error}</p>}
+        {status && <p className="profile-message success-message">{status}</p>}
+
+        <div className="profile-actions">
+          <button type="submit" disabled={loading.updateProfile}>
+            {loading.updateProfile ? 'Saving...' : 'Save Profile'}
+          </button>
+        </div>
+      </form>
+    </section>
+  );
+};
+
+const AddressManager = () => {
+  const {
+    addresses,
+    loading,
+    error,
+    createLoading,
+    updateLoading,
+    deleteLoading,
+    getAddresses,
+    addAddress,
+    editAddress,
+    removeAddress,
+    clearErrorState
+  } = useAddress();
+  const [showForm, setShowForm] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState(null);
+  const [addressForm, setAddressForm] = useState(emptyAddress);
+  const [status, setStatus] = useState('');
+
+  const isSaving = createLoading || updateLoading;
+
+  const openNewAddressForm = () => {
+    setAddressForm(emptyAddress);
+    setEditingAddressId(null);
+    setShowForm(true);
+    setStatus('');
+    clearErrorState();
+  };
+
+  const openEditAddressForm = (address) => {
+    setAddressForm({
+      addressType: address.addressType || 'shipping',
+      streetAddress: address.streetAddress || '',
+      city: address.city || '',
+      state: address.state || '',
+      postalCode: address.postalCode || '',
+      country: address.country || '',
+      isDefault: Boolean(address.isDefault)
+    });
+    setEditingAddressId(address.id);
+    setShowForm(true);
+    setStatus('');
+    clearErrorState();
+  };
+
+  const handleAddressChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    setAddressForm((current) => ({
+      ...current,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+    setStatus('');
+    clearErrorState();
+  };
+
+  const closeForm = () => {
+    setShowForm(false);
+    setEditingAddressId(null);
+    setAddressForm(emptyAddress);
+  };
+
+  const handleSaveAddress = async (event) => {
+    event.preventDefault();
+    const payload = {
+      ...addressForm,
+      streetAddress: addressForm.streetAddress.trim(),
+      city: addressForm.city.trim(),
+      state: addressForm.state.trim(),
+      postalCode: addressForm.postalCode.trim(),
+      country: addressForm.country.trim()
+    };
+
+    try {
+      if (editingAddressId) {
+        await editAddress(editingAddressId, payload);
+        setStatus('Address updated successfully.');
+      } else {
+        await addAddress(payload);
+        setStatus('Address added successfully.');
+      }
+      closeForm();
+      getAddresses();
+    } catch {
+      setStatus('');
+    }
+  };
+
+  const handleDeleteAddress = async (addressId) => {
+    if (!window.confirm('Delete this address?')) return;
+
+    try {
+      await removeAddress(addressId);
+      setStatus('Address deleted successfully.');
+    } catch {
+      setStatus('');
+    }
+  };
+
+  return (
+    <section className="profile-panel" aria-labelledby="addresses-heading">
+      <div className="profile-section-title">
+        <div>
+          <h2 id="addresses-heading">Your Addresses</h2>
+          <p>{addresses.length} saved {addresses.length === 1 ? 'address' : 'addresses'}</p>
+        </div>
+        <button type="button" onClick={openNewAddressForm}>Add Address</button>
+      </div>
+
+      {loading && <p className="profile-message">Loading addresses...</p>}
+      {error && <p className="profile-message error-message">{error}</p>}
+      {status && <p className="profile-message success-message">{status}</p>}
+
+      {showForm && (
+        <form className="profile-form address-form" onSubmit={handleSaveAddress}>
+          <label>
+            Address type
+            <select name="addressType" value={addressForm.addressType} onChange={handleAddressChange}>
+              <option value="shipping">Shipping</option>
+              <option value="billing">Billing</option>
+            </select>
+          </label>
+          <label>
+            Street address
+            <input name="streetAddress" type="text" value={addressForm.streetAddress} onChange={handleAddressChange} required />
+          </label>
+          <label>
+            City
+            <input name="city" type="text" value={addressForm.city} onChange={handleAddressChange} required />
+          </label>
+          <label>
+            State
+            <input name="state" type="text" value={addressForm.state} onChange={handleAddressChange} required />
+          </label>
+          <label>
+            Postal code
+            <input name="postalCode" type="text" value={addressForm.postalCode} onChange={handleAddressChange} required />
+          </label>
+          <label>
+            Country
+            <input name="country" type="text" value={addressForm.country} onChange={handleAddressChange} required />
+          </label>
+          <label className="checkbox-row">
+            <input name="isDefault" type="checkbox" checked={addressForm.isDefault} onChange={handleAddressChange} />
+            Set as default {addressForm.addressType} address
+          </label>
+
+          <div className="profile-actions">
+            <button type="submit" disabled={isSaving}>{isSaving ? 'Saving...' : 'Save Address'}</button>
+            <button type="button" className="secondary-button" onClick={closeForm}>Cancel</button>
+          </div>
+        </form>
+      )}
+
+      <div className="profile-address-list">
+        {addresses.length === 0 && !loading ? (
+          <div className="empty-state">No addresses saved. Add your first address.</div>
+        ) : (
+          addresses.map((address) => (
+            <article key={address.id} className="profile-address-card">
+              <div>
+                <div className="address-card-header">
+                  <h3>{address.addressType || 'Address'}</h3>
+                  {address.isDefault && <span>Default</span>}
+                </div>
+                <p>{address.streetAddress}</p>
+                <p>{address.city}, {address.state} {address.postalCode}</p>
+                <p>{address.country}</p>
+              </div>
+              <div className="address-card-actions">
+                <button type="button" onClick={() => openEditAddressForm(address)}>Edit</button>
+                <button type="button" className="danger-button" disabled={deleteLoading} onClick={() => handleDeleteAddress(address.id)}>
+                  Delete
+                </button>
+              </div>
+            </article>
+          ))
+        )}
+      </div>
+    </section>
   );
 };
 
 const ProfilePage = () => (
   <div className="manage-containers">
     <AccountNavigation />
-    <ProfilePageContent />
+    <main className="side-container profile-page-content">
+      <UserProfileDetails />
+      <AddressManager />
+    </main>
   </div>
 );
 

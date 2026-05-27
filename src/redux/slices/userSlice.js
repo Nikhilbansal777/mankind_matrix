@@ -145,7 +145,14 @@ export const updateUserProfile = createAsyncThunk(
   'user/updateUserProfile',
   async (userData, { rejectWithValue }) => {
     try {
-      const user = await userService.updateProfile(userData);
+      const updatedUser = await userService.updateProfile(userData);
+      let user = updatedUser;
+
+      try {
+        user = await userService.getCurrentUser();
+      } catch (refreshError) {
+        console.warn('Updated profile, but could not refresh full user profile:', refreshError.message);
+      }
       
       // Update user in localStorage
       const currentToken = getStoredToken();
@@ -441,10 +448,8 @@ const userSlice = createSlice({
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.loading.updateProfile = false;
-        state.user = action.payload;
-        if (state.currentUser?.id === action.payload.id) {
-          state.currentUser = action.payload;
-        }
+        state.user = { ...(state.user || {}), ...(action.payload || {}) };
+        state.currentUser = { ...(state.currentUser || {}), ...(action.payload || {}) };
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.loading.updateProfile = false;

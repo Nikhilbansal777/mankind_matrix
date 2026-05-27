@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 import { Link } from 'react-router-dom';
-import { FaShoppingCart, FaBars, FaTimes, FaSignOutAlt, FaSignInAlt, FaUserShield } from 'react-icons/fa';
+import { FaShoppingCart, FaBars, FaTimes, FaSignOutAlt, FaSignInAlt, FaUserCircle, FaUserShield } from 'react-icons/fa';
 import NotificationsUI from '../../features/profile/NotificationsUI';
 import { useCart } from '../../hooks/useCart';
 import { useUser } from '../../hooks/useUser';
@@ -72,6 +72,19 @@ function Header({ onSearch }) {
 
             {/* Notifications Component - only show when logged in */}
             <NotificationsUI />
+
+            <Link
+              to="/profile"
+              className="profile-icon-wrapper"
+              aria-label="Open profile"
+              title="Profile"
+            >
+              {user?.profilePictureUrl ? (
+                <img src={user.profilePictureUrl} alt="" className="profile-image-icon" />
+              ) : (
+                <FaUserCircle className="profile-icon" />
+              )}
+            </Link>
            
             {/* Cart icon with item count - only show when logged in */}
             <Link

@@ -55,7 +55,7 @@ const userService = {
    * @returns {Promise<User>} Updated user details
    */
   updateProfile: (data) => 
-    api.user.put('/profile', data),
+    api.user.put('/me', data),
 
   /**
    * Update user by id (admin)

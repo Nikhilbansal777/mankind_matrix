@@ -220,6 +220,45 @@
   justify-content: center;
 }
 
+/* Profile icon styles */
+.profile-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+  background-color: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  outline: none;
+  box-shadow: none;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.profile-icon-wrapper:hover {
+  color: #fff;
+  background-color: rgba(233, 30, 99, 0.1);
+}
+
+.profile-icon {
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.profile-image-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 /* Cart Icon Styles */
 .cart-icon-wrapper {
   position: relative;
@@ -435,9 +474,17 @@
     padding: 0;
     font-size: 0.9rem;
   }
+
+  .profile-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 0.9rem;
+  }
   
   .header-login-btn svg,
   .header-logout-btn svg,
+  .profile-icon,
   .admin-icon {
     font-size: 1rem;
   }
@@ -448,9 +495,15 @@
   
   .header-logout-btn svg,
   .logout-spinner,
+  .profile-icon,
   .admin-icon {
     font-size: 1rem;
     width: 1rem;
     height: 1rem;
+  }
+
+  .profile-image-icon {
+    width: 28px;
+    height: 28px;
   }
 }
