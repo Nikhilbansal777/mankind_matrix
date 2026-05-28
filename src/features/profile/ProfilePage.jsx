@@ -23,6 +23,11 @@ const getInitials = (user) => {
   return `${first}${last}`.toUpperCase() || 'U';
 };
 
+const formatAddressType = (addressType) => {
+  if (!addressType) return 'Address';
+  return addressType.charAt(0).toUpperCase() + addressType.slice(1);
+};
+
 const UserProfileDetails = () => {
   const { user, getCurrentUser, updateProfile, loading, error, clearError } = useUser();
   const [formData, setFormData] = useState({
@@ -95,6 +100,10 @@ const UserProfileDetails = () => {
 
       <dl className="profile-summary">
         <div>
+          <dt>Username</dt>
+          <dd>{user?.username || 'Not provided'}</dd>
+        </div>
+        <div>
           <dt>Name</dt>
           <dd>{displayName}</dd>
         </div>
@@ -103,23 +112,24 @@ const UserProfileDetails = () => {
           <dd>{user?.email || 'Not provided'}</dd>
         </div>
         <div>
-          <dt>Role</dt>
-          <dd>{user?.role || 'USER'}</dd>
+          <dt>Profile image</dt>
+          <dd>{user?.profilePictureUrl ? 'Added' : 'Not added'}</dd>
         </div>
       </dl>
 
       <form className="profile-form" onSubmit={handleSubmit}>
+        <h3 className="profile-form-heading">Editable Information</h3>
         <label>
           First name
-          <input name="firstName" type="text" value={formData.firstName} onChange={handleFieldChange} required />
+          <input name="firstName" type="text" value={formData.firstName} onChange={handleFieldChange} autoComplete="given-name" required />
         </label>
         <label>
           Last name
-          <input name="lastName" type="text" value={formData.lastName} onChange={handleFieldChange} required />
+          <input name="lastName" type="text" value={formData.lastName} onChange={handleFieldChange} autoComplete="family-name" required />
         </label>
         <label>
           Email
-          <input name="email" type="email" value={formData.email} onChange={handleFieldChange} required />
+          <input name="email" type="email" value={formData.email} onChange={handleFieldChange} autoComplete="email" required />
         </label>
         <label>
           Profile picture URL
@@ -159,9 +169,10 @@ const AddressManager = () => {
   const [status, setStatus] = useState('');
 
   const isSaving = createLoading || updateLoading;
+  const addressFormTitle = editingAddressId ? 'Edit Address' : 'Add Address';
 
   const openNewAddressForm = () => {
-    setAddressForm(emptyAddress);
+    setAddressForm({ ...emptyAddress });
     setEditingAddressId(null);
     setShowForm(true);
     setStatus('');
@@ -197,7 +208,7 @@ const AddressManager = () => {
   const closeForm = () => {
     setShowForm(false);
     setEditingAddressId(null);
-    setAddressForm(emptyAddress);
+    setAddressForm({ ...emptyAddress });
   };
 
   const handleSaveAddress = async (event) => {
@@ -253,6 +264,7 @@ const AddressManager = () => {
 
       {showForm && (
         <form className="profile-form address-form" onSubmit={handleSaveAddress}>
+          <h3 className="profile-form-heading">{addressFormTitle}</h3>
           <label>
             Address type
             <select name="addressType" value={addressForm.addressType} onChange={handleAddressChange}>
@@ -300,7 +312,7 @@ const AddressManager = () => {
             <article key={address.id} className="profile-address-card">
               <div>
                 <div className="address-card-header">
-                  <h3>{address.addressType || 'Address'}</h3>
+                  <h3>{formatAddressType(address.addressType)}</h3>
                   {address.isDefault && <span>Default</span>}
                 </div>
                 <p>{address.streetAddress}</p>
