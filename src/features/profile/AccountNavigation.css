@@ -1,0 +1,104 @@
+/* AccountNavigation.css - Shared navigation styles for account pages */
+
+.account-navigation-container {
+    width: 350px;
+    min-height: 100vh; /* Full viewport height */
+    background-color: #f8f8f8;
+    border-right: 1px solid #eee;
+    padding: 20px;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+  
+  .account-navigation-container h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #000000;
+    font-size: 1.6rem;
+  }
+  
+  .account-navigation-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .account-navigation-container ul li {
+    margin-bottom: 5px;
+  }
+  
+  .account-navigation-container ul li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 4px;
+  }
+  
+  .account-navigation-container ul li a:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .account-navigation-container ul li a.active {
+    font-weight: bold;
+    color: #007bff;
+    background-color: #e6f2ff;
+  }
+  
+  /* Navigation items styling */
+  .account-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px;
+  }
+  
+  .account-nav-item {
+    margin-bottom: 5px;
+  }
+  
+  .account-nav-link {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    color: #555;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .account-nav-link:hover {
+    background-color: #f0f2f5;
+    color: #333;
+  }
+  
+  .account-nav-item.active .account-nav-link {
+    background-color: #ced5dc;
+    border-color: #2c2b2b;
+    font-weight: 500;
+  }
+  
+  /* Account section heading */
+  .account-section-heading {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  /* Responsive design for smaller screens */
+  @media (max-width: 768px) {
+    .account-navigation-container {
+      width: 100%;
+      position: static;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+    }
+  }

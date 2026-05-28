@@ -1,0 +1,143 @@
+/* Admin Footer */
+.admin-footer {
+  background-color: #2c2c2c;
+  color: #ccc;
+  padding: 2rem 1.5rem;
+  margin-top: auto;
+}
+
+.admin-footer-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-footer-column {
+  min-width: 200px;
+}
+
+.admin-footer-column h4 {
+  color: #fff;
+  margin-bottom: 1rem;
+  position: relative;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.admin-footer-column h4::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  background-color: #e91e63;
+  margin-top: 0.5rem;
+}
+
+.admin-footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.admin-footer-column ul li {
+  margin-bottom: 0.6rem;
+  font-size: 0.95rem;
+}
+
+.admin-footer-column ul li a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: block;
+  padding: 0.2rem 0;
+}
+
+.admin-footer-column ul li a:hover {
+  color: #e91e63;
+}
+
+.admin-footer-icons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.admin-footer-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: rgba(255, 255, 255, 0.05);
+  text-decoration: none;
+  color: #ccc;
+}
+
+.admin-footer-icon:hover {
+  background-color: rgba(233, 30, 99, 0.1);
+  color: #e91e63;
+  text-decoration: none;
+}
+
+.admin-footer-icon svg {
+  font-size: 1.2rem;
+  color: inherit;
+}
+
+.admin-footer-icon span {
+  font-size: 0.8rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .admin-footer {
+    padding: 1.5rem 1rem;
+  }
+  
+  .admin-footer-container {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-footer-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .admin-footer-column {
+    min-width: 100%;
+  }
+  
+  .admin-footer-icons {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .admin-footer-icon {
+    padding: 0.5rem;
+  }
+  
+  .admin-footer-icon svg {
+    font-size: 1rem;
+  }
+  
+  .admin-footer-icon span {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-footer-icons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

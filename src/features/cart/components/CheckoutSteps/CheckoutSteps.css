@@ -1,0 +1,150 @@
+/* Checkout Steps Component Styles */
+
+.checkout-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto 3rem;
+  padding: 0 10%;
+  max-width: 800px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.step.active .step-number {
+  background-color: #000000;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.step.completed .step-number {
+  background-color: #10b981;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.step-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  transition: all 0.3s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.step.active .step-label {
+  color: #000000;
+  font-weight: 600;
+  transform: scale(1.05);
+}
+
+.step.completed .step-label {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.step-divider {
+  height: 2px;
+  background-color: #e2e8f0;
+  flex: 1;
+  margin: 0 1rem;
+  margin-bottom: 1.5rem;
+  transition: background-color 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.step.completed + .step-divider {
+  background-color: #10b981;
+}
+
+.step.completed + .step-divider::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+  animation: progressFill 0.8s ease-out;
+}
+
+@keyframes progressFill {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Hover effects */
+.step:hover .step-number {
+  transform: scale(1.05);
+}
+
+.step.active:hover .step-number {
+  transform: scale(1.15);
+}
+
+.step.completed:hover .step-number {
+  transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .checkout-steps {
+    padding: 0;
+  }
+  
+  .step-label {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .checkout-steps {
+    margin-bottom: 2rem;
+  }
+  
+  .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+  
+  .step-label {
+    font-size: 11px;
+  }
+  
+  .step-divider {
+    margin: 0 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+}

@@ -1,0 +1,96 @@
+.payment-provider-selector {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.payment-provider-selector h2 {
+  margin-bottom: 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.payment-provider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+  margin-bottom: 0.75rem;
+}
+
+.payment-provider:last-child {
+  margin-bottom: 0;
+}
+
+.payment-provider:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.payment-provider.selected {
+  border-color: #0070ba;
+  background-color: #eff6ff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.payment-provider-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.payment-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  color: #0070ba;
+  flex-shrink: 0;
+}
+
+/* Payment provider specific icon colors */
+.payment-provider[data-provider="STRIPE"] .payment-icon {
+  color: #6772e5;
+}
+
+.payment-provider[data-provider="PAYPAL"] .payment-icon {
+  color: #0070ba;
+}
+
+.payment-provider-details {
+  flex: 1;
+}
+
+.payment-provider-details h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.payment-provider-details p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.payment-check {
+  color: #1f2937;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
