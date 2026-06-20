@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -16,62 +16,70 @@ import {
   Avatar,
   TextField,
   InputAdornment,
+  CircularProgress,
+  Alert,
   useTheme,
 } from '@mui/material';
 import {
   LocalShipping as SupplierIcon,
   Inventory as ProductsIcon,
-  AttachMoney as RevenueIcon,
   CheckCircle as ActiveIcon,
   Search as SearchIcon,
 } from '@mui/icons-material';
 import withLayout from '../../../../layouts/HOC/withLayout';
+import supplierService from '../../../../api2/services/supplierService';
 
-const stats = [
-  { title: 'Total Suppliers', value: '48', change: '+4 this month', icon: <SupplierIcon sx={{ fontSize: 36 }} />, color: '#1976d2' },
-  { title: 'Active Suppliers', value: '39', change: '81% active rate', icon: <ActiveIcon sx={{ fontSize: 36 }} />, color: '#4caf50' },
-  { title: 'Products Supplied', value: '1,240', change: '+85 this month', icon: <ProductsIcon sx={{ fontSize: 36 }} />, color: '#ff9800' },
-  { title: 'Total Revenue', value: '$342,800', change: '+9.3% vs last month', icon: <RevenueIcon sx={{ fontSize: 36 }} />, color: '#9c27b0' },
-];
-
-const suppliers = [
-  { id: 'SUP-001', name: 'Alpha Goods Co.', contact: 'alice@alphagoods.com', products: 120, revenue: '$45,200', status: 'Active', rating: 4.8 },
-  { id: 'SUP-002', name: 'Beta Supplies Ltd.', contact: 'bob@betasupplies.com', products: 85, revenue: '$32,100', status: 'Active', rating: 4.5 },
-  { id: 'SUP-003', name: 'Gamma Traders', contact: 'carol@gammatraders.com', products: 60, revenue: '$21,500', status: 'Inactive', rating: 3.9 },
-  { id: 'SUP-004', name: 'Delta Wholesale', contact: 'dave@deltawholesale.com', products: 200, revenue: '$78,400', status: 'Active', rating: 4.9 },
-  { id: 'SUP-005', name: 'Epsilon Exports', contact: 'eve@epsilonexports.com', products: 45, revenue: '$15,600', status: 'Pending', rating: 4.1 },
-  { id: 'SUP-006', name: 'Zeta Distributors', contact: 'zack@zetadist.com', products: 95, revenue: '$38,900', status: 'Active', rating: 4.6 },
-  { id: 'SUP-007', name: 'Eta Merchants', contact: 'helen@etamerchants.com', products: 30, revenue: '$9,800', status: 'Inactive', rating: 3.5 },
-];
-
-const statusColor = { Active: 'success', Inactive: 'error', Pending: 'warning' };
-
-const StatCard = ({ stat }) => {
+const StatCard = ({ title, value, change, icon, color }) => {
   const theme = useTheme();
   return (
     <Card sx={{ height: '100%', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-4px)', boxShadow: theme.shadows[8] } }}>
       <CardContent sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <Box sx={{ width: 56, height: 56, borderRadius: 2, backgroundColor: stat.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {stat.icon}
+          <Box sx={{ width: 56, height: 56, borderRadius: 2, backgroundColor: color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {icon}
           </Box>
-          <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'right' }}>{stat.change}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'right' }}>{change}</Typography>
         </Box>
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>{stat.value}</Typography>
-        <Typography variant="body2" color="text.secondary">{stat.title}</Typography>
+        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>{value}</Typography>
+        <Typography variant="body2" color="text.secondary">{title}</Typography>
       </CardContent>
     </Card>
   );
 };
 
+const formatDate = (dateStr) => {
+  if (!dateStr) return '—';
+  return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+};
+
 const SupplierDashboardPage = () => {
+  const [suppliers, setSuppliers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
 
-  const filtered = suppliers.filter(
-    (s) =>
-      s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.id.toLowerCase().includes(search.toLowerCase())
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const data = await supplierService.getAdminSummary();
+        setSuppliers(data);
+      } catch (err) {
+        setError(err.message || 'Failed to load supplier data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const filtered = suppliers.filter((s) =>
+    s.supplierName?.toLowerCase().includes(search.toLowerCase())
   );
+
+  const totalSuppliers = suppliers.length;
+  const activeSuppliers = suppliers.filter((s) => s.activeProducts > 0).length;
+  const totalItemsSupplied = suppliers.reduce((sum, s) => sum + (s.totalProducts || 0), 0);
 
   return (
     <Box>
@@ -84,17 +92,39 @@ const SupplierDashboardPage = () => {
 
       {/* Stats */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        {stats.map((stat, i) => (
-          <Grid item xs={12} sm={6} md={3} key={i}>
-            <StatCard stat={stat} />
-          </Grid>
-        ))}
+        <Grid item xs={12} sm={6} md={4}>
+          <StatCard
+            title="Total Suppliers"
+            value={loading ? '—' : totalSuppliers}
+            change="All registered suppliers"
+            icon={<SupplierIcon sx={{ fontSize: 36 }} />}
+            color="#1976d2"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <StatCard
+            title="Active Suppliers"
+            value={loading ? '—' : activeSuppliers}
+            change="Suppliers with active products"
+            icon={<ActiveIcon sx={{ fontSize: 36 }} />}
+            color="#4caf50"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <StatCard
+            title="Total Items Supplied"
+            value={loading ? '—' : totalItemsSupplied}
+            change="Across all suppliers"
+            icon={<ProductsIcon sx={{ fontSize: 36 }} />}
+            color="#ff9800"
+          />
+        </Grid>
       </Grid>
 
       {/* Supplier Table */}
       <Paper sx={{ p: 3, borderRadius: 2 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>Supplier List</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>Supplier Information</Typography>
           <TextField
             size="small"
             placeholder="Search suppliers..."
@@ -111,56 +141,89 @@ const SupplierDashboardPage = () => {
           />
         </Box>
 
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {['Supplier', 'ID', 'Contact', 'Products', 'Revenue', 'Rating', 'Status'].map((h) => (
-                  <TableCell key={h} sx={{ fontWeight: 600 }}>{h}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filtered.map((s) => (
-                <TableRow key={s.id} hover>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                      <Avatar sx={{ width: 36, height: 36, bgcolor: '#1976d2', fontSize: 14 }}>
-                        {s.name.charAt(0)}
-                      </Avatar>
-                      <Typography variant="body2" sx={{ fontWeight: 500 }}>{s.name}</Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" color="text.secondary">{s.id}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">{s.contact}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">{s.products}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" sx={{ fontWeight: 500 }}>{s.revenue}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">⭐ {s.rating}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Chip label={s.status} color={statusColor[s.status]} size="small" />
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filtered.length === 0 && (
+        {loading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+            <CircularProgress />
+          </Box>
+        )}
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+        )}
+
+        {!loading && !error && (
+          <TableContainer>
+            <Table>
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan={7} align="center">
-                    <Typography variant="body2" color="text.secondary" sx={{ py: 3 }}>No suppliers found.</Typography>
-                  </TableCell>
+                  {['Supplier', 'Date Joined', 'Last Supplied Item', 'Total Items Supplied', 'Active Products', 'Status'].map((h) => (
+                    <TableCell key={h} sx={{ fontWeight: 600 }}>{h}</TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {filtered.map((s) => (
+                  <TableRow key={s.supplierId} hover>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Avatar sx={{ width: 36, height: 36, bgcolor: '#1976d2', fontSize: 14 }}>
+                          {s.supplierName?.charAt(0)}
+                        </Avatar>
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>{s.supplierName}</Typography>
+                      </Box>
+                    </TableCell>
+
+                    {/* Date Joined */}
+                    <TableCell>
+                      <Typography variant="body2">{formatDate(s.createdAt)}</Typography>
+                    </TableCell>
+
+                    {/* Last Supplied Item */}
+                    <TableCell>
+                      {s.lastSuppliedItemName ? (
+                        <Box>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>{s.lastSuppliedItemName}</Typography>
+                          <Typography variant="caption" color="text.secondary">{formatDate(s.lastSuppliedItemDate)}</Typography>
+                        </Box>
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">—</Typography>
+                      )}
+                    </TableCell>
+
+                    {/* Total Items Supplied Till Date */}
+                    <TableCell>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>{s.totalProducts ?? 0}</Typography>
+                    </TableCell>
+
+                    {/* Active Products */}
+                    <TableCell>
+                      <Typography variant="body2">{s.activeProducts ?? 0}</Typography>
+                    </TableCell>
+
+                    {/* Status */}
+                    <TableCell>
+                      <Chip
+                        label={s.activeProducts > 0 ? 'Active' : 'Inactive'}
+                        color={s.activeProducts > 0 ? 'success' : 'default'}
+                        size="small"
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+
+                {filtered.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} align="center">
+                      <Typography variant="body2" color="text.secondary" sx={{ py: 3 }}>
+                        No suppliers found.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Paper>
     </Box>
   );

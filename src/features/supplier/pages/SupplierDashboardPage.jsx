@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import {
   Box, Typography, Grid, Card, CardContent, Paper, Button, Chip,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Avatar, IconButton, LinearProgress, Stack
+  Avatar, IconButton, LinearProgress, Stack, CircularProgress, Alert,
+  TextField, InputAdornment
 } from '@mui/material';
 import {
   TrendingUp, ShoppingCart, Inventory, Star, Add as AddIcon,
   FileDownload as ExportIcon, Store as StoreIcon, SupportAgent as SupportIcon,
-  ArrowForwardIos as ArrowIcon
+  ArrowForwardIos as ArrowIcon, LocalShipping as SupplierIcon,
+  Search as SearchIcon, CalendarToday as DateIcon, CheckCircle as ActiveIcon
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import {
@@ -15,6 +17,7 @@ import {
 } from 'recharts';
 import SupplierLayout from '../../../layouts/SupplierLayout';
 import { useNavigate } from 'react-router-dom';
+import supplierService from '../../../api2/services/supplierService';
 
 const chartData = [
   { name: 'Mon', revenue: 4200, orders: 12 },
@@ -81,8 +84,28 @@ const darkGlassCard = {
     color: '#f8fafc'
 };
 
+const formatDate = (dateStr) => {
+  if (!dateStr) return '—';
+  return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+};
+
 const SupplierDashboardPage = () => {
   const navigate = useNavigate();
+  const [suppliers, setSuppliers] = useState([]);
+  const [suppliersLoading, setSuppliersLoading] = useState(true);
+  const [suppliersError, setSuppliersError] = useState(null);
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    supplierService.getAdminSummary()
+      .then(data => setSuppliers(data))
+      .catch(err => setSuppliersError(err.message || 'Failed to load supplier info.'))
+      .finally(() => setSuppliersLoading(false));
+  }, []);
+
+  const filtered = suppliers.filter(s =>
+    s.supplierName?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <SupplierLayout>
@@ -399,6 +422,112 @@ const SupplierDashboardPage = () => {
                                 </Box>
                             ))}
                         </Stack>
+                    </Paper>
+                </motion.div>
+
+                {/* Supplier Info Card */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.65 }}
+                >
+                    <Paper sx={{ ...darkGlassCard, p: 4, borderRadius: '36px' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                            <Typography variant="h6" sx={{ fontWeight: 900 }}>Supplier Info</Typography>
+                            <Chip
+                                label={`${suppliers.length} Suppliers`}
+                                size="small"
+                                sx={{ fontWeight: 900, height: 24, fontSize: '0.7rem', borderRadius: '10px', background: 'rgba(139, 92, 246, 0.15)', color: '#a855f7', border: '1px solid rgba(139,92,246,0.3)' }}
+                            />
+                        </Box>
+
+                        <TextField
+                            placeholder="Search suppliers..."
+                            size="small"
+                            fullWidth
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: '#64748b', fontSize: 18 }} /></InputAdornment>,
+                                sx: { borderRadius: '14px', bgcolor: 'rgba(0,0,0,0.2)', color: '#f8fafc', fontSize: '0.85rem', border: '1px solid rgba(255,255,255,0.07)', '& fieldset': { border: 'none' } }
+                            }}
+                            sx={{ mb: 3, input: { color: '#f8fafc' } }}
+                        />
+
+                        {suppliersLoading && (
+                            <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                                <CircularProgress size={28} sx={{ color: '#a855f7' }} />
+                            </Box>
+                        )}
+
+                        {suppliersError && (
+                            <Alert severity="error" sx={{ borderRadius: '12px', fontSize: '0.8rem' }}>{suppliersError}</Alert>
+                        )}
+
+                        {!suppliersLoading && !suppliersError && (
+                            <Stack spacing={2.5}>
+                                {filtered.length === 0 && (
+                                    <Typography variant="body2" sx={{ color: '#64748b', textAlign: 'center', py: 2 }}>No suppliers found.</Typography>
+                                )}
+                                {filtered.map(s => (
+                                    <Box
+                                        key={s.supplierId}
+                                        sx={{
+                                            p: 2.5, borderRadius: '18px',
+                                            background: 'rgba(0,0,0,0.2)',
+                                            border: '1px solid rgba(255,255,255,0.05)',
+                                            '&:hover': { borderColor: 'rgba(139,92,246,0.3)', background: 'rgba(139,92,246,0.05)' },
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                    >
+                                        {/* Supplier name + status */}
+                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                                <Avatar sx={{ width: 32, height: 32, bgcolor: 'rgba(139,92,246,0.2)', color: '#a855f7', fontSize: 13, fontWeight: 900 }}>
+                                                    {s.supplierName?.charAt(0)}
+                                                </Avatar>
+                                                <Typography variant="body2" sx={{ fontWeight: 800, color: '#f8fafc' }}>{s.supplierName}</Typography>
+                                            </Box>
+                                            <Chip
+                                                label={s.activeProducts > 0 ? 'Active' : 'Inactive'}
+                                                size="small"
+                                                sx={{
+                                                    height: 22, fontSize: '0.65rem', fontWeight: 900, borderRadius: '8px',
+                                                    background: s.activeProducts > 0 ? 'rgba(16,185,129,0.15)' : 'rgba(100,116,139,0.15)',
+                                                    color: s.activeProducts > 0 ? '#10b981' : '#64748b',
+                                                    border: `1px solid ${s.activeProducts > 0 ? 'rgba(16,185,129,0.3)' : 'rgba(100,116,139,0.3)'}`
+                                                }}
+                                            />
+                                        </Box>
+
+                                        {/* Date Joined */}
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                                            <DateIcon sx={{ fontSize: 13, color: '#64748b' }} />
+                                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 700 }}>Joined:</Typography>
+                                            <Typography variant="caption" sx={{ color: '#94a3b8', fontWeight: 600 }}>{formatDate(s.createdAt)}</Typography>
+                                        </Box>
+
+                                        {/* Last Supplied Item */}
+                                        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1 }}>
+                                            <SupplierIcon sx={{ fontSize: 13, color: '#64748b', mt: 0.2 }} />
+                                            <Box>
+                                                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 700 }}>Last Item: </Typography>
+                                                <Typography variant="caption" sx={{ color: '#94a3b8', fontWeight: 600 }}>
+                                                    {s.lastSuppliedItemName ? `${s.lastSuppliedItemName} · ${formatDate(s.lastSuppliedItemDate)}` : '—'}
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+
+                                        {/* Total Items Supplied */}
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <Inventory sx={{ fontSize: 13, color: '#64748b' }} />
+                                            <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 700 }}>Total Supplied:</Typography>
+                                            <Typography variant="caption" sx={{ color: '#a855f7', fontWeight: 900 }}>{s.totalProducts ?? 0}</Typography>
+                                        </Box>
+                                    </Box>
+                                ))}
+                            </Stack>
+                        )}
                     </Paper>
                 </motion.div>
 
