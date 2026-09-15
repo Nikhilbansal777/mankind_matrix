@@ -6,6 +6,15 @@ import {
   Card,
   CardContent,
   Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
+  Avatar,
+  Button,
   useTheme,
 } from '@mui/material';
 import {
@@ -13,10 +22,29 @@ import {
   ShoppingCart as ShoppingCartIcon,
   People as PeopleIcon,
   Inventory as InventoryIcon,
+  PersonAdd as UserCreatedIcon,
+  AddBox as ProductAddedIcon,
 } from '@mui/icons-material';
 import AnalyticsPage from '../analytics/AnalyticsPage';
+import { useNavigate } from 'react-router-dom';
 
-// Mock data - in real implementation, this would come from API
+const recentLogs = [
+  { id: 1, type: 'USER_CREATED',   actor: 'System',            target: 'alice@example.com',       timestamp: '2025-06-05T09:12:00' },
+  { id: 2, type: 'USER_PURCHASE',  actor: 'alice@example.com', target: 'Order #ORD-1021',          timestamp: '2025-06-05T10:05:00' },
+  { id: 3, type: 'PRODUCT_ADDED',  actor: 'admin@mankind.com', target: 'Wireless Headphones',     timestamp: '2025-06-05T08:30:00' },
+  { id: 4, type: 'USER_CREATED',   actor: 'System',            target: 'bob@example.com',         timestamp: '2025-06-04T14:22:00' },
+  { id: 5, type: 'USER_PURCHASE',  actor: 'bob@example.com',   target: 'Order #ORD-1020',         timestamp: '2025-06-04T15:40:00' },
+];
+
+const typeConfig = {
+  USER_CREATED:  { label: 'User Created',  color: 'success', icon: <UserCreatedIcon fontSize="small" />,  bg: '#e8f5e9', iconColor: '#4caf50' },
+  USER_PURCHASE: { label: 'Purchase',      color: 'info',    icon: <ShoppingCartIcon fontSize="small" />, bg: '#e3f2fd', iconColor: '#2196f3' },
+  PRODUCT_ADDED: { label: 'Product Added', color: 'warning', icon: <ProductAddedIcon fontSize="small" />, bg: '#fff3e0', iconColor: '#ff9800' },
+};
+
+const formatDate = (ts) =>
+  new Date(ts).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
 const dashboardStats = [
   {
     title: 'Total Sales',
@@ -114,6 +142,7 @@ const StatCard = ({ stat }) => {
 
 const DashboardPage = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <Box>
@@ -137,11 +166,50 @@ const DashboardPage = () => {
       </Grid>
 
       {/* Analytics Section */}
-      <Paper sx={{ p: 3, borderRadius: 2 }}>
+      <Paper sx={{ p: 3, borderRadius: 2, mb: 4 }}>
         <Typography variant="h5" component="h2" sx={{ fontWeight: 600, mb: 3 }}>
           Sales Analytics
         </Typography>
         <AnalyticsPage />
+      </Paper>
+
+      {/* Audit Logs Preview */}
+      <Paper sx={{ p: 3, borderRadius: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600 }}>Recent Audit Logs</Typography>
+          <Button variant="outlined" size="small" onClick={() => navigate('/admin/audit-logs')}>
+            View All
+          </Button>
+        </Box>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                {['Event', 'Type', 'Actor', 'Target', 'Time'].map(h => (
+                  <TableCell key={h} sx={{ fontWeight: 700 }}>{h}</TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {recentLogs.map(log => {
+                const cfg = typeConfig[log.type];
+                return (
+                  <TableRow key={log.id} hover>
+                    <TableCell>
+                      <Avatar sx={{ width: 30, height: 30, bgcolor: cfg.bg, color: cfg.iconColor }}>
+                        {cfg.icon}
+                      </Avatar>
+                    </TableCell>
+                    <TableCell><Chip label={cfg.label} color={cfg.color} size="small" /></TableCell>
+                    <TableCell><Typography variant="body2">{log.actor}</Typography></TableCell>
+                    <TableCell><Typography variant="body2" sx={{ fontWeight: 500 }}>{log.target}</Typography></TableCell>
+                    <TableCell><Typography variant="body2" color="text.secondary">{formatDate(log.timestamp)}</Typography></TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Paper>
     </Box>
   );
