@@ -1,0 +1,118 @@
+.products-layout {
+  display: flex;
+  flex-direction: row;
+}
+
+.products-page {
+    flex-grow: 1;
+    min-width: 0; /* Prevents overflow in flexbox */
+    margin: 0;
+    padding: 1rem 1rem 0 1rem;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+  
+  .products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .products-header h1 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+    position: relative;
+  }
+  
+  .products-header h1::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #e91e63;
+    margin-top: 0.5rem;
+  }
+  
+  .products-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .search-container {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .product-search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+  }
+  
+  .product-search-input:focus {
+    outline: none;
+    border-color: #e91e63;
+    box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.1);
+  }
+  
+  .product-grid-container {
+    min-height: 400px;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .products-layout {
+      flex-direction: column;
+    }
+
+    .products-page {
+      padding: 1rem 1rem 0 1rem;
+    }
+    
+    .products-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .products-header h1 {
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .products-page {
+      padding: 1rem 1rem 0 1rem;
+    }
+    
+    .products-header h1 {
+      font-size: 1.25rem;
+    }
+  }
+
+.sale-banner {
+  width: 100%;
+  background: linear-gradient(90deg, #ff9800 0%, #ff5722 100%);
+  color: #fff;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 0.85rem 0.5rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  z-index: 100;
+  position: relative;
+}
+@media (max-width: 600px) {
+  .sale-banner {
+    font-size: 1rem;
+    padding: 0.7rem 0.2rem;
+  }
+}

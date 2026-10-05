@@ -1,0 +1,144 @@
+/* Admin Sidebar specific styles */
+
+/* Navigation item button */
+.admin-nav-item-btn {
+  background-color: transparent !important;
+  color: #ccc !important;
+  border-radius: 8px !important;
+  margin-bottom: 4px !important;
+}
+
+.admin-nav-item-btn:hover {
+  background-color: rgba(233, 30, 99, 0.1) !important;
+  color: #fff !important;
+}
+
+.admin-nav-item-btn.active {
+  background-color: #e91e63 !important;
+  color: #fff !important;
+}
+
+/* Navigation item icon */
+.admin-nav-item-icon {
+  color: inherit !important;
+  min-width: 40px !important;
+}
+
+/* Navigation item text */
+.admin-nav-item-text {
+  font-size: 1rem !important;
+  font-weight: normal !important;
+  font-family: inherit !important;
+}
+
+.admin-nav-item-text.active {
+  font-weight: bold !important;
+}
+
+/* Child navigation item button */
+.admin-nav-child-btn {
+  background-color: transparent !important;
+  color: #ccc !important;
+  padding-left: 48px !important;
+  border-radius: 6px !important;
+  margin-bottom: 2px !important;
+}
+
+.admin-nav-child-btn:hover {
+  background-color: rgba(233, 30, 99, 0.1) !important;
+  color: #fff !important;
+}
+
+.admin-nav-child-btn.active {
+  background-color: rgba(233, 30, 99, 0.2) !important;
+  color: #fff !important;
+}
+
+/* Child navigation item text */
+.admin-nav-child-text {
+  font-size: 0.875rem !important;
+  font-weight: normal !important;
+  font-family: inherit !important;
+}
+
+.admin-nav-child-text.active {
+  font-weight: bold !important;
+}
+
+/* Drawer content container */
+.admin-drawer-content {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Drawer header */
+.admin-drawer-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 16px !important;
+  min-height: 64px !important;
+  border-bottom: 1px solid #444 !important;
+}
+
+/* Drawer title */
+.admin-drawer-title {
+  font-weight: bold !important;
+  color: #fff !important;
+  font-size: 1.8rem !important;
+  font-family: inherit !important;
+  white-space: nowrap !important;
+  opacity: 1 !important;
+  transition: opacity 0.3s !important;
+}
+
+/* Navigation list */
+.admin-nav-list {
+  flex: 1 !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+/* Drawer footer */
+.admin-drawer-footer {
+  padding: 16px !important;
+  border-top: 1px solid #444 !important;
+}
+
+/* Drawer footer text */
+.admin-drawer-footer-text {
+  opacity: 1 !important;
+  transition: opacity 0.3s !important;
+  text-align: center !important;
+  display: block !important;
+  color: #ccc !important;
+}
+
+/* Mobile drawer */
+.admin-mobile-drawer .MuiDrawer-paper {
+  box-sizing: border-box !important;
+  width: 280px !important;
+  background-color: #2c2c2c !important;
+  color: #ccc !important;
+}
+
+/* Desktop drawer */
+.admin-desktop-drawer .MuiDrawer-paper {
+  box-sizing: border-box !important;
+  width: 280px !important;
+  transition: transform 0.3s ease !important;
+  overflow-x: hidden !important;
+  background-color: #2c2c2c !important;
+  color: #ccc !important;
+  border-right: 1px solid #444 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  height: 100vh !important;
+  z-index: 1200 !important;
+}
+
+.admin-desktop-drawer.closed .MuiDrawer-paper {
+  transform: translateX(-280px) !important;
+}
