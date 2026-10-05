@@ -12,6 +12,7 @@ function Header({ onSearch }) {
   const [isMobile, setIsMobile] = useState(false);
   const { itemCount } = useCart();
   const { isAuthenticated, user } = useUser();
+  const profileLabel = user?.firstName || user?.username || 'Profile';
   
   // Check if we're on mobile view
   useEffect(() => {
@@ -35,6 +36,10 @@ function Header({ onSearch }) {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
+
   return (
     <div className="header">
       {/* Make logo clickable and link to home page */}
@@ -52,10 +57,10 @@ function Header({ onSearch }) {
       
       <div className={`header-right ${mobileMenuOpen ? 'mobile-open' : ''}`}>
       <nav className="nav-links">
-          <Link to='/products'>Products</Link>
-          <Link to='/blog'>Blog</Link>
-          <Link to='/about'>About</Link>
-          <Link to='/contact'>Contact</Link>
+          <Link to='/products' onClick={closeMobileMenu}>Products</Link>
+          <Link to='/blog' onClick={closeMobileMenu}>Blog</Link>
+          <Link to='/about' onClick={closeMobileMenu}>About</Link>
+          <Link to='/contact' onClick={closeMobileMenu}>Contact</Link>
         </nav>
       </div>
      
@@ -65,7 +70,12 @@ function Header({ onSearch }) {
           <>
             {/* Admin icon - only show when user role is admin */}
             {user?.role === 'ADMIN' && (
-              <Link to="/admin" className="admin-icon-wrapper">
+              <Link
+                to="/admin"
+                className="admin-icon-wrapper"
+                aria-label="Open admin dashboard"
+                title="Admin dashboard"
+              >
                 <FaUserShield className="admin-icon" />
               </Link>
             )}
@@ -76,11 +86,11 @@ function Header({ onSearch }) {
             <Link
               to="/profile"
               className="profile-icon-wrapper"
-              aria-label="Open profile"
-              title="Profile"
+              aria-label={`Open ${profileLabel}'s profile`}
+              title="My profile"
             >
               {user?.profilePictureUrl ? (
-                <img src={user.profilePictureUrl} alt="" className="profile-image-icon" />
+                <img src={user.profilePictureUrl} alt={profileLabel} className="profile-image-icon" />
               ) : (
                 <FaUserCircle className="profile-icon" />
               )}
