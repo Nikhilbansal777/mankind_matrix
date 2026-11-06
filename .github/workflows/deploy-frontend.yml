@@ -1,0 +1,127 @@
+name: Deploy frontend to NameHero
+
+# Runs on every push to master (i.e. every merged PR) and can also be started by hand
+# (Actions -> Deploy frontend to NameHero -> Run workflow).
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Never run two deployments at the same time (a running deployment is never cancelled midway).
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    # Only ever deploy master, even if the workflow is started by hand from another branch.
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          CI: "false"                 # Create React App treats warnings as errors when CI=true
+          GENERATE_SOURCEMAP: "false" # do not publish source maps (smaller upload, source not exposed)
+        run: npm run build
+
+      - name: Check the build before touching the server
+        env:
+          API_HOST: ${{ vars.API_HOST || 'api.mankindmatrixai.com' }}
+        run: |
+          set -euo pipefail
+          test -f build/index.html   || { echo "::error::build/index.html is missing"; exit 1; }
+          test -f build/.htaccess    || { echo "::error::build/.htaccess is missing (public/.htaccess provides the SPA routing rule)"; exit 1; }
+          JS=$(ls build/static/js/main.*.js | head -n 1)
+          grep -q "$API_HOST" "$JS" || { echo "::error::The build does not contain the backend address $API_HOST. Is .env on this branch up to date?"; exit 1; }
+          if grep -q -E 'onrender\.com|localhost:8085' "$JS"; then
+            echo "::error::The build still contains old backend URLs (onrender.com or localhost:8085). Check .env."; exit 1
+          fi
+          echo "Build looks right: $(find build -type f | wc -l) files, entry point $JS"
+
+      - name: Upload to NameHero over FTPS (new files first, index.html last, stale files removed afterwards)
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_TLS_VERIFY: ${{ vars.FTP_TLS_VERIFY || 'yes' }}
+        run: |
+          set -euo pipefail
+          export LC_ALL=C
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+          # $1 = strict (any failed command fails the job) | loose (failures are only reported), $2 = lftp commands
+          lftp_run() {
+            local fail=true; [ "$1" = loose ] && fail=false
+            lftp -u "$FTP_USER,$FTP_PASSWORD" "ftp://$FTP_HOST" -e \
+              "set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate $FTP_TLS_VERIFY; set net:max-retries 3; set net:timeout 30; set net:reconnect-interval-base 5; set cmd:fail-exit $fail; $2; bye"
+          }
+
+          WORK=$(mktemp -d)
+          ( cd build && find . -type f | sed 's|^\./||' | sort ) > "$WORK/new.txt"
+
+          echo "== 1/5 Reading the manifest of the previous deployment"
+          if lftp_run strict "cat .deploy-manifest.txt" > "$WORK/old.txt" 2>/dev/null; then
+            echo "The previous deployment uploaded $(wc -l < "$WORK/old.txt") files"
+          else
+            : > "$WORK/old.txt"
+            echo "No previous manifest (first pipeline deployment): nothing will be deleted this time"
+          fi
+          sort -o "$WORK/old.txt" "$WORK/old.txt"
+
+          echo "== 2/5 Uploading new and changed files (index.html is held back)"
+          lftp_run strict "mirror -R --no-perms --verbose=1 -x '^index\.html\$' build ."
+
+          echo "== 3/5 Switching the site over: uploading index.html"
+          lftp_run strict "put -O . build/index.html"
+
+          echo "== 4/5 Removing files that earlier deployments uploaded and this build no longer has"
+          comm -23 "$WORK/old.txt" "$WORK/new.txt" \
+            | { grep -E '^[A-Za-z0-9._/@+-]+$' || true; } \
+            | { grep -v -E '(^|/)\.\.(/|$)' || true; } > "$WORK/stale.txt"
+          if [ -s "$WORK/stale.txt" ]; then
+            sed 's/^/  removing /' "$WORK/stale.txt"
+            lftp_run loose "$(sed 's|.*|rm -f "&"|' "$WORK/stale.txt" | paste -sd ';' -)"
+          else
+            echo "Nothing to remove"
+          fi
+
+          echo "== 5/5 Recording what is deployed"
+          lftp_run strict "put -O . \"$WORK/new.txt\" -o .deploy-manifest.txt"
+          echo "Upload finished"
+
+      - name: Check that the live site serves the new build
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://mankindmatrixai.com' }}
+        run: |
+          set -euo pipefail
+          MAIN=$(grep -o 'main\.[a-f0-9]*\.js' build/index.html | head -n 1)
+          check() {
+            local html code
+            html=$(curl -fsSL "$SITE_URL/") || return 1
+            grep -q "$MAIN" <<< "$html" || { echo "  the home page does not reference $MAIN yet"; return 1; }
+            curl -fsSL -o /dev/null "$SITE_URL/static/js/$MAIN" || { echo "  $MAIN is not downloadable yet"; return 1; }
+            code=$(curl -sSL -o /dev/null -w '%{http_code}' "$SITE_URL/login") || return 1
+            [ "$code" = 200 ] || { echo "  /login returned $code (the SPA routing rule in .htaccess is not working)"; return 1; }
+          }
+          for i in $(seq 1 "${SMOKE_RETRIES:-6}"); do
+            if check; then echo "Live site OK: serves $MAIN and /login works"; exit 0; fi
+            echo "Not ready (attempt $i), waiting..."
+            sleep "${SMOKE_DELAY:-10}"
+          done
+          echo "::error::The live site does not serve the new build. To go back, revert the commit on master and push."
+          exit 1
