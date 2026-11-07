@@ -20,7 +20,7 @@ jobs:
     # Only ever deploy master, even if the workflow is started by hand from another branch.
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -53,6 +53,7 @@ jobs:
           echo "Build looks right: $(find build -type f | wc -l) files, entry point $JS"
 
       - name: Upload to NameHero over FTPS (new files first, index.html last, stale files removed afterwards)
+        timeout-minutes: 10
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USER: ${{ secrets.FTP_USER }}
@@ -61,47 +62,82 @@ jobs:
         run: |
           set -euo pipefail
           export LC_ALL=C
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq lftp
+          WORK=$(mktemp -d); chmod 700 "$WORK"
+          CT="${FTP_CONNECT_TIMEOUT:-20}"   # seconds to wait for a connection
+          MT="${FTP_MAX_TIME:-120}"         # hard limit for any single transfer
 
-          # $1 = strict (any failed command fails the job) | loose (failures are only reported), $2 = lftp commands
-          lftp_run() {
-            local fail=true; [ "$1" = loose ] && fail=false
-            lftp -u "$FTP_USER,$FTP_PASSWORD" "ftp://$FTP_HOST" -e \
-              "set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate $FTP_TLS_VERIFY; set net:max-retries 3; set net:timeout 30; set net:reconnect-interval-base 5; set cmd:fail-exit $fail; $2; bye"
-          }
+          # Credentials go through a private config file so they never appear in a process list.
+          esc() { sed 's/\\/\\\\/g; s/"/\\"/g'; }
+          printf 'user = "%s:%s"\n' "$(printf %s "$FTP_USER" | esc)" "$(printf %s "$FTP_PASSWORD" | esc)" > "$WORK/curlrc"
+          BASE=(-K "$WORK/curlrc" --silent --show-error --ssl-reqd --connect-timeout "$CT" --max-time "$MT")
+          [ "$FTP_TLS_VERIFY" = no ] && BASE+=(--insecure)
+          MODE=()
+          ftp() { curl "${BASE[@]}" "${MODE[@]}" "$@" < /dev/null; }
 
-          WORK=$(mktemp -d)
+          echo "== 0/5 Checking the FTPS connection (explicit TLS, hard time limits)"
+          HOST_ONLY="${FTP_HOST%%:*}"; PORT="${FTP_HOST##*:}"; [ "$PORT" = "$FTP_HOST" ] && PORT=21
+          getent hosts "$HOST_ONLY" > /dev/null 2>&1 && echo "  DNS lookup: ok" || echo "  DNS lookup: FAILED (check the FTP_HOST secret: it must be a bare host name such as ftp.mindstack-technologies.com)"
+          timeout 15 bash -c "exec 3<>/dev/tcp/$HOST_ONLY/$PORT" 2> /dev/null && echo "  TCP port $PORT: reachable" || echo "  TCP port $PORT: NOT reachable from GitHub's runners within 15s"
+          CONNECTED=0
+          for m in "" "--ftp-skip-pasv-ip" "--disable-epsv" "--ftp-skip-pasv-ip --disable-epsv"; do
+            read -r -a MODE <<< "$m"
+            if ftp -o /dev/null "ftp://$FTP_HOST/" 2> "$WORK/err.txt"; then
+              echo "  login + directory listing: ok (settings: ${m:-default})"; CONNECTED=1; break
+            fi
+            echo "  login attempt failed with [${m:-default}]: $(head -c 300 "$WORK/err.txt")"
+          done
+          if [ "$CONNECTED" != 1 ]; then
+            echo "::error::Could not log in to the FTP server over FTPS. Check, in this order: (1) secrets FTP_HOST (bare host name, e.g. ftp.mindstack-technologies.com, the FTP server name shown in cPanel under FTP Accounts), FTP_USER (full name, e.g. deploy@mankindmatrixai.com) and FTP_PASSWORD; (2) if the message above says 'SSL certificate problem', set the repository variable FTP_TLS_VERIFY=no as a temporary fallback; (3) if the port is not reachable, NameHero is blocking GitHub's runners - ask NameHero support to allow FTPS (port 21 plus passive ports) from GitHub Actions or to enable SFTP/SSH."
+            exit 1
+          fi
+
           ( cd build && find . -type f | sed 's|^\./||' | sort ) > "$WORK/new.txt"
 
           echo "== 1/5 Reading the manifest of the previous deployment"
-          if lftp_run strict "cat .deploy-manifest.txt" > "$WORK/old.txt" 2>/dev/null; then
+          set +e; ftp "ftp://$FTP_HOST/.deploy-manifest.txt" -o "$WORK/old.txt" 2> "$WORK/err.txt"; RC=$?; set -e
+          if [ "$RC" = 0 ]; then
             echo "The previous deployment uploaded $(wc -l < "$WORK/old.txt") files"
-          else
+          elif [ "$RC" = 78 ]; then
             : > "$WORK/old.txt"
             echo "No previous manifest (first pipeline deployment): nothing will be deleted this time"
+          else
+            echo "::error::Could not read the manifest (curl exit $RC): $(head -c 300 "$WORK/err.txt")"; exit 1
           fi
           sort -o "$WORK/old.txt" "$WORK/old.txt"
 
-          echo "== 2/5 Uploading new and changed files (index.html is held back)"
-          lftp_run strict "mirror -R --no-perms --verbose=1 -x '^index\.html\$' build ."
+          put() {  # $1 = path inside build/ ; the same path is used on the server
+            local rel="$1" n=0
+            until ftp --ftp-create-dirs -T "build/$rel" "ftp://$FTP_HOST/$rel" 2> "$WORK/err.txt"; do
+              n=$((n + 1))
+              if [ "$n" -ge 3 ]; then echo "::error::Upload of $rel failed: $(head -c 300 "$WORK/err.txt")"; return 1; fi
+              echo "  retrying $rel (attempt $((n + 1)))"; sleep 3
+            done
+            echo "  uploaded $rel"
+          }
+
+          echo "== 2/5 Uploading all files except index.html"
+          while IFS= read -r f; do
+            [ "$f" = index.html ] && continue
+            put "$f"
+          done < "$WORK/new.txt"
 
           echo "== 3/5 Switching the site over: uploading index.html"
-          lftp_run strict "put -O . build/index.html"
+          put index.html
 
           echo "== 4/5 Removing files that earlier deployments uploaded and this build no longer has"
           comm -23 "$WORK/old.txt" "$WORK/new.txt" \
             | { grep -E '^[A-Za-z0-9._/@+-]+$' || true; } \
             | { grep -v -E '(^|/)\.\.(/|$)' || true; } > "$WORK/stale.txt"
           if [ -s "$WORK/stale.txt" ]; then
-            sed 's/^/  removing /' "$WORK/stale.txt"
-            lftp_run loose "$(sed 's|.*|rm -f "&"|' "$WORK/stale.txt" | paste -sd ';' -)"
+            ARGS=()
+            while IFS= read -r f; do echo "  removing $f"; ARGS+=(-Q "-DELE $f"); done < "$WORK/stale.txt"
+            ftp "${ARGS[@]}" -o /dev/null "ftp://$FTP_HOST/" || echo "::warning::Some old files could not be removed (harmless, they are retried on the next deployment)"
           else
             echo "Nothing to remove"
           fi
 
           echo "== 5/5 Recording what is deployed"
-          lftp_run strict "put -O . \"$WORK/new.txt\" -o .deploy-manifest.txt"
+          ftp -T "$WORK/new.txt" "ftp://$FTP_HOST/.deploy-manifest.txt"
           echo "Upload finished"
 
       - name: Check that the live site serves the new build
