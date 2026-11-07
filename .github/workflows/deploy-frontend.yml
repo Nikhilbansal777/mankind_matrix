@@ -76,7 +76,7 @@ jobs:
 
           echo "== 0/5 Checking the FTPS connection (explicit TLS, hard time limits)"
           HOST_ONLY="${FTP_HOST%%:*}"; PORT="${FTP_HOST##*:}"; [ "$PORT" = "$FTP_HOST" ] && PORT=21
-          getent hosts "$HOST_ONLY" > /dev/null 2>&1 && echo "  DNS lookup: ok" || echo "  DNS lookup: FAILED (check the FTP_HOST secret: it must be a bare host name such as ftp.mindstack-technologies.com)"
+          getent hosts "$HOST_ONLY" > /dev/null 2>&1 && echo "  DNS lookup: ok" || echo "  DNS lookup: FAILED (check the FTP_HOST secret: it must be a bare host name such as node403.namehero.net)"
           timeout 15 bash -c "exec 3<>/dev/tcp/$HOST_ONLY/$PORT" 2> /dev/null && echo "  TCP port $PORT: reachable" || echo "  TCP port $PORT: NOT reachable from GitHub's runners within 15s"
           CONNECTED=0
           for m in "" "--ftp-skip-pasv-ip" "--disable-epsv" "--ftp-skip-pasv-ip --disable-epsv"; do
@@ -87,7 +87,7 @@ jobs:
             echo "  login attempt failed with [${m:-default}]: $(head -c 300 "$WORK/err.txt")"
           done
           if [ "$CONNECTED" != 1 ]; then
-            echo "::error::Could not log in to the FTP server over FTPS. Check, in this order: (1) secrets FTP_HOST (bare host name, e.g. ftp.mindstack-technologies.com, the FTP server name shown in cPanel under FTP Accounts), FTP_USER (full name, e.g. deploy@mankindmatrixai.com) and FTP_PASSWORD; (2) if the message above says 'SSL certificate problem', set the repository variable FTP_TLS_VERIFY=no as a temporary fallback; (3) if the port is not reachable, NameHero is blocking GitHub's runners - ask NameHero support to allow FTPS (port 21 plus passive ports) from GitHub Actions or to enable SFTP/SSH."
+            echo "::error::Could not log in to the FTP server over FTPS. Check, in this order: (1) secrets FTP_HOST (bare host name, e.g. node403.namehero.net, the NameHero server your site is hosted on), FTP_USER (full name, e.g. deploy@mankindmatrixai.com) and FTP_PASSWORD; (2) if the message above says 'SSL certificate problem', set the repository variable FTP_TLS_VERIFY=no as a temporary fallback; (3) if the port is not reachable, NameHero is blocking GitHub's runners - ask NameHero support to allow FTPS (port 21 plus passive ports) from GitHub Actions or to enable SFTP/SSH."
             exit 1
           fi
 
