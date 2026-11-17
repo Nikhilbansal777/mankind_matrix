@@ -20,6 +20,7 @@ import {
   ShoppingCart as OrdersIcon,
   Analytics as AnalyticsIcon,
   Settings as SettingsIcon,
+  Assignment as AuditIcon,
   ExpandLess,
   ExpandMore,
 } from '@mui/icons-material';
@@ -57,6 +58,12 @@ const navigationItems = [
       { id: 'orders-list', label: 'Order List', path: '/admin/orders' },
       { id: 'coupons', label: 'Coupons', path: '/admin/coupons' },
     ],
+  },
+  {
+    id: 'audit-logs',
+    label: 'Audit Logs',
+    icon: <AuditIcon />,
+    path: '/admin/audit-logs',
   },
   {
     id: 'analytics',
