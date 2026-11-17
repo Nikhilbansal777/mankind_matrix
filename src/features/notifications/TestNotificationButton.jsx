@@ -18,9 +18,9 @@ const TestNotificationButton = () => {
       <button onClick={handleRequestPermission} style={{ marginRight: '1rem' }}>
         Request Notification Permission
       </button>
-      <button onClick={handleShowNotification}>
+      {/* <button onClick={handleShowNotification}>
         Show Test Notification
-      </button>
+      </button> */}
     </div>
   );
 };
