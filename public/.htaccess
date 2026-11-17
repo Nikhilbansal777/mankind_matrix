@@ -1,0 +1,12 @@
+# React single-page app routing (Apache / LiteSpeed)
+# Sends every address that is not a real file or folder to index.html,
+# so /login, /product/1 etc. work on direct visits and refreshes.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/\.well-known/
+  RewriteRule . /index.html [L]
+</IfModule>

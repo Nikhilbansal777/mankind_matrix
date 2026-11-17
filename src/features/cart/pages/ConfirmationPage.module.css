@@ -1,0 +1,591 @@
+/* Confirmation Page Module Styles */
+
+.confirmationPage {
+  min-height: 100vh;
+  background: white;
+  padding: 0;
+}
+
+.confirmationContainer {
+  max-width: 100%;
+  margin: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+/* Loading Section */
+.loadingSection {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+}
+
+.loadingSpinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error Section */
+.errorSection {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+}
+
+.errorIcon {
+  color: #ef4444;
+  margin-bottom: 1.5rem;
+}
+
+.errorMessage {
+  color: #6b7280;
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+}
+
+/* Success Section */
+.successSection {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  width: 100%;
+}
+
+.successIcon {
+  margin-bottom: 1.5rem;
+  animation: fadeInScale 0.6s ease-out;
+}
+
+.successIcon svg {
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.successSection h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: -0.025em;
+}
+
+.successMessage {
+  font-size: 1.125rem;
+  opacity: 0.95;
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Order Details Section */
+.orderDetailsSection {
+  padding: 3rem 2rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  margin: 0;
+}
+
+.orderDetailsSection h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.orderInfoGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+.orderInfoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  min-height: auto;
+}
+
+.orderInfoItem .label {
+  font-weight: 500;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.orderInfoItem .value {
+  font-weight: 600;
+  color: #1f2937;
+  text-align: right;
+  word-break: break-all;
+  max-width: 300px;
+}
+
+.statusConfirmed {
+  color: #059669 !important;
+  background: #d1fae5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.statusPaid {
+  color: #059669 !important;
+  background: #d1fae5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Order Summary */
+.orderSummary {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.orderSummary h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.summaryGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.summaryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.summaryItem:last-child {
+  border-bottom: none;
+}
+
+.summaryItem .label {
+  font-weight: 500;
+  color: #64748b;
+}
+
+.summaryItem .value {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.totalItem {
+  border-top: 2px solid #1f2937;
+  border-bottom: none;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+.totalItem .label {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 1.125rem;
+}
+
+.totalItem .value {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 1.125rem;
+}
+
+/* Coupon Info */
+.couponInfo {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  background: #fef3c7;
+  border-radius: 0.75rem;
+  border: 1px solid #f59e0b;
+}
+
+.couponInfo h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.couponDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.couponCode {
+  font-weight: 700;
+  color: #92400e;
+  background: #fbbf24;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.couponName {
+  flex: 1;
+  color: #92400e;
+  font-weight: 500;
+}
+
+.couponDiscount {
+  font-weight: 700;
+  color: #059669;
+  background: #d1fae5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Order Items */
+.orderItems {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+.orderItems h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.itemsList {
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.itemRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  align-items: center;
+}
+
+.itemRow:last-child {
+  border-bottom: none;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.itemName {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.itemQuantity {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.itemPrice,
+.itemSubtotal {
+  font-weight: 600;
+  color: #1f2937;
+  text-align: right;
+}
+
+/* Next Steps Section */
+.nextStepsSection {
+  padding: 3rem 2rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  margin: 0;
+}
+
+.nextStepsSection h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.stepItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: transparent;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stepItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.stepContent h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.stepContent p {
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  padding: 3rem 2rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  margin: 0;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, #000000 0%, #374151 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.primaryButton:hover {
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.secondaryButton {
+  background: white;
+  color: #374151;
+  border: 2px solid #e2e8f0;
+}
+
+.secondaryButton:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+/* Additional Information */
+.additionalInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 3rem 2rem;
+  background: white;
+}
+
+.infoCard {
+  background: transparent;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.infoCard h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.infoCard p {
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.contactLink,
+.trackingLink {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
+  color: white;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.contactLink:hover,
+.trackingLink:hover {
+  background: #2563eb;
+}
+
+/* Animations */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .confirmationPage {
+    padding: 1rem 0.5rem;
+  }
+  
+  .successSection {
+    padding: 2rem 1rem;
+  }
+  
+  .successSection h1 {
+    font-size: 2rem;
+  }
+  
+  .orderInfoGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .summaryGrid {
+    gap: 0.5rem;
+  }
+  
+  .couponDetails {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .itemRow {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .itemPrice,
+  .itemSubtotal {
+    text-align: center;
+  }
+  
+  .stepsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .actionButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .additionalInfo {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .successSection h1 {
+    font-size: 1.75rem;
+  }
+  
+  .successMessage {
+    font-size: 1rem;
+  }
+  
+  .orderDetailsSection,
+  .nextStepsSection,
+  .actionButtons,
+  .additionalInfo {
+    padding: 1.5rem 1rem;
+  }
+  
+  .stepItem {
+    padding: 1rem;
+  }
+  
+  .stepNumber {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  
+  .orderSummary,
+  .couponInfo {
+    padding: 1rem;
+  }
+}

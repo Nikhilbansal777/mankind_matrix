@@ -1,0 +1,212 @@
+/* manage-addresses.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+
+.default-checkbox-container {
+    grid-column: 1 / -1; /* Span both columns of the grid */
+    display: flex; /* Enable Flexbox for inline alignment */
+    align-items: center; /* Vertically align items in the center */
+    justify-content: flex-start; /* Align items to the left */
+    margin-top: 10px; /* Add some top margin for spacing */
+}
+
+.default-checkbox-container label[for="isDefault"] {
+    text-align: left;
+    font-weight: normal;
+    padding-left: 5px;
+    margin-right: 10px; /* This will create the gap */
+}
+
+
+/* --- Container for Address Section --- */
+#address-root {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#address-root h2,
+#address-root h3 {
+    color: #000000;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+
+#add-address-btn {
+    background-color: #000000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+#address-form {
+    display: grid;
+    grid-template-columns: auto 1fr; 
+    gap: 15px 12px; 
+    margin-top: 25px;
+    align-items: center;
+    width: auto; 
+}
+
+#address-form label {
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #000000;
+    text-align: left;
+    padding-right: 10px;  
+    margin-bottom: 0;
+}
+
+#address-form input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    align-self: center;
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box;
+    width: auto;
+    margin-bottom: 0;
+}
+
+.address-card{
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.address-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+/* Specific handling for the checkbox row */
+#address-form label[for="isDefault"] {
+    grid-column: 2 / 3;
+    text-align: left;
+    font-weight: normal;
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+#address-form input[type="checkbox"]#isDefault {
+    grid-column: 1 / 2;
+    justify-self: end;
+    margin: 0;
+    width: auto;
+    cursor: pointer;
+}
+
+/* Container for Save/Cancel buttons */
+.form-actions {
+    grid-column: 2;
+    justify-content:left !important;
+    gap: 50px;
+    margin-top: 10px;
+}
+
+.form-actions button[type="submit"] {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #000000;
+    color: white;
+    margin-left: 200px;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.form-actions button[type="button"] {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+    background-color: #000000;
+    color: white;
+}
+
+.form-actions button[type="submit"]:hover {
+    background-color: #000000;
+}
+
+.form-actions button[type="button"],
+.form-actions #cancel-btn {
+     /* Adjust vertical and horizontal padding */
+    font-size: 1em;
+    background-color: #000000;
+    margin-left: 10px;
+    color: white;
+}
+
+
+
+.hidden {
+    display: none !important;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* --- Optional: Responsiveness for the Form (Update input max-width if needed) --- */
+@media (max-width: 500px) {
+  #address-form {
+    grid-template-columns: 1fr; /* Stack to a single column */
+    gap: 5px 0;
+  }
+
+  #address-form label {
+     grid-column: 1 / -1;
+     text-align: left;
+     padding-right: 0;
+     margin-bottom: 3px;
+  }
+
+   #address-form input[type="text"]{
+       grid-column: 1 / -1;
+       margin-bottom: 10px;
+       max-width: none; /* Allow input to be full width on small screens */
+   }
+
+   /* Checkbox layout for stacking */
+   #address-form input[type="checkbox"]#isDefault {
+       grid-column: 1 / -1;
+       justify-self: start;
+       margin-bottom: 0;
+   }
+    #address-form label[for="isDefault"]{
+       grid-column: 1 / -1;
+       padding-left: 25px;
+       position: relative;
+       top: -18px;
+       margin-bottom: -10px;
+   }
+
+   .form-actions {
+       justify-content: center;
+   }
+}

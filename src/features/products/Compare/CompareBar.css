@@ -1,0 +1,85 @@
+.compare-bar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: #0b1324;
+	color: #fff;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 16px;
+	gap: 12px;
+	box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
+	z-index: 1000;
+}
+
+.compare-items {
+	display: flex;
+	gap: 10px;
+	overflow-x: auto;
+	max-width: 70%;
+}
+
+.compare-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	background: rgba(255,255,255,0.08);
+	border-radius: 8px;
+	padding: 6px 8px;
+}
+
+.compare-item img, .compare-item .placeholder {
+	width: 36px;
+	height: 36px;
+	border-radius: 4px;
+	object-fit: cover;
+	background: #2a3350;
+}
+
+.compare-item .name {
+	max-width: 180px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.compare-item .remove {
+	background: transparent;
+	color: #fff;
+	border: none;
+	cursor: pointer;
+	font-size: 18px;
+	line-height: 1;
+}
+
+.compare-actions {
+	display: flex;
+	gap: 8px;
+}
+
+.compare-actions .clear,
+.compare-actions .go {
+	border: none;
+	border-radius: 6px;
+	padding: 8px 12px;
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.compare-actions .clear {
+	background: #2a3350;
+	color: #fff;
+}
+
+.compare-actions .go {
+	background: #00d68f;
+	color: #0b1324;
+}
+
+.compare-actions .go:disabled {
+	background: #7aa18e;
+	cursor: not-allowed;
+}
+

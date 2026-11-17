@@ -1,0 +1,186 @@
+/* Admin Header specific styles */
+
+/* AppBar styles */
+.admin-header-appbar {
+  width: 100% !important;
+  margin-left: 0 !important;
+  transition: width 0.3s ease, margin-left 0.3s ease !important;
+  background-color: #2c2c2c !important;
+  color: #ccc !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  border-bottom: 1px solid #444 !important;
+  height: 64px !important;
+  z-index: 1300 !important;
+}
+
+/* Menu toggle button */
+.admin-menu-toggle-btn {
+  margin-right: 16px !important;
+}
+
+/* Admin logo link */
+.admin-logo-link {
+  text-decoration: none !important;
+  flex-grow: 1 !important;
+}
+
+/* Admin title */
+.admin-title {
+  font-weight: bold !important;
+  color: #fff !important;
+  font-size: 1.8rem !important;
+  font-family: inherit !important;
+  transition: color 0.2s ease !important;
+}
+
+.admin-title:hover {
+  color: #e91e63 !important;
+}
+
+/* Right side actions container */
+.admin-right-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+/* User profile button */
+.admin-user-profile-btn {
+  color: #ccc !important;
+}
+
+.admin-user-profile-btn:hover {
+  background-color: rgba(233, 30, 99, 0.1) !important;
+}
+
+/* User avatar */
+.admin-user-avatar {
+  width: 32px !important;
+  height: 32px !important;
+  background-color: #e91e63 !important;
+  font-size: 0.875rem !important;
+  color: #fff !important;
+}
+
+/* Profile dropdown menu */
+.admin-profile-menu {
+  overflow: visible !important;
+  filter: drop-shadow(0px 2px 8px rgba(0,0,0,0.32)) !important;
+  margin-top: 12px !important;
+}
+
+.admin-profile-menu .MuiAvatar-root {
+  width: 32px !important;
+  height: 32px !important;
+  margin-left: -4px !important;
+  margin-right: 8px !important;
+}
+
+.admin-profile-menu::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 14px !important;
+  width: 10px !important;
+  height: 10px !important;
+  background-color: #fff !important;
+  transform: translateY(-50%) rotate(45deg) !important;
+  z-index: 0 !important;
+}
+
+/* Menu item avatar */
+.admin-menu-item-avatar {
+  margin-right: 8px !important;
+}
+
+/* Logout Button Styles - matching main header */
+.header-logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  min-width: 44px;
+  min-height: 44px;
+  color: #ccc;
+  background-color: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.header-logout-btn:hover {
+  color: #fff;
+  background-color: rgba(233, 30, 99, 0.1);
+  border: none;
+}
+
+.header-logout-btn:focus,
+.header-logout-btn:focus:hover {
+  outline: none;
+  box-shadow: none;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.header-logout-btn.loading,
+.header-logout-btn.loading:hover,
+.header-logout-btn.loading:focus,
+.header-logout-btn.loading:focus:hover {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background-color: transparent !important;
+  border: none !important;
+  color: #ccc !important;
+  position: relative;
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.header-logout-btn.loading::after {
+  display: none !important;
+}
+
+.logout-spinner {
+  font-size: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.header-logout-btn svg,
+.logout-spinner {
+  font-size: 1.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
